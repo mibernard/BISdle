@@ -7,21 +7,24 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>B.I.Sdle</h1>
+    <h1 id="page-title">B.I.Sdle - Daily</h1>
+    <button id="toggle-mode">Switch to Unlimited</button>
+    <div id="loading">Loading...</div>
+    <div id="results"></div>
     <div>
-      <!--       images -->
+      <!-- Images -->
       <img id="Img1" style="width: 100px" />
       <img id="Img2" style="width: 100px" />
       <img id="Img3" style="width: 100px" />
     </div>
     <section class="test-area">
       <div id="origin-text">
-        <p>The text is to test.</p>
+        <p>Guess the champion given their BIS:</p>
       </div>
     </section>
     <input type="text" id="unitName" placeholder="Enter unit name, e.g., WuKong" />
-    <!-- <button onclick="fetchAlts()">Fetch BIS</button> -->
-    <div id="results"></div>
+
+    <button id="generate-unit" style="display: none">Generate Random Unit</button>
 
     <script src="script.js"></script>
   </body>

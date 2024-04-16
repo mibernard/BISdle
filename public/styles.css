@@ -1,3 +1,6 @@
+* {
+  /* border: 1px solid #ddd; */
+}
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
@@ -16,6 +19,6 @@ button {
 #results {
   margin-top: 20px;
   padding: 10px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  /* background-color: #fff; */
+  /* border: 1px solid #ddd; */
 }
