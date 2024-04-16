@@ -60,6 +60,9 @@ champion = [
   'Zyra',
 ];
 
+let currentMode = 'daily'; // Default mode
+let currentIndex; // This will hold the index of the current champion to guess
+
 document.addEventListener('DOMContentLoaded', () => {
   // const storedData = localStorage.getItem('unitData');
   // const pageTitle = document.getElementById('page-title');
@@ -71,27 +74,43 @@ document.addEventListener('DOMContentLoaded', () => {
   // } else {
   //   fetchUnitData(randomIndex); // No data found, proceed to fetch new data
   // }
-  fetchUnitData(randomIndex);
+  fetchUnitData(currentIndex);
 });
 
 document.getElementById('toggle-mode').addEventListener('click', function () {
+  const resultsDiv = document.getElementById('results');
+  const incorrectGuesses = document.getElementById('incorrectGuesses');
+  const feedback = document.getElementById('feedback');
+  resultsDiv.innerHTML = ''; // Clear previous results
+  incorrectGuesses.innerHTML = ''; // Clear previous incorrect guesses
+  feedback.innerHTML = ''; // Clear previous feedback
+
   const pageTitle = document.getElementById('page-title');
   const generateButton = document.getElementById('generate-unit');
+
   if (this.textContent.includes('Unlimited')) {
     pageTitle.textContent = 'B.I.Sdle - Unlimited';
     this.textContent = 'Switch to Daily';
     generateButton.style.display = 'block'; // Show the generate button
+    currentMode = 'Daily';
   } else {
     pageTitle.textContent = 'B.I.Sdle - Daily';
     this.textContent = 'Switch to Unlimited';
     generateButton.style.display = 'none'; // Hide the generate button
+    currentMode = 'Unlimited';
+    currentIndex = todayschampion;
+    fetchUnitData(currentIndex);
   }
 });
 
 document.getElementById('generate-unit').addEventListener('click', function () {
-  const randomIndex = getRandomIndex();
-  console.log('Random index champion:', champion[randomIndex]);
-  fetchUnitData(randomIndex);
+  const incorrectGuesses = document.getElementById('incorrectGuesses');
+  const feedback = document.getElementById('feedback');
+  incorrectGuesses.innerHTML = ''; // Clear previous incorrect guesses
+  feedback.innerHTML = ''; // Clear previous feedback
+  currentIndex = getRandomIndex();
+  console.log('Random Champion:', champion[currentIndex]);
+  fetchUnitData(currentIndex);
 });
 
 function fetchUnitData() {
@@ -101,7 +120,7 @@ function fetchUnitData() {
   loadingDiv.style.display = 'block'; // Show loading message
   resultsDiv.innerHTML = ''; // Clear previous results
 
-  fetch(`/api/fetch-alts?unit=${champion[todayschampion]}`)
+  fetch(`/api/fetch-alts?unit=${champion[currentIndex]}`)
     .then((response) => response.json())
     .then((data) => {
       console.log('updating page with results');
@@ -137,58 +156,75 @@ function updatePageWithResults(data) {
   }
 }
 
+document.getElementById('guessButton').addEventListener('click', function () {
+  const userInputField = document.getElementById('unitName');
+  const userInput = userInputField.value.trim();
+  const correctAnswer = champion[currentIndex]; // Make sure this variable is correctly assigned somewhere in your script
+
+  const feedback = document.getElementById('feedback');
+  const incorrectGuesses = document.getElementById('incorrectGuesses');
+
+  if (userInput.toLowerCase() === correctAnswer.toLowerCase()) {
+    feedback.textContent = `Correct! It was ${correctAnswer}.`;
+    feedback.style.color = 'green';
+  } else {
+    feedback.textContent = 'Incorrect, try again!';
+    feedback.style.color = 'red';
+
+    // Create a new paragraph for each incorrect guess and append it
+    const guessEntry = document.createElement('p');
+    guessEntry.textContent = userInput;
+    guessEntry.style.color = 'red'; // Optional: make incorrect guesses red
+    incorrectGuesses.appendChild(guessEntry);
+  }
+
+  userInputField.value = ''; // Clear input field after the guess
+});
+
+// Clear feedback when the page reloads
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('feedback').textContent = '';
+});
+
+document.getElementById('unitName').addEventListener('keypress', function (event) {
+  if (event.key === 'Enter') {
+    // Check if the key pressed is 'Enter'
+    event.preventDefault(); // Prevent the default action to avoid form submission
+    document.getElementById('guessButton').click(); // Trigger the click event on the button
+  }
+});
+
+// DAILY RANDOM NUMBER  GENERATION CODE
+
 const day = new Date().getDate();
 const month = new Date().getMonth();
 
 let num = Math.round(((day + 7) / month) * 3913).toString();
-console.log('Num: ', num);
+console.log('Num:', num);
 const today = +(num[4] + num[3]);
-let todayschampion = 0;
+let todayschampion;
 
 if (today > champion.length - 1) {
   var overflow = today - 59;
+  currentIndex = overflow;
   todayschampion = overflow;
+
   console.log(champion.length);
-  console.log('Today: ', overflow);
-  console.log('Todays Champion:', champion[overflow]);
+  console.log('Daily Random Number:', overflow);
+  console.log('Daily Champion:', champion[overflow]);
 } else {
+  currentIndex = today;
   todayschampion = today;
-  console.log('Today: ', today);
-  console.log('Todays Champion:', champion[today]);
+  console.log('Daily Random Number:', today);
+  console.log('Daily Champion:', champion[today]);
 }
 
-// var unitName = document.getElementById('unitName').value;
-
+// UNLIMITED RANDOM NUMBER GENERATION CODE
 function getRandomIndex() {
   const max = 58; // Length of the array
   return Math.floor(Math.random() * max); // Math.random() gives a number from 0 (inclusive) to 1 (exclusive)
 }
 
 const randomIndex = getRandomIndex();
-console.log('Random index:', randomIndex);
-console.log('Random index champion:', champion[randomIndex]);
-
-// fetch(`/api/fetch-alts?unit=${champion[todayschampion]}`)
-//   .then((response) => response.json())
-//   .then((data) => {
-//     if (data.success && Array.isArray(data.alts)) {
-//       const resultsDiv = document.getElementById('results');
-//       resultsDiv.innerHTML = ''; // Clear previous results
-//       data.alts.forEach((alt) => {
-//         const itemImg = document.createElement('img');
-
-//         // alt = alt.replaceAll(' ', '');
-//         alt = alt.replace(/[^a-zA-Z]/g, '');
-
-//         console.log(alt);
-
-//         itemImg.src = `https://rerollcdn.com/items/${alt}.png`;
-//         console.log(itemImg.src);
-//         itemImg.width = 100;
-
-//         resultsDiv.appendChild(itemImg);
-//       });
-//     } else {
-//       alert('Failed to fetch data: ' + (data.message || 'Unknown error'));
-//     }
-//   });
+// console.log('Unlimited - Random Number:', randomIndex);
+// console.log('Unlimited - Champion:', champion[randomIndex]);

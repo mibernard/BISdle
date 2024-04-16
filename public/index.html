@@ -9,6 +9,8 @@
   <body>
     <h1 id="page-title">B.I.Sdle - Daily</h1>
     <button id="toggle-mode">Switch to Unlimited</button>
+    <button id="generate-unit" style="display: none">Generate Random BIS</button>
+
     <div id="loading">Loading...(takes 5-10 seconds)</div>
     <div id="results"></div>
     <div>
@@ -23,8 +25,9 @@
       </div>
     </section>
     <input type="text" id="unitName" placeholder="Enter unit name, e.g., WuKong" />
-
-    <button id="generate-unit" style="display: none">Generate Random Unit</button>
+    <button id="guessButton">Guess</button>
+    <div id="feedback"></div>
+    <div id="incorrectGuesses"></div>
 
     <script src="script.js"></script>
   </body>
