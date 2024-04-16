@@ -61,16 +61,17 @@ champion = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-  const storedData = localStorage.getItem('unitData');
-  const pageTitle = document.getElementById('page-title');
+  // const storedData = localStorage.getItem('unitData');
+  // const pageTitle = document.getElementById('page-title');
 
-  if (storedData && pageTitle.textContent.includes('Daily')) {
-    console.log('using local storage, title.textContent =', pageTitle);
-    const data = JSON.parse(storedData);
-    updatePageWithResults(data); // Use the locally stored data
-  } else {
-    fetchUnitData(randomIndex); // No data found, proceed to fetch new data
-  }
+  // if (storedData && pageTitle.textContent.includes('Daily')) {
+  //   console.log('using local storage, title.textContent =', pageTitle);
+  //   const data = JSON.parse(storedData);
+  //   updatePageWithResults(data); // Use the locally stored data
+  // } else {
+  //   fetchUnitData(randomIndex); // No data found, proceed to fetch new data
+  // }
+  fetchUnitData(randomIndex);
 });
 
 document.getElementById('toggle-mode').addEventListener('click', function () {
@@ -93,14 +94,14 @@ document.getElementById('generate-unit').addEventListener('click', function () {
   fetchUnitData(randomIndex);
 });
 
-function fetchUnitData(index) {
+function fetchUnitData() {
   const loadingDiv = document.getElementById('loading');
   const resultsDiv = document.getElementById('results');
 
   loadingDiv.style.display = 'block'; // Show loading message
   resultsDiv.innerHTML = ''; // Clear previous results
 
-  fetch(`/api/fetch-alts?unit=${champion[randomIndex]}`)
+  fetch(`/api/fetch-alts?unit=${champion[todayschampion]}`)
     .then((response) => response.json())
     .then((data) => {
       console.log('updating page with results');
@@ -114,13 +115,14 @@ function fetchUnitData(index) {
 }
 
 function updatePageWithResults(data) {
+  console.log('Received data:', data);
   const resultsDiv = document.getElementById('results');
   const loadingDiv = document.getElementById('loading');
 
   resultsDiv.innerHTML = ''; // Clear previous results
   loadingDiv.style.display = 'none'; // Hide loading message
   if (data.success && Array.isArray(data.alts)) {
-    localStorage.setItem('unitData', JSON.stringify(data)); // Save the data to localStorage
+    // localStorage.setItem('unitData', JSON.stringify(data)); // Save the data to localStorage
     data.alts.forEach((alt) => {
       const itemImg = document.createElement('img');
       alt = alt.replace(/[^a-zA-Z]/g, '');
