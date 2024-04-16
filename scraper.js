@@ -2,15 +2,14 @@ const puppeteer = require('puppeteer');
 
 async function fetchImageAlts(url) {
   let alts = []; // Initialize alts to avoid returning undefined
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--single-process', '--no-zygote'],
+    headless: true, // Runs browser in headless mode
+  });
   const page = await browser.newPage();
   try {
     await page.goto(url, { waitUntil: 'networkidle0' });
-    const test = await page.evaluate(() => document.title);
-    console.log('Page title is:', test);
-
-    // Assuming you would process 'alts' here...
-    // Example, just to illustrate:
+    // Additional logic and evaluation...
     alts = await page.evaluate(() => {
       return Array.from(document.querySelectorAll('.ItemDetailHolders img.TableItemImg'))
         .slice(0, 3)
