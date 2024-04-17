@@ -117,6 +117,7 @@ document.getElementById('unitName').addEventListener('input', function (e) {
       item.addEventListener('click', function () {
         document.getElementById('unitName').value = champion; // Set input value
         document.getElementById('guessButton').click(); // Trigger the click event on the button
+        document.getElementById('unitName').focus();
         list.innerHTML = ''; // Clear suggestions
         submitGuess(champion); // Submit the guess immediately
       });
