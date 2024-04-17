@@ -63,6 +63,8 @@ champions = [
 let currentMode = 'daily'; // Default mode
 let currentIndex; // This will hold the index of the current champion to guess
 
+let guessedChampions = [];
+
 document.addEventListener('DOMContentLoaded', () => {
   // const storedData = localStorage.getItem('unitData');
   // const pageTitle = document.getElementById('page-title');
@@ -86,19 +88,19 @@ document.getElementById('toggle-mode').addEventListener('click', function () {
   resultsDiv.innerHTML = ''; // Clear previous results
   incorrectGuesses.innerHTML = ''; // Clear previous incorrect guesses
   feedback.innerHTML = ''; // Clear previous feedback
-  loadingDiv.textContent = ''; // clear loading message
-
   const pageTitle = document.getElementById('page-title');
   const generateButton = document.getElementById('generate-unit');
 
   if (this.textContent.includes('Unlimited')) {
     pageTitle.textContent = 'BISdle - Unlimited';
     this.textContent = 'Daily Mode';
+    loadingDiv.textContent = '';
     generateButton.style.display = 'block'; // Show the generate button
     currentMode = 'Daily';
   } else {
     pageTitle.textContent = 'BISdle - Daily';
     this.textContent = 'Unlimited Mode';
+    loadingDiv.textContent = 'loading...'; // clear loading message
     generateButton.style.display = 'none'; // Hide the generate button
     currentMode = 'Unlimited';
     currentIndex = todayschampion;
@@ -114,7 +116,7 @@ document.getElementById('unitName').addEventListener('input', function (e) {
   if (!input) return;
 
   champions.forEach((champion) => {
-    if (champion.toLowerCase().startsWith(input)) {
+    if (champion.toLowerCase().startsWith(input) && !guessedChampions.includes(champion.toLowerCase())) {
       const item = document.createElement('div');
       item.innerHTML = champion;
       item.addEventListener('click', function () {
@@ -123,6 +125,7 @@ document.getElementById('unitName').addEventListener('input', function (e) {
         document.getElementById('unitName').focus();
         list.innerHTML = ''; // Clear suggestions
         submitGuess(champion); // Submit the guess immediately
+        guessedChampions.push(champion.toLowerCase()); // Add to guessed list
       });
       list.appendChild(item);
     }
@@ -145,7 +148,7 @@ document.getElementById('generate-unit').addEventListener('click', function () {
   const incorrectGuesses = document.getElementById('incorrectGuesses');
   const feedback = document.getElementById('feedback');
   const loadingDiv = document.getElementById('loading');
-  loadingDiv.textContent = ''; // clear loading message
+  loadingDiv.textContent = 'loading...'; // clear loading message
   incorrectGuesses.innerHTML = ''; // Clear previous incorrect guesses
   feedback.innerHTML = ''; // Clear previous feedback
   currentIndex = getRandomIndex();
@@ -245,11 +248,14 @@ document.getElementById('unitName').addEventListener('keypress', function (event
   if (event.key === 'Enter') {
     // Check if the key pressed is 'Enter'
     event.preventDefault(); // Prevent the default action to avoid form submission
-    document.getElementById('guessButton').click(); // Trigger the click event on the button
+    var firstItem = document.querySelector('#autocomplete-list div');
+    if (firstItem) {
+      firstItem.click(); // Programmatically click the first item in the list
+    }
   }
 });
 
-// DAILY RANDOM NUMBER  GENERATION CODE
+// DAILY RANDOM NUMBER GENERATION CODE
 
 const day = new Date().getDate();
 const month = new Date().getMonth();
