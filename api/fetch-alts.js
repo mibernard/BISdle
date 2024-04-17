@@ -3,8 +3,10 @@ const fetchImageAlts = require('../scraper');
 module.exports = async (req, res) => {
   console.log('inside fetch-alts');
 
-  const unit = req.query.unit; // Vercel uses `query` for URL parameters
-  const url = `https://www.metatft.com/units/${unit}`;
+  const unit = req.query.unit.toLowerCase(); // Vercel uses `query` for URL parameters
+  // const url = `https://www.metatft.com/units/${unit}`;
+  const url = `https://mobalytics.gg/tft/champions/${unit}`;
+
   console.log('url: ', url);
   try {
     const alts = await fetchImageAlts(url);

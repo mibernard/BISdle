@@ -144,7 +144,20 @@ function updatePageWithResults(data) {
     // localStorage.setItem('unitData', JSON.stringify(data)); // Save the data to localStorage
     data.alts.forEach((alt) => {
       const itemImg = document.createElement('img');
+      // alt = alt.replace(/[^a-zA-Z]/g, '');
+      alt = alt
+        .split('-') // Split the string into an array of words using hyphen as delimiter
+        .map((word) => {
+          // Capitalize the first letter of each word, except for the word "of"
+          if (word === 'of') {
+            return word;
+          } else {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+          }
+        })
+        .join('');
       alt = alt.replace(/[^a-zA-Z]/g, '');
+
       itemImg.src = `https://rerollcdn.com/items/${alt}.png`;
       console.log('item url:', itemImg.src);
       itemImg.width = 100;
