@@ -144,6 +144,8 @@ document.addEventListener('click', function (e) {
 document.getElementById('generate-unit').addEventListener('click', function () {
   const incorrectGuesses = document.getElementById('incorrectGuesses');
   const feedback = document.getElementById('feedback');
+  const loadingDiv = document.getElementById('loading');
+  loadingDiv.textContent = ''; // clear loading message
   incorrectGuesses.innerHTML = ''; // Clear previous incorrect guesses
   feedback.innerHTML = ''; // Clear previous feedback
   currentIndex = getRandomIndex();
