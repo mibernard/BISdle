@@ -81,9 +81,12 @@ document.getElementById('toggle-mode').addEventListener('click', function () {
   const resultsDiv = document.getElementById('results');
   const incorrectGuesses = document.getElementById('incorrectGuesses');
   const feedback = document.getElementById('feedback');
+  const loadingDiv = document.getElementById('loading');
+
   resultsDiv.innerHTML = ''; // Clear previous results
   incorrectGuesses.innerHTML = ''; // Clear previous incorrect guesses
   feedback.innerHTML = ''; // Clear previous feedback
+  loadingDiv.textContent = ''; // clear loading message
 
   const pageTitle = document.getElementById('page-title');
   const generateButton = document.getElementById('generate-unit');
