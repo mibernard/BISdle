@@ -174,9 +174,10 @@ function updatePageWithResults(data) {
   const loadingDiv = document.getElementById('loading');
 
   resultsDiv.innerHTML = ''; // Clear previous results
-  loadingDiv.style.display = 'none'; // Hide loading message
+
   if (data.success && Array.isArray(data.alts)) {
     // localStorage.setItem('unitData', JSON.stringify(data)); // Save the data to localStorage
+    loadingDiv.style.display = 'none'; // Hide loading message
     data.alts.forEach((alt) => {
       const itemImg = document.createElement('img');
       // alt = alt.replace(/[^a-zA-Z]/g, '');
@@ -200,7 +201,8 @@ function updatePageWithResults(data) {
       resultsDiv.appendChild(itemImg);
     });
   } else {
-    alert('updatePageWithResults Error: ' + (data.message || 'Unknown error'));
+    loadingDiv.textContent = 'ya the fetch failed oops(vercels fault not mine)'; // Hide loading message
+    console.log('updatePageWithResults Error: ' + (data.message || 'Unknown error'));
   }
 }
 
