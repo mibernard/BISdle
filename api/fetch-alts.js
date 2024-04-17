@@ -1,4 +1,4 @@
-const fetchImageAlts = require('../scraper');
+const fetchImageAlts = require('./scraper');
 
 module.exports = async (req, res) => {
   console.log('inside fetch-alts');
