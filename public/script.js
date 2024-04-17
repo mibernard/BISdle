@@ -89,7 +89,7 @@ document.getElementById('toggle-mode').addEventListener('click', function () {
   const generateButton = document.getElementById('generate-unit');
 
   if (this.textContent.includes('Unlimited')) {
-    pageTitle.textContent = 'B.I.Sdle - Unlimited';
+    pageTitle.textContent = 'BISdle - Unlimited';
     this.textContent = 'Switch to Daily';
     generateButton.style.display = 'block'; // Show the generate button
     currentMode = 'Daily';
@@ -152,7 +152,7 @@ function updatePageWithResults(data) {
       resultsDiv.appendChild(itemImg);
     });
   } else {
-    alert('Failed to fetch data: ' + (data.message || 'Unknown error'));
+    alert('updatePageWithResults Error: ' + (data.message || 'Unknown error'));
   }
 }
 

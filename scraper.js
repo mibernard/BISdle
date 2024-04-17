@@ -11,6 +11,34 @@ async function fetchImageAlts(url) {
       headless: true,
     });
     const page = await browser.newPage();
+
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+      const resourceType = req.resourceType();
+      if (
+        [
+          // 'image',
+          // 'stylesheet',
+          // 'script',
+          // 'xhr',
+          'font',
+          'media',
+          'texttrack',
+          'eventsource',
+          'websocket',
+          'other',
+          'manifest',
+          // 'document',
+          'fetch',
+          'other',
+        ].includes(resourceType)
+      ) {
+        req.abort();
+      } else {
+        req.continue();
+      }
+    });
+
     await page.goto(url, { waitUntil: 'networkidle0' });
     const alts = await page.evaluate(() => {
       return Array.from(document.querySelectorAll('.ItemDetailHolders img.TableItemImg'))
