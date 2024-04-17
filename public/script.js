@@ -90,6 +90,7 @@ document.getElementById('toggle-mode').addEventListener('click', function () {
   feedback.innerHTML = ''; // Clear previous feedback
   const pageTitle = document.getElementById('page-title');
   const generateButton = document.getElementById('generate-unit');
+  guessedChampions = [];
 
   if (this.textContent.includes('Unlimited')) {
     pageTitle.textContent = 'BISdle - Unlimited';
@@ -154,6 +155,7 @@ document.getElementById('generate-unit').addEventListener('click', function () {
   currentIndex = getRandomIndex();
   console.log('Random Champion:', champions[currentIndex]);
   fetchUnitData(currentIndex);
+  guessedChampions = [];
 });
 
 function fetchUnitData() {
