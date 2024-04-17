@@ -94,7 +94,7 @@ document.getElementById('toggle-mode').addEventListener('click', function () {
     generateButton.style.display = 'block'; // Show the generate button
     currentMode = 'Daily';
   } else {
-    pageTitle.textContent = 'B.I.Sdle - Daily';
+    pageTitle.textContent = 'BISdle - Daily';
     this.textContent = 'Switch to Unlimited';
     generateButton.style.display = 'none'; // Hide the generate button
     currentMode = 'Unlimited';
