@@ -93,12 +93,12 @@ document.getElementById('toggle-mode').addEventListener('click', function () {
 
   if (this.textContent.includes('Unlimited')) {
     pageTitle.textContent = 'BISdle - Unlimited';
-    this.textContent = 'Switch to Daily';
+    this.textContent = 'Daily Mode';
     generateButton.style.display = 'block'; // Show the generate button
     currentMode = 'Daily';
   } else {
     pageTitle.textContent = 'BISdle - Daily';
-    this.textContent = 'Switch to Unlimited';
+    this.textContent = 'Unlimited Mode';
     generateButton.style.display = 'none'; // Hide the generate button
     currentMode = 'Unlimited';
     currentIndex = todayschampion;
