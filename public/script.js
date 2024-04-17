@@ -1,4 +1,4 @@
-champion = [
+champions = [
   'Aatrox',
   'Ahri',
   'Alune',
@@ -103,13 +103,47 @@ document.getElementById('toggle-mode').addEventListener('click', function () {
   }
 });
 
+document.getElementById('unitName').addEventListener('input', function (e) {
+  const input = e.target.value.toLowerCase();
+  const list = document.getElementById('autocomplete-list');
+  list.innerHTML = ''; // Clear previous suggestions
+
+  if (!input) return;
+
+  champions.forEach((champion) => {
+    if (champion.toLowerCase().startsWith(input)) {
+      const item = document.createElement('div');
+      item.innerHTML = champion;
+      item.addEventListener('click', function () {
+        document.getElementById('unitName').value = champion; // Set input value
+        document.getElementById('guessButton').click(); // Trigger the click event on the button
+        list.innerHTML = ''; // Clear suggestions
+        submitGuess(champion); // Submit the guess immediately
+      });
+      list.appendChild(item);
+    }
+  });
+});
+
+function submitGuess(guess) {
+  console.log('Guess submitted: ' + guess);
+  // Implement your guess submission logic here, like sending a request to a server
+  // or updating the page based on the guess.
+}
+
+document.addEventListener('click', function (e) {
+  if (!e.target.matches('#unitName')) {
+    document.getElementById('autocomplete-list').innerHTML = '';
+  }
+});
+
 document.getElementById('generate-unit').addEventListener('click', function () {
   const incorrectGuesses = document.getElementById('incorrectGuesses');
   const feedback = document.getElementById('feedback');
   incorrectGuesses.innerHTML = ''; // Clear previous incorrect guesses
   feedback.innerHTML = ''; // Clear previous feedback
   currentIndex = getRandomIndex();
-  console.log('Random Champion:', champion[currentIndex]);
+  console.log('Random Champion:', champions[currentIndex]);
   fetchUnitData(currentIndex);
 });
 
@@ -120,7 +154,7 @@ function fetchUnitData() {
   loadingDiv.style.display = 'block'; // Show loading message
   resultsDiv.innerHTML = ''; // Clear previous results
 
-  fetch(`/api/fetch-alts?unit=${champion[currentIndex]}`)
+  fetch(`/api/fetch-alts?unit=${champions[currentIndex]}`)
     .then((response) => response.json())
     .then((data) => {
       console.log('updating page with results');
@@ -172,7 +206,7 @@ function updatePageWithResults(data) {
 document.getElementById('guessButton').addEventListener('click', function () {
   const userInputField = document.getElementById('unitName');
   const userInput = userInputField.value.trim();
-  const correctAnswer = champion[currentIndex]; // Make sure this variable is correctly assigned somewhere in your script
+  const correctAnswer = champions[currentIndex]; // Make sure this variable is correctly assigned somewhere in your script
 
   const feedback = document.getElementById('feedback');
   const incorrectGuesses = document.getElementById('incorrectGuesses');
@@ -217,19 +251,19 @@ console.log('Num:', num);
 const today = +(num[4] + num[3]);
 let todayschampion;
 
-if (today > champion.length - 1) {
+if (today > champions.length - 1) {
   var overflow = today - 59;
   currentIndex = overflow;
   todayschampion = overflow;
 
-  console.log(champion.length);
+  console.log(champions.length);
   console.log('Daily Random Number:', overflow);
-  console.log('Daily Champion:', champion[overflow]);
+  console.log('Daily Champion:', champions[overflow]);
 } else {
   currentIndex = today;
   todayschampion = today;
   console.log('Daily Random Number:', today);
-  console.log('Daily Champion:', champion[today]);
+  console.log('Daily Champion:', champions[today]);
 }
 
 // UNLIMITED RANDOM NUMBER GENERATION CODE
@@ -240,4 +274,4 @@ function getRandomIndex() {
 
 const randomIndex = getRandomIndex();
 // console.log('Unlimited - Random Number:', randomIndex);
-// console.log('Unlimited - Champion:', champion[randomIndex]);
+// console.log('Unlimited - Champion:', champions[randomIndex]);

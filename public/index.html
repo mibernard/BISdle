@@ -24,7 +24,11 @@
         <p>Guess the champion given their BIS:</p>
       </div>
     </section>
-    <input type="text" id="unitName" placeholder="Enter champion name" />
+    <div class="autocomplete-wrapper">
+      <input type="text" id="unitName" placeholder="Enter champion name" autocomplete="off" />
+      <div id="autocomplete-list" class="autocomplete-items"></div>
+    </div>
+
     <button id="guessButton">Guess</button>
     <div id="feedback"></div>
     <div id="incorrectGuesses"></div>
