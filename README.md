@@ -15,7 +15,7 @@ Before you can run this project, you need to have Node.js and npm (Node Package 
 
 ## Installation
 
-1. Clone the repository:
+1. Clone the repository:  
    git clone https://github.com/mibernard/BISdle.git  
    cd your-project-directory
    
