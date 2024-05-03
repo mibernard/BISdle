@@ -76,18 +76,18 @@ export default function Home() {
   const [itemData, setItemData] = useState({}); // State to store item data
 
   useEffect(() => {
+    // Only set the index based on the mode
     if (currentMode === 'daily') {
-      calculateTodayIndex();
-    } else {
-      // handler(currentIndex);
-    }
-  }, [currentIndex]);
-
-  useEffect(() => {
-    if (currentMode === 'unlimited') {
+      setCurrentIndex(getTodayIndex());
+    } else if (currentMode === 'unlimited' && currentIndex === null) {
       setCurrentIndex(getRandomIndex());
     }
+    getTopItemsForChampion(currentIndex);
   }, [currentMode]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const toggleMode = () => {
     const newMode = currentMode === 'daily' ? 'unlimited' : 'daily';
@@ -99,34 +99,53 @@ export default function Home() {
 
   const handleInputChange = (event) => {
     const input = event.target.value.toLowerCase();
-    setUnitName(input);
+    setInput(event.target.value);
     if (!input) return;
+  };
+
+  const handleNewItems = () => {
+    setCurrentIndex(getRandomIndex());
+    getTopItemsForChampion(currentIndex);
   };
 
   const handleGuess = () => {
     if (!unitName) return;
-    const isCorrect = unitName.toLowerCase() === champions[currentIndex].toLowerCase();
+    console.log('current index:', currentIndex, 'champions[currentIndex]:', champions[currentIndex]);
+    const isCorrect = input.toLowerCase() === unitName.toLowerCase().split('_')[1];
+    console.log('input:', input.toLowerCase(), 'unitName:', unitName.toLowerCase().split('_')[1]);
     if (isCorrect) {
-      setFeedback(`Correct! It was ${champions[currentIndex]}.`);
+      setFeedback(`Correct! It is ${unitName.split('_')[1]}.`);
     } else {
-      setFeedback('Incorrect, try again!');
+      setFeedback(`It is not ${input}, try again!`);
       setIncorrectGuesses([...incorrectGuesses, unitName]);
     }
-    setUnitName('');
     setGuessedChampions([...guessedChampions, unitName.toLowerCase()]);
   };
 
-  function calculateTodayIndex() {
+  function getTodayIndex() {
     const day = new Date().getDate();
-    const month = new Date().getMonth() + 1;
+    const month = new Date().getMonth() + 1; // January is 0 in JavaScript, hence +1
     let num = Math.round(((day + 7) / month) * 3913).toString();
-    const todayIndex = +num[4] + num[3];
+    // console.log('Num:', num); // Debugging output to see what num looks like
+
+    // Ensure num has at least 5 characters; pad if necessary
+    num = num.padStart(5, '0'); // Ensures there are at least 5 digits, padding with '0' if not
+
+    // Convert the specific characters to numbers; using a safer access approach
+    const index4 = +num.charAt(4); // Safely access character, if not exist will give empty string which becomes 0
+    const index3 = +num.charAt(3); // Same as above
+    let todayIndex = index4 + index3;
+
     if (todayIndex > champions.length - 1) {
-      setCurrentIndex(todayIndex - 59);
-    } else {
-      setCurrentIndex(todayIndex);
+      todayIndex = todayIndex % champions.length;
     }
-    console.log('Daily Champion:', champions[todayIndex]);
+
+    // console.log('champions.length:', champions.length);
+    // console.log('TodayIndex:', todayIndex);
+    // console.log('currentIndex:', currentIndex);
+    console.log('Daily Champion:', champions[currentIndex]);
+
+    return todayIndex;
   }
 
   function getRandomIndex() {
@@ -140,26 +159,20 @@ export default function Home() {
       setSuggestions([]);
       return;
     }
-
     const filtered = champions.filter(
       (champion) =>
         champion.toLowerCase().startsWith(input.toLowerCase()) && !guessedChampions.includes(champion.toLowerCase())
     );
-
     setSuggestions(filtered);
   }, [input, guessedChampions]);
-
-  // Handle input change
-  const handleChange = (event) => {
-    setInput(event.target.value.toLowerCase());
-  };
 
   // Handle selecting a suggestion
   const handleSelect = (champion) => {
     setInput(champion); // Set input to the selected champion
+    console.log('champion', champion);
     setGuessedChampions((prev) => [...prev, champion.toLowerCase()]); // Add to guessed list
     setSuggestions([]); // Clear suggestions
-    // Trigger guess handling logic here if needed
+    document.getElementById('guessBtn').click();
   };
 
   // Clear suggestions when clicking outside the input
@@ -185,22 +198,26 @@ export default function Home() {
       }
       const data = await response.json();
       setItemData(data.data); // Assuming the backend returns an object with a 'data' key
+      console.log('itemData:', itemData);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching item data:', error);
       setLoading(false);
     }
-    getTopItemsForChampion(getRandomIndex());
   };
 
   const getTopItemsForChampion = (index) => {
-    if (!itemData || Object.keys(itemData).length === 0) {
-      console.log('No item data available', index);
-      return;
-    }
+    // if (!itemData || Object.keys(itemData).length === 0) {
+    //   console.log('No item data available', index);
+    //   return;
+    // }
     const championNames = Object.keys(itemData);
     const championName = championNames[index];
+    setUnitName(championName);
+    console.log('unitName', unitName);
     const items = itemData[championName];
+    console.log('championName', championName);
+    console.log('items', items);
 
     if (!items || Object.keys(items).length === 0) {
       console.log(`No items data available for ${championName}`);
@@ -224,11 +241,13 @@ export default function Home() {
     <div className={styles.container}>
       <h1>BISdle - {currentMode}</h1>
       <button onClick={toggleMode}>{currentMode === 'daily' ? 'Switch to Unlimited' : 'Switch to Daily'}</button>
-      <button onClick={() => fetchData()}>Get new BIS</button>
+      <button onClick={handleNewItems}>Get new BIS</button>
       <div>{loading ? 'Loading...' : 'fetched'}</div>
       <div id='results'></div>
-      <input id='unitName' value={input} onChange={handleChange} placeholder='Enter champion name' />
-      <button onClick={handleGuess}>Guess</button>
+      <input id='unitName' value={input} onChange={handleInputChange} placeholder='Enter champion name' />
+      <button id='guessBtn' onClick={handleGuess}>
+        Guess
+      </button>
       <div>{feedback}</div>
       {suggestions.length > 0 && (
         <div id='autocomplete-list'>
