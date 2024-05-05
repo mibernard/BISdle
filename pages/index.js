@@ -93,6 +93,7 @@ export default function Home() {
     const newMode = currentMode === 'daily' ? 'unlimited' : 'daily';
     setCurrentMode(newMode);
     setFeedback('');
+    setInput('');
     setIncorrectGuesses([]);
     setGuessedChampions([]);
   };
@@ -101,11 +102,17 @@ export default function Home() {
     const input = event.target.value.toLowerCase();
     setInput(event.target.value);
     if (!input) return;
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent the default form submission
+      document.getElementById('guessBtn').click(); // Programmatically click the guess button
+    }
   };
 
   const handleNewItems = () => {
     setCurrentIndex(getRandomIndex());
     getTopItemsForChampion(currentIndex);
+    setInput('');
+    setFeedback('');
   };
 
   const handleGuess = () => {
@@ -119,6 +126,7 @@ export default function Home() {
       setFeedback(`It is not ${input}, try again!`);
       setIncorrectGuesses([...incorrectGuesses, unitName]);
     }
+    setInput('');
     setGuessedChampions([...guessedChampions, unitName.toLowerCase()]);
   };
 
@@ -244,7 +252,13 @@ export default function Home() {
       <button onClick={handleNewItems}>Get new BIS</button>
       <div>{loading ? 'Loading...' : 'fetched'}</div>
       <div id='results'></div>
-      <input id='unitName' value={input} onChange={handleInputChange} placeholder='Enter champion name' />
+      <input
+        id='unitName'
+        value={input}
+        onChange={handleInputChange}
+        onKeyDown={handleInputChange}
+        placeholder='Enter champion name'
+      />
       <button id='guessBtn' onClick={handleGuess}>
         Guess
       </button>
