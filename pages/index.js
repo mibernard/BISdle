@@ -5,6 +5,7 @@ const champions = [
   'Aatrox',
   'Ahri',
   'Alune',
+  'Amumu',
   'Annie',
   'Aphelios',
   'Ashe',
@@ -121,13 +122,20 @@ export default function Home() {
     const isCorrect = input.toLowerCase() === unitName.toLowerCase().split('_')[1];
     console.log('input:', input.toLowerCase(), 'unitName:', unitName.toLowerCase().split('_')[1]);
     if (isCorrect) {
+      document.getElementById('feedback').style.color = 'green';
       setFeedback(`Correct! It is ${unitName.split('_')[1]}.`);
     } else {
+      document.getElementById('feedback').style.color = 'red';
       setFeedback(`It is not ${input}, try again!`);
       setIncorrectGuesses([...incorrectGuesses, unitName]);
     }
     setInput('');
     setGuessedChampions([...guessedChampions, unitName.toLowerCase()]);
+  };
+
+  const handleAnswer = () => {
+    document.getElementById('feedback').style.color = 'black';
+    setFeedback(`The answer is ${unitName.split('_')[1]}`);
   };
 
   function getTodayIndex() {
@@ -300,7 +308,10 @@ export default function Home() {
       <button id='guessBtn' onClick={handleGuess}>
         Guess
       </button>
-      <div>{feedback}</div>
+      <button id='answerBtn' onClick={handleAnswer}>
+        Answer
+      </button>
+      <div id='feedback'>{feedback}</div>
       {suggestions.length > 0 && (
         <div id='autocomplete-list'>
           {suggestions.map((item, index) => (
