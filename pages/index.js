@@ -110,9 +110,9 @@ export default function Home() {
 
   const handleNewItems = () => {
     setCurrentIndex(getRandomIndex());
-    getTopItemsForChampion(currentIndex);
     setInput('');
     setFeedback('');
+    getTopItemsForChampion(currentIndex);
   };
 
   const handleGuess = () => {
@@ -215,10 +215,11 @@ export default function Home() {
   };
 
   const getTopItemsForChampion = (index) => {
-    // if (!itemData || Object.keys(itemData).length === 0) {
-    //   console.log('No item data available', index);
-    //   return;
-    // }
+    if (!itemData || Object.keys(itemData).length === 0) {
+      console.log('No item data available', index);
+      return;
+    }
+
     const championNames = Object.keys(itemData);
     const championName = championNames[index];
     setUnitName(championName);
@@ -229,21 +230,58 @@ export default function Home() {
 
     if (!items || Object.keys(items).length === 0) {
       console.log(`No items data available for ${championName}`);
+      // handleNewItems();
       return { championName, topThreeItems: [] };
     }
+
     const sortedItems = Object.entries(items).sort((a, b) => b[1] - a[1]);
     const topThreeItems = sortedItems.slice(0, 3).map((item) => item[0]);
 
     const container = document.getElementById('results');
     container.innerHTML = ''; // Clear previous items
     topThreeItems.forEach((item) => {
-      const para = document.createElement('p');
-      para.textContent = item;
-      container.appendChild(para);
+      const imgElement = document.createElement('img');
+      imgElement.src = getImageUrl(item);
+      imgElement.alt = item;
+      imgElement.style.width = '100px'; // Set image width
+      container.appendChild(imgElement);
     });
-    console.log(`Top 3 items for ${championName}:`, topThreeItems);
+    console.log(`Top 3 items for ${championName}:`, topThreeItems.map(getImageUrl));
     return { championName, topThreeItems };
   };
+
+  function pascalToSnakeCase(str) {
+    return str
+      .replace(/\.?([A-Z]+)/g, function (x, y) {
+        return '_' + y.toLowerCase();
+      })
+      .replace(/^_/, '');
+  }
+
+  function getImageUrl(itemName) {
+    const baseUrl =
+      // 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/maps/particles/tft/item_icons/';
+      'https://rerollcdn.com/items/';
+
+    itemName = itemName.split('Item_')[1];
+    console.log(pascalToSnakeCase(itemName));
+
+    // Adjust paths based on item prefixes or special conditions
+    if (itemName.startsWith('TFT11_Inkshadow')) {
+      return `${baseUrl}tft11_inkshadowitems/${pascalToSnakeCase(itemName)}.png`;
+    } else if (itemName.startsWith('Ornn_Item')) {
+      return `${baseUrl}ornn_items/${pascalToSnakeCase(itemName)}.png`;
+    } else if (itemName.includes('Spatula')) {
+      return `${baseUrl}traits/spatula/set11/tft_set11${pascalToSnakeCase(itemName)}.png`;
+    } else if (itemName.includes('Emblem')) {
+      return `${baseUrl}traits/spatula/set11/tft_set11${pascalToSnakeCase(itemName)}.png`;
+    }
+    // Default directory for standard items
+    // return `${baseUrl}standard/${pascalToSnakeCase(itemName)}.png`;
+    return `${baseUrl}${itemName}.png`;
+
+    // dont work: TG, DB, RedBuff, Archangels
+  }
 
   return (
     <div className={styles.container}>

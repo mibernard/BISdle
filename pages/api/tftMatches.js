@@ -5,6 +5,7 @@
 //   const region = 'americas'; // Match history might be stored differently
 //   const url = `https://${region}.api.riotgames.com/tft/match/v1/matches/by-puuid/${puuid}/ids`;
 //   //dishsoaps puuid = oK8ZzbXf2vNt3NThnpjB0ISlFca-RseO3J1REaPijty8Skl88MLKw3rBY0ZfDcLw49-3q1WCY8zVrA
+//   //k3soju1 puuid = NWTnvxwpLQ3XuTbiOOI29lO8LrQ4cumVYAHuu05UJ3460QMXV9RXWRb3112m93pPWmTLri5LlDjLQA
 
 //   try {
 //     const response = await axios.get(url, {
@@ -24,7 +25,7 @@ import axios from 'axios';
 
 async function fetchMatches(playerPUUID) {
   const region = 'AMERICAS'; // Ensure you use the correct region endpoint
-  const matchesUrl = `https://${region}.api.riotgames.com/tft/match/v1/matches/by-puuid/oK8ZzbXf2vNt3NThnpjB0ISlFca-RseO3J1REaPijty8Skl88MLKw3rBY0ZfDcLw49-3q1WCY8zVrA/ids?count=10`; //gets dishsoaps 10 recent matches
+  const matchesUrl = `https://${region}.api.riotgames.com/tft/match/v1/matches/by-puuid/NWTnvxwpLQ3XuTbiOOI29lO8LrQ4cumVYAHuu05UJ3460QMXV9RXWRb3112m93pPWmTLri5LlDjLQA/ids?count=20`; //gets dishsoaps 10 recent matches
   // const matchesUrl = `https://${region}.api.riotgames.com/tft/match/v1/matches/by-puuid/${playerPUUID}/ids?count=10`;
   const apiKey = process.env.RIOT_API_KEY;
   const matchIds = await axios.get(matchesUrl, { headers: { 'X-Riot-Token': apiKey } }).then((res) => res.data);
