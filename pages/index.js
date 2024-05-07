@@ -116,14 +116,35 @@ export default function Home() {
     getTopItemsForChampion(currentIndex);
   };
 
+  // const getFeedbackForCorrectGuess = () => {
+  //   const unit = unitName.split('_')[1];
+
+  //   const itemDetails = Object.entries(itemData[Object.keys(itemData)[currentIndex]]).map(([item, count], index) => (
+  //     // item = itemMapping[item] || item;
+  //     <div key={index}>
+  //       {item.split('Item_')[1]}: {count} times
+  //     </div>
+  //   ));
+
+  //   return (
+  //     <>
+  //       <div>Correct! It is {unit}.</div>
+  //       <div>Item frequencies:</div>
+  //       {itemDetails}
+  //     </>
+  //   );
+  // };
+
   const handleGuess = () => {
     if (!unitName) return;
-    console.log('current index:', currentIndex, 'champions[currentIndex]:', champions[currentIndex]);
+    // console.log('current index:', currentIndex, 'champions[currentIndex]:', champions[currentIndex]);
     const isCorrect = input.toLowerCase() === unitName.toLowerCase().split('_')[1];
-    console.log('input:', input.toLowerCase(), 'unitName:', unitName.toLowerCase().split('_')[1]);
+    console.log('input:', input.toLowerCase(), 'answer:', unitName.toLowerCase().split('_')[1]);
     if (isCorrect) {
       document.getElementById('feedback').style.color = 'green';
       setFeedback(`Correct! It is ${unitName.split('_')[1]}.`);
+      // document.getElementById('feedback').innerHTML = getFeedbackForCorrectGuess();
+      // setFeedback(getFeedbackForCorrectGuess());
     } else {
       document.getElementById('feedback').style.color = 'red';
       setFeedback(`It is not ${input}, try again!`);
@@ -239,6 +260,8 @@ export default function Home() {
     console.log('championName', championName);
     console.log('items', items);
 
+    //itemData[Object.keys(itemData)[currentIndex]]
+
     if (!items || Object.keys(items).length === 0) {
       console.log(`No items data available for ${championName}`);
       // handleNewItems();
@@ -303,6 +326,9 @@ export default function Home() {
     InkshadowOx: 'TattooOfVitality',
     InkshadowPig: 'TattooOfProtection',
     InkshadowSnake: 'TattooOfToxin',
+    Moonstone: '',
+    SpectralGauntlet: '',
+    ForceOfNature: 'TacticiansCrown',
   };
 
   function getImageUrl(itemName) {
