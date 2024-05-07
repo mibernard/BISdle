@@ -29,16 +29,21 @@ Before you can run this project, you need to have Node.js and npm (Node Package 
    cd your-project-directory
    
 2. Install dependencies:
-  npm install
+   npm install
 
-3. Start the server:
-  npm run dev
+3. Set up environment variables:
+   Create a .env.local file in the root of your project.
+   Add the Riot Games API key:
+   RIOT_API_KEY=your_riot_games_api_key
+
+4. Start the server:
+   npm run dev
 
 ## Usage
-After starting the server, open your web browser and visit http://localhost:3000. Choose between Daily or Unlimited modes to start guessing champions based on the clues provided.
+After starting the server, open your web browser and visit http://localhost:3000. Choose between Daily or Unlimited modes to start guessing champions based on the items provided.
 
 ## Contributing
 Contributions are welcome! Please feel free to submit pull requests with any enhancements, bug fixes, or improvements.
 
 ## Contact
-For any queries or further assistance, please contact Your Email.
+For any queries or further assistance, please contact matthewbernard4@gmail.com.
