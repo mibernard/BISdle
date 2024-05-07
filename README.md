@@ -1,13 +1,22 @@
 # BISDLE
 ## Determine the TeamfightTactics champion given their BIS (best in slot) item combination!
 
-This project demonstrates a simple web scraper built with Node.js, using Puppeteer for scraping and Express for serving the scraped data through a RESTful API. The scraper fetches the alt texts of the first three images from specified pages and serves this data to a simple front-end interface.
+BISdle is a wordle-like web application that challenges players to guess the best-in-slot (BIS) item combinations for champions in the game Teamfight Tactics (TFT). The application uses data from Riot Games' TFT API to determine the most frequent item combinations based on actual game data and presents these as puzzles for users to solve.
 
 ## Features
 
-- Scrapes image alt texts using Puppeteer from dynamically generated content.
-- Serves scraped data through an Express.js server.
-- Provides a simple frontend interface to request and display data.
+- **Two Game Modes**: Daily and Unlimited, where Daily mode provides a single puzzle per day and Unlimited allows users to generate new puzzles at will.
+- **Interactive Guessing**: Users can type in their guesses or select from an autocomplete dropdown of TFT champions.
+- **Feedback System**: Immediate feedback on guesses, displaying the correct or incorrect item setups.
+- **Responsive Design**: Fully functional on both desktop and mobile devices.
+
+## Tech Stack
+
+- **Frontend**: Next.js (React framework) for server-side rendering and a seamless user experience.
+- **Backend**: Node.js for handling API requests, including fetching data from the Riot Games API.
+- **API**: Riot Games' Teamfight Tactics API to fetch real-time data on champions and item combinations.
+- **Styling**: TailwindCSS for scoped and maintainable styles across the application.
+- **Deployment**: Vercel for hosting and automatic deployments from Git repositories.
 
 ## Prerequisites
 
@@ -20,25 +29,21 @@ Before you can run this project, you need to have Node.js and npm (Node Package 
    cd your-project-directory
    
 2. Install dependencies:
-  npm install
+   npm install
 
-3. Start the server:
-  npm start
+3. Set up environment variables:
+   Create a .env.local file in the root of your project.
+   Add the Riot Games API key:
+   RIOT_API_KEY=your_riot_games_api_key
+
+4. Start the server:
+   npm run dev
 
 ## Usage
-After starting the server, open your web browser and visit http://localhost:3000. Enter a unit name in the input field and click "Fetch Alts" to retrieve the alt texts of images. The results will be displayed on the page.
-
-## API
-The server exposes a single API endpoint:
-GET /fetch-alts/:unit
-Parameter: unit - The name of the unit to fetch images from.
-Response: JSON containing the success status and either the alt texts or an error message.
+After starting the server, open your web browser and visit http://localhost:3000. Choose between Daily or Unlimited modes to start guessing champions based on the items provided.
 
 ## Contributing
 Contributions are welcome! Please feel free to submit pull requests with any enhancements, bug fixes, or improvements.
 
-## License
-This project is open source and available under the MIT License.
-
 ## Contact
-For any queries or further assistance, please contact Your Email.
+For any queries or further assistance, please contact matthewbernard4@gmail.com.
