@@ -1,3 +1,4 @@
+
 .autocomplete-wrapper {
   position: relative;
   width: 100%; /* Adjust this value as needed, or use max-width */
@@ -41,3 +42,4 @@
     max-width: 400px; /* Adjusts for smaller devices */
   }
 }
+

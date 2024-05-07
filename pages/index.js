@@ -65,7 +65,7 @@ const champions = [
 ];
 
 export default function Home() {
-  const [currentMode, setCurrentMode] = useState('daily');
+  const [currentMode, setCurrentMode] = useState('Daily');
   const [currentIndex, setCurrentIndex] = useState(null);
   const [guessedChampions, setGuessedChampions] = useState([]);
   const [unitName, setUnitName] = useState('');
@@ -78,9 +78,9 @@ export default function Home() {
 
   useEffect(() => {
     // Only set the index based on the mode
-    if (currentMode === 'daily') {
+    if (currentMode === 'Daily') {
       setCurrentIndex(getTodayIndex());
-    } else if (currentMode === 'unlimited' && currentIndex === null) {
+    } else if (currentMode === 'Unlimited' && currentIndex === null) {
       setCurrentIndex(getRandomIndex());
     }
     getTopItemsForChampion(currentIndex);
@@ -91,7 +91,7 @@ export default function Home() {
   }, []);
 
   const toggleMode = () => {
-    const newMode = currentMode === 'daily' ? 'unlimited' : 'daily';
+    const newMode = currentMode === 'Daily' ? 'Unlimited' : 'Daily';
     setCurrentMode(newMode);
     setFeedback('');
     setInput('');
@@ -278,7 +278,9 @@ export default function Home() {
       const imgElement = document.createElement('img');
       imgElement.src = getImageUrl(item);
       imgElement.alt = item;
-      imgElement.style.width = '100px'; // Set image width
+      imgElement.style.width = '100px';
+      imgElement.style.border = 'solid 3px #c8aa6d';
+      imgElement.style.margin = '6px'; // Set image width
       container.appendChild(imgElement);
     });
     console.log(`Top 3 items for ${championName}:`, topThreeItems.map(getImageUrl));
@@ -356,36 +358,42 @@ export default function Home() {
   }
 
   return (
-    <div className={styles.container}>
-      <h1>BISdle - {currentMode}</h1>
-      <p>(not rly bis but most frequent items placed on this unit in sojus last 10 games)</p>
-      <button onClick={toggleMode}>{currentMode === 'daily' ? 'Switch to Unlimited' : 'Switch to Daily'}</button>
-      <button onClick={handleNewItems}>Get new BIS</button>
-      <div>{loading ? 'Loading...' : 'fetched'}</div>
-      <div id='results'></div>
-      <input
-        id='unitName'
-        value={input}
-        onChange={handleInputChange}
-        onKeyDown={handleInputChange}
-        placeholder='Enter champion name'
-      />
-      <button id='guessBtn' onClick={handleGuess}>
-        Guess
-      </button>
-      <button id='answerBtn' onClick={handleAnswer}>
-        Answer
-      </button>
-      <div id='feedback'>{feedback}</div>
-      {suggestions.length > 0 && (
-        <div id='autocomplete-list'>
-          {suggestions.map((item, index) => (
-            <div key={index} onClick={() => handleSelect(item)}>
-              {item}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    <center class='back'>
+      <div>
+        <img
+          class='logo'
+          src='https://cdn.discordapp.com/attachments/411423022117945356/1237513676915998720/bisdle.png?ex=663bebec&is=663a9a6c&hm=0b617fd168f14251b1d4c874524a28566e08c83806b032897484353b96e49710&'
+        />
+        <h1>{currentMode}</h1>
+        <p>(not rly bis but most frequent items placed on this unit in sojus last 10 games)</p>
+        <button onClick={toggleMode}>{currentMode === 'Daily' ? 'Switch to Unlimited' : 'Switch to Daily'}</button>
+        <button onClick={handleNewItems}>Get new BIS</button>
+        <div>{loading ? 'Loading...' : 'fetched'}</div>
+        <div id='results'></div>
+        <input
+          id='unitName'
+          value={input}
+          onChange={handleInputChange}
+          onKeyDown={handleInputChange}
+          placeholder='Enter champion name'
+        />
+        <button id='guessBtn' onClick={handleGuess}>
+          Guess
+        </button>
+        <button id='answerBtn' onClick={handleAnswer}>
+          Answer
+        </button>
+        <div id='feedback'>{feedback}</div>
+        {suggestions.length > 0 && (
+          <div id='autocomplete-list'>
+            {suggestions.map((item, index) => (
+              <div key={index} onClick={() => handleSelect(item)}>
+                {item}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </center>
   );
 }

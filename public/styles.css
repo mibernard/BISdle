@@ -4,9 +4,12 @@
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
-  padding: 0;
-  background-color: #f4f4f4;
+  padding: 0; 
+  background-color: #010007;
   color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 input,
