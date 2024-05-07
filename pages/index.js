@@ -230,6 +230,9 @@ export default function Home() {
 
     const championNames = Object.keys(itemData);
     const championName = championNames[index];
+    if (championName === 'TFT11_Kayle') {
+      championName = championNames[index + 1];
+    }
     setUnitName(championName);
     console.log('unitName', unitName);
     const items = itemData[championName];
@@ -239,6 +242,7 @@ export default function Home() {
     if (!items || Object.keys(items).length === 0) {
       console.log(`No items data available for ${championName}`);
       // handleNewItems();
+      // getTopItemsForChampion(index + 1); these two can lead to max call stack for some reason
       return { championName, topThreeItems: [] };
     }
 
@@ -265,35 +269,70 @@ export default function Home() {
       })
       .replace(/^_/, '');
   }
+  function pascalToKebab(inputString) {
+    // Initialize the result with the first character converted to lowercase
+    let result = inputString[0].toLowerCase();
+    // Loop over the input string starting from the second character
+    for (let i = 1; i < inputString.length; i++) {
+      let char = inputString[i];
+      // If the character is uppercase, add a hyphen before it
+      if (char >= 'A' && char <= 'Z') {
+        result += '-' + char.toLowerCase();
+      } else {
+        result += char;
+      }
+    }
+    return result;
+  }
+
+  const itemMapping = {
+    NightHarvester: 'SteadfastHeart',
+    GuardianAngel: 'EdgeOfNight',
+    MadredsBloodrazor: 'GiantSlayer',
+    FrozenHeart: 'ProtectorsVow',
+    PowerGauntlet: 'Guardbreaker',
+    Hullbreaker: 'Hullcrusher',
+    Chalice: 'ChaliceOfPower',
+    UnstableConcoction: 'HandOfJustice',
+    Leviathan: 'NashorsTooth',
+    RapidFireCannon: 'RapidFirecannon',
+    ZzRotPortal: 'ZzrotPortal',
+    InkshadowTiger: 'TattooOfFury',
+    InkshadowRat: 'TattooOfBombardment',
+    InkshadowHorse: 'TattooOfForce',
+    InkshadowOx: 'TattooOfVitality',
+    InkshadowPig: 'TattooOfProtection',
+    InkshadowSnake: 'TattooOfToxin',
+  };
 
   function getImageUrl(itemName) {
     const baseUrl =
       // 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/maps/particles/tft/item_icons/';
-      'https://rerollcdn.com/items/';
+      // 'https://rerollcdn.com/items/';
+      'https://www.mobafire.com/images/tft/set11/item/icon/';
 
     itemName = itemName.split('Item_')[1];
-    console.log(pascalToSnakeCase(itemName));
-
-    // Adjust paths based on item prefixes or special conditions
-    if (itemName.startsWith('TFT11_Inkshadow')) {
-      return `${baseUrl}tft11_inkshadowitems/${pascalToSnakeCase(itemName)}.png`;
-    } else if (itemName.startsWith('Ornn_Item')) {
-      return `${baseUrl}ornn_items/${pascalToSnakeCase(itemName)}.png`;
-    } else if (itemName.includes('Spatula')) {
-      return `${baseUrl}traits/spatula/set11/tft_set11${pascalToSnakeCase(itemName)}.png`;
-    } else if (itemName.includes('Emblem')) {
-      return `${baseUrl}traits/spatula/set11/tft_set11${pascalToSnakeCase(itemName)}.png`;
+    if (itemName.includes('Emblem')) {
+      itemName = itemName.split('Item')[0];
+    } else if (itemName.includes('Artifact')) {
+      itemName = itemName.split('Artifact_')[1];
+    } else if (itemName.includes('Ornn')) {
+      itemName = itemName.split('Ornn')[1];
+    } else if (itemName.includes('Radiant')) {
+      itemName = itemName.split('Radiant')[0];
     }
-    // Default directory for standard items
-    // return `${baseUrl}standard/${pascalToSnakeCase(itemName)}.png`;
-    return `${baseUrl}${itemName}.png`;
+    itemName = itemMapping[itemName] || itemName;
+    console.log('pascal:', itemName);
+    // console.log('snake:', pascalToSnakeCase(itemName));
+    console.log('kebab:', pascalToKebab(itemName));
 
-    // dont work: TG, DB, RedBuff, Archangels
+    return `${baseUrl}${pascalToKebab(itemName)}.png`;
   }
 
   return (
     <div className={styles.container}>
       <h1>BISdle - {currentMode}</h1>
+      <p>(not rly bis but most frequent items placed on this unit in sojus last 10 games)</p>
       <button onClick={toggleMode}>{currentMode === 'daily' ? 'Switch to Unlimited' : 'Switch to Daily'}</button>
       <button onClick={handleNewItems}>Get new BIS</button>
       <div>{loading ? 'Loading...' : 'fetched'}</div>
