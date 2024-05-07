@@ -326,7 +326,7 @@ export default function Home() {
     InkshadowOx: 'TattooOfVitality',
     InkshadowPig: 'TattooOfProtection',
     InkshadowSnake: 'TattooOfToxin',
-    Moonstone: '',
+    Moonstone: 'MoonstoneRenewer',
     SpectralGauntlet: '',
     ForceOfNature: 'TacticiansCrown',
   };
