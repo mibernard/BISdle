@@ -155,7 +155,7 @@ export default function Home() {
   };
 
   const handleAnswer = () => {
-    document.getElementById('feedback').style.color = 'black';
+    document.getElementById('feedback').style.color = '#fffbe6';
     setFeedback(`The answer is ${unitName.split('_')[1]}`);
   };
 
@@ -278,6 +278,7 @@ export default function Home() {
       const imgElement = document.createElement('img');
       imgElement.src = getImageUrl(item);
       imgElement.alt = item;
+      imgElement.className = 'itemImg';
       imgElement.style.width = '100px';
       imgElement.style.border = 'solid 3px #c8aa6d';
       imgElement.style.margin = '6px'; // Set image width
@@ -312,6 +313,7 @@ export default function Home() {
 
   const itemMapping = {
     NightHarvester: 'SteadfastHeart',
+    RedBuff: 'SunfireCape',
     GuardianAngel: 'EdgeOfNight',
     MadredsBloodrazor: 'GiantSlayer',
     FrozenHeart: 'ProtectorsVow',
@@ -320,7 +322,7 @@ export default function Home() {
     Chalice: 'ChaliceOfPower',
     UnstableConcoction: 'HandOfJustice',
     Leviathan: 'NashorsTooth',
-    RapidFireCannon: 'RapidFirecannon',
+    RapidFireCannon: 'RedBuff',
     ZzRotPortal: 'ZzrotPortal',
     InkshadowTiger: 'TattooOfFury',
     InkshadowRat: 'TattooOfBombardment',
@@ -329,8 +331,10 @@ export default function Home() {
     InkshadowPig: 'TattooOfProtection',
     InkshadowSnake: 'TattooOfToxin',
     Moonstone: 'MoonstoneRenewer',
-    SpectralGauntlet: '',
+    // SpectralGauntlet: '',
     ForceOfNature: 'TacticiansCrown',
+    TheCollector: 'GoldCollector',
+    RadiantVirtue: 'VirtueOfTheMartyr',
   };
 
   function getImageUrl(itemName) {
@@ -358,17 +362,17 @@ export default function Home() {
   }
 
   return (
-    <center class='back'>
+    <center className='back'>
       <div>
         <img
-          class='logo'
+          className='logo'
           src='https://cdn.discordapp.com/attachments/411423022117945356/1237513676915998720/bisdle.png?ex=663bebec&is=663a9a6c&hm=0b617fd168f14251b1d4c874524a28566e08c83806b032897484353b96e49710&'
         />
         <h1>{currentMode}</h1>
         <p>(not rly bis but most frequent items placed on this unit in sojus last 10 games)</p>
         <button onClick={toggleMode}>{currentMode === 'Daily' ? 'Switch to Unlimited' : 'Switch to Daily'}</button>
         <button onClick={handleNewItems}>Get new BIS</button>
-        <div>{loading ? 'Loading...' : 'fetched'}</div>
+        <div>{loading ? 'Loading...' : ''}</div>
         <div id='results'></div>
         <input
           id='unitName'

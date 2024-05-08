@@ -3,12 +3,12 @@ body {
   margin: 20px;
   padding: 0;
   background: linear-gradient(to left, rgba(0, 0, 0, 0), #010007, #010007, rgba(0, 0, 0, 0) 100%),
-  url(https://cdn.discordapp.com/attachments/411423022117945356/1237530859137925232/remix-rumble-pingu_1.png?ex=663bfbed&is=663aaa6d&hm=72f2b8c4f8a18d530cf09a10bf4b087693e7aa5176f66b91841e8d9eacd438df&);
+    url(https://cdn.discordapp.com/attachments/411423022117945356/1237530859137925232/remix-rumble-pingu_1.png?ex=663bfbed&is=663aaa6d&hm=72f2b8c4f8a18d530cf09a10bf4b087693e7aa5176f66b91841e8d9eacd438df&);
   background-repeat: no-repeat;
-background-position: center center;
-background-attachment: fixed;
-background-size: cover;
-  color:#FFFBE6;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
+  color: #fffbe6;
 }
 
 input,
@@ -16,13 +16,13 @@ button {
   margin: 10px 5px;
   padding: 10px;
   font-size: 16px;
-} 
+}
 
-input{
+input {
   font-family: 'Marcellus SC', serif;
   font-size: 20px;
   letter-spacing: 1px;
-  padding: 5px 15px; 
+  padding: 5px 15px;
   background: #1e2328;
   color: #cdbe91;
   box-shadow: inset 0 0 2px #000000;
@@ -31,15 +31,15 @@ input{
   border-width: 2px;
 }
 
-input[type="text"]:focus {
-  outline: none; /* Removes the default focus highlight */     
- }
+input[type='text']:focus {
+  outline: none; /* Removes the default focus highlight */
+}
 
 button {
   font-family: 'Marcellus SC', serif;
   font-size: 20px;
   letter-spacing: 1px;
-  padding: 5px 15px; 
+  padding: 5px 15px;
   background: #1e2328;
   color: #cdbe91;
   box-shadow: inset 0 0 2px #000000;
@@ -47,7 +47,6 @@ button {
   border-image-slice: 1;
   border-width: 2px;
 }
-
 
 button:hover {
   text-shadow: 0 0 5px #ffffff80;
@@ -63,25 +62,27 @@ button:active {
   color: #cdbe9130;
 }
 
-.logo{
-  height:200px;
+.logo {
+  height: 200px;
   width: 200px;
-  background-repeat:no-repeat;
-background-size:contain;
-background-position:center;
- }
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
 
-
- @media (max-width: 768px) {
-  body{
+@media (max-width: 768px) {
+  body {
     font-size: 12px;
   }
-  .logo{
-    height:100px;
-    width:100px;
+  .logo {
+    height: 100px;
+    width: 100px;
   }
   input,
-button {
+  button {
     font-size: 12px;
   }
- }
+  .itemImg {
+    width: 70px;
+  }
+}

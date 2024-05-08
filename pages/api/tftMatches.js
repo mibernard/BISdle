@@ -23,10 +23,12 @@
 
 import axios from 'axios';
 
-async function fetchMatches(playerPUUID) {
-  const region = 'AMERICAS'; // Ensure you use the correct region endpoint
-  const matchesUrl = `https://${region}.api.riotgames.com/tft/match/v1/matches/by-puuid/NWTnvxwpLQ3XuTbiOOI29lO8LrQ4cumVYAHuu05UJ3460QMXV9RXWRb3112m93pPWmTLri5LlDjLQA/ids?count=10`; //gets dishsoaps 10 recent matches
-  // const matchesUrl = `https://${region}.api.riotgames.com/tft/match/v1/matches/by-puuid/${playerPUUID}/ids?count=10`;
+let cacheInitialized = false; // Flag to check cache status
+const cacheRefreshInterval = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+
+async function fetchMatches() {
+  const region = 'AMERICAS';
+  const matchesUrl = `https://${region}.api.riotgames.com/tft/match/v1/matches/by-puuid/NWTnvxwpLQ3XuTbiOOI29lO8LrQ4cumVYAHuu05UJ3460QMXV9RXWRb3112m93pPWmTLri5LlDjLQA/ids?count=10`;
   const apiKey = process.env.RIOT_API_KEY;
   const matchIds = await axios.get(matchesUrl, { headers: { 'X-Riot-Token': apiKey } }).then((res) => res.data);
 
@@ -38,11 +40,10 @@ async function fetchMatches(playerPUUID) {
       .get(matchDetailsUrl, { headers: { 'X-Riot-Token': apiKey } })
       .then((res) => res.data);
 
-    // Process each match's details to aggregate item data
     matchDetails.info.participants.forEach((participant) => {
       participant.units.forEach((unit) => {
         const championName = unit.character_id;
-        const items = unit.itemNames; // Accessing the correct items array
+        const items = unit.itemNames;
 
         if (!championItems[championName]) {
           championItems[championName] = {};
@@ -58,13 +59,27 @@ async function fetchMatches(playerPUUID) {
     });
   }
 
-  return championItems; // This contains the item frequency for each champion
+  return championItems;
+}
+
+function initializeCache() {
+  console.log('Starting cache initialization...');
+  fetchMatches()
+    .then(() => {
+      console.log('Cache has been initialized.');
+      cacheInitialized = true;
+      setTimeout(initializeCache, cacheRefreshInterval); // Schedule next refresh
+    })
+    .catch((error) => console.error('Failed to initialize cache:', error));
 }
 
 export default async function handler(req, res) {
-  const { puuid } = req.query; // Assume you pass the player's PUUID as a query parameter
+  if (!cacheInitialized) {
+    initializeCache(); // Initialize on first API access if not already done
+  }
+  // const { puuid } = req.query;
   try {
-    const itemData = await fetchMatches(puuid);
+    const itemData = await fetchMatches();
     res.status(200).json({ success: true, data: itemData });
   } catch (error) {
     console.error('Failed to fetch match data:', error);
