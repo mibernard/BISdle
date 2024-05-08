@@ -111,6 +111,7 @@ export default function Home() {
 
   const handleNewItems = () => {
     setCurrentIndex(getRandomIndex());
+    console.log('current index:', currentIndex);
     setInput('');
     setFeedback('');
     getTopItemsForChampion(currentIndex);
@@ -186,7 +187,7 @@ export default function Home() {
   }
 
   function getRandomIndex() {
-    const max = 58; // Adjust if your champion list size is different
+    const max = Object.keys(itemData).length; // Adjust if your champion list size is different
     return Math.floor(Math.random() * max);
   }
 
@@ -255,8 +256,8 @@ export default function Home() {
       championName = championNames[index + 1];
     }
     setUnitName(championName);
-    console.log('unitName', unitName);
     const items = itemData[championName];
+    // console.log('unitName', unitName);
     console.log('championName', championName);
     console.log('items', items);
 
@@ -331,7 +332,7 @@ export default function Home() {
     InkshadowPig: 'TattooOfProtection',
     InkshadowSnake: 'TattooOfToxin',
     Moonstone: 'MoonstoneRenewer',
-    // SpectralGauntlet: '',
+    SpectralGauntlet: 'Evenshroud',
     ForceOfNature: 'TacticiansCrown',
     TheCollector: 'GoldCollector',
     RadiantVirtue: 'VirtueOfTheMartyr',
@@ -341,24 +342,26 @@ export default function Home() {
     const baseUrl =
       // 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/maps/particles/tft/item_icons/';
       // 'https://rerollcdn.com/items/';
-      'https://www.mobafire.com/images/tft/set11/item/icon/';
+      // 'https://www.mobafire.com/images/tft/set11/item/icon/';
+      'https://cdn.matches.lol/latest/img/tft-item/';
 
-    itemName = itemName.split('Item_')[1];
-    if (itemName.includes('Emblem')) {
-      itemName = itemName.split('Item')[0];
-    } else if (itemName.includes('Artifact')) {
-      itemName = itemName.split('Artifact_')[1];
-    } else if (itemName.includes('Ornn')) {
-      itemName = itemName.split('Ornn')[1];
-    } else if (itemName.includes('Radiant')) {
-      itemName = itemName.split('Radiant')[0];
-    }
-    itemName = itemMapping[itemName] || itemName;
+    // itemName = itemName.split('Item_')[1];
+    // if (itemName.includes('Emblem')) {
+    //   itemName = itemName.split('Item')[0];
+    // } else if (itemName.includes('Artifact')) {
+    //   itemName = itemName.split('Artifact_')[1];
+    // } else if (itemName.includes('Ornn')) {
+    //   itemName = itemName.split('Ornn')[1];
+    // } else if (itemName.includes('Radiant')) {
+    //   itemName = itemName.split('Radiant')[0];
+    // }
+    // itemName = itemMapping[itemName] || itemName;
     console.log('pascal:', itemName);
     // console.log('snake:', pascalToSnakeCase(itemName));
     console.log('kebab:', pascalToKebab(itemName));
 
-    return `${baseUrl}${pascalToKebab(itemName)}.png`;
+    // return `${baseUrl}${pascalToKebab(itemName)}.png`;
+    return `${baseUrl}${itemName}.png`;
   }
 
   return (

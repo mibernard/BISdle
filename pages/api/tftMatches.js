@@ -59,6 +59,13 @@ async function fetchMatches() {
     });
   }
 
+  // Filter out champions with no items
+  Object.keys(championItems).forEach((champion) => {
+    if (Object.keys(championItems[champion]).length < 3) {
+      delete championItems[champion];
+    }
+  });
+
   return championItems;
 }
 
