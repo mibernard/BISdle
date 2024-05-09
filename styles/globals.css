@@ -3,7 +3,7 @@ body {
   margin: 20px;
   padding: 0;
   background: linear-gradient(to left, rgba(0, 0, 0, 0), #010007, #010007, rgba(0, 0, 0, 0) 100%),
-    url(https://cdn.discordapp.com/attachments/411423022117945356/1237530859137925232/remix-rumble-pingu_1.png?ex=663bfbed&is=663aaa6d&hm=72f2b8c4f8a18d530cf09a10bf4b087693e7aa5176f66b91841e8d9eacd438df&);
+    url('../assets/pengu.png');
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: fixed;
@@ -65,6 +65,8 @@ button:active {
 .logo {
   height: 200px;
   width: 200px;
+  background: 
+    url('../assets/bisdle.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;

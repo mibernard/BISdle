@@ -367,10 +367,7 @@ export default function Home() {
   return (
     <center className='back'>
       <div>
-        <img
-          className='logo'
-          src='https://cdn.discordapp.com/attachments/411423022117945356/1237513676915998720/bisdle.png?ex=663bebec&is=663a9a6c&hm=0b617fd168f14251b1d4c874524a28566e08c83806b032897484353b96e49710&'
-        />
+        <div className='logo'></div>
         <h1>{currentMode}</h1>
         <p>(not rly bis but most frequent items placed on this unit in sojus last 10 games)</p>
         <button onClick={toggleMode}>{currentMode === 'Daily' ? 'Switch to Unlimited' : 'Switch to Daily'}</button>
