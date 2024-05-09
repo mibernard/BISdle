@@ -356,9 +356,9 @@ export default function Home() {
     //   itemName = itemName.split('Radiant')[0];
     // }
     // itemName = itemMapping[itemName] || itemName;
-    console.log('pascal:', itemName);
+    // console.log('pascal:', itemName);
     // console.log('snake:', pascalToSnakeCase(itemName));
-    console.log('kebab:', pascalToKebab(itemName));
+    // console.log('kebab:', pascalToKebab(itemName));
 
     // return `${baseUrl}${pascalToKebab(itemName)}.png`;
     return `${baseUrl}${itemName}.png`;
@@ -383,6 +383,7 @@ export default function Home() {
           onChange={handleInputChange}
           onKeyDown={handleInputChange}
           placeholder='Enter champion name'
+          autoComplete='off'
         />
         <button id='guessBtn' onClick={handleGuess}>
           Guess
