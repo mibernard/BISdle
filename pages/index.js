@@ -231,13 +231,22 @@ export default function Home() {
   }, [input, guessedChampions]);
 
   // Handle selecting a suggestion
+  const [clickPending, setClickPending] = useState(false);
+
   const handleSelect = (champion) => {
     setInput(champion); // Set input to the selected champion
     console.log('champion', champion);
     setGuessedChampions((prev) => [...prev, champion.toLowerCase()]); // Add to guessed list
     setSuggestions([]); // Clear suggestions
-    document.getElementById('guessBtn').click();
+    setClickPending(true); // Set the flag to trigger the click
   };
+
+  useEffect(() => {
+    if (clickPending) {
+      document.getElementById('guessBtn').click();
+      setClickPending(false); // Reset the flag after the click
+    }
+  }, [clickPending]);
 
   // Clear suggestions when clicking outside the input
   useEffect(() => {
@@ -334,6 +343,7 @@ export default function Home() {
         <div id='guessContainer'>
           <input
             id='unitName'
+            name='myText'
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleInputChange}
@@ -361,7 +371,7 @@ export default function Home() {
         {suggestions.length > 0 && (
           <div id='autocomplete-list'>
             {suggestions.map((item, index) => (
-              <div key={index} onClick={() => handleSelect(item)}>
+              <div class='Champion' key={index} onClick={() => handleSelect(item)}>
                 {item}
               </div>
             ))}
