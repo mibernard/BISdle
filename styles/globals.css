@@ -12,7 +12,7 @@ body {
   margin: 20px;
   padding: 0;
   background: linear-gradient(to left, rgba(0, 0, 0, 0), #010007, #010007, rgba(0, 0, 0, 0) 100%),
-    url('../assets/pengu.png');
+    url('https://cdn.glitch.global/c482ca3f-5f21-4ad8-b3a2-4674f54d04f7/pengu.png?v=1715377921432');
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: fixed;
@@ -82,7 +82,7 @@ button:active {
 .logo {
   height: 200px;
   width: 200px;
-  background: url('../assets/bisdle.png');
+  background: url('https://cdn.glitch.global/c482ca3f-5f21-4ad8-b3a2-4674f54d04f7/bisdle.png?v=1715377934811');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
