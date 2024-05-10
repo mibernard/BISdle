@@ -154,7 +154,7 @@ export default function Home() {
     if (isCorrect) {
       document.getElementById('feedback').style.color = 'green';
       setFeedback(`Correct! It is ${unitName.split('_')[1]}.`);
-      // document.getElementById('unitName').disabled = true;
+      document.getElementById('unitName').blur();
       // document.getElementById('feedback').innerHTML = getFeedbackForCorrectGuess();
       // setFeedback(getFeedbackForCorrectGuess());
     } else {
