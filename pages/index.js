@@ -166,9 +166,18 @@ export default function Home() {
     setGuessedChampions([...guessedChampions, unitName.toLowerCase()]);
   };
 
+  const handleListChamps = () => {
+    window.open('https://tftactics.gg/champions/', '_blank');
+  };
+
+  const handleHint = () => {
+    document.getElementById('feedback').style.color = '#fffbe6';
+    setFeedback(`The champion's name starts with ${unitName.split('_')[1].charAt(0).toUpperCase()}`);
+  };
+
   const handleAnswer = () => {
     document.getElementById('feedback').style.color = '#fffbe6';
-    setFeedback(`The answer is ${unitName.split('_')[1]}`);
+    setFeedback(`The champion's name is ${unitName.split('_')[1]}`);
   };
 
   function getTodayIndex() {
@@ -333,9 +342,18 @@ export default function Home() {
         <button id='guessBtn' onClick={handleGuess}>
           Guess
         </button>
-        <button id='answerBtn' onClick={handleAnswer}>
-          Answer
-        </button>
+        <div>
+          <button id='listChampsBtn' onClick={handleListChamps}>
+            List of TFT Champions
+          </button>
+          <button id='hintBtn' onClick={handleHint}>
+            Hint
+          </button>
+          <button id='answerBtn' onClick={handleAnswer}>
+            Answer
+          </button>
+        </div>
+
         <div id='feedback'>{feedback}</div>
         {suggestions.length > 0 && (
           <div id='autocomplete-list'>
