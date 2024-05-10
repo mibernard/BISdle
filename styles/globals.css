@@ -11,10 +11,18 @@ body {
   color: #fffbe6;
 }
 
+.itemImg {
+  width: 100px;
+}
+
+#itemImgContainer {
+  margin: 20px 0px;
+}
+
 input,
 button {
   margin: 10px 5px;
-  padding: 10px;
+  /* padding: 10px; */
   font-size: 16px;
 }
 
@@ -65,8 +73,7 @@ button:active {
 .logo {
   height: 200px;
   width: 200px;
-  background: 
-    url('../assets/bisdle.png');
+  background: url('../assets/bisdle.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -74,7 +81,7 @@ button:active {
 
 @media (max-width: 768px) {
   body {
-    font-size: 12px;
+    font-size: 14px;
   }
   .logo {
     height: 100px;
@@ -82,7 +89,7 @@ button:active {
   }
   input,
   button {
-    font-size: 12px;
+    font-size: 14px;
   }
   .itemImg {
     width: 70px;

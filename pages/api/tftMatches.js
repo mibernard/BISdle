@@ -9,6 +9,7 @@ const cacheRefreshInterval = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
 async function fetchMatches() {
   const region = 'AMERICAS';
   const puuid = 'oEQIUNhEAVbubo-O5imrcKRzpqqNZtyCk9W1drEAa-MVGCXsF5Gb0sZIgol2MjNiHY6I_fLUJtVRag'; //k3soju1's puuid
+  // const puuid = '6DF8bd0o98ejI3fDpBOQG_U4FOkSK9rQM83GrxfIBZykQ0qonWmUjv0WmrAdSXCvBUUW5Acw1W4tKA'; //im jack#tft 's puuid
   const matchesUrl = `https://${region}.api.riotgames.com/tft/match/v1/matches/by-puuid/${puuid}/ids?count=10`;
   const apiKey = process.env.RIOT_API_KEY;
   const matchIds = await axios.get(matchesUrl, { headers: { 'X-Riot-Token': apiKey } }).then((res) => res.data);

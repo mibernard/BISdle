@@ -297,14 +297,14 @@ export default function Home() {
     const sortedItems = Object.entries(items).sort((a, b) => b[1] - a[1]);
     const topThreeItems = sortedItems.slice(0, 3).map((item) => item[0]);
 
-    const container = document.getElementById('results');
+    const container = document.getElementById('itemImgContainer');
     container.innerHTML = ''; // Clear previous items
     topThreeItems.forEach((item) => {
       const imgElement = document.createElement('img');
       imgElement.src = getImageUrl(item);
       imgElement.alt = item;
       imgElement.className = 'itemImg';
-      imgElement.style.width = '100px';
+      // imgElement.style.width = '100px';
       imgElement.style.border = 'solid 3px #c8aa6d';
       imgElement.style.margin = '6px'; // Set image width
       container.appendChild(imgElement);
@@ -322,29 +322,32 @@ export default function Home() {
     <center className='back'>
       <div>
         <div className='logo'></div>
-        <h1>{currentMode}</h1>
-        <p>Guess the Set 11 Teamfight Tactics champion given its best in slot (BIS)!</p>
-        <p>(not rly BIS but most frequent items in a few recent challenger games)</p>
+        <h1>{`BIS-dle ${currentMode}`}</h1>
+        <p>Guess the Set 11 Teamfight Tactics champion given its best-in-slot (BIS) item combination!</p>
+        <p>(not rly BIS but most frequently slammed items in a few recent challenger games)</p>
         <button onClick={toggleMode}>
           {currentMode === 'Daily' ? 'Switch to Unlimited Mode' : 'Switch to Daily Mode'}
         </button>
         {currentMode === 'Unlimited' && <button onClick={handleNewItems}>Get new BIS</button>}
         <div>{loading ? 'Loading...' : ''}</div>
-        <div id='results'></div>
-        <input
-          id='unitName'
-          value={input}
-          onChange={handleInputChange}
-          onKeyDown={handleInputChange}
-          placeholder='Enter champion name'
-          autoComplete='off'
-        />
-        <button id='guessBtn' onClick={handleGuess}>
-          Guess
-        </button>
-        <div>
+        <div id='itemImgContainer'></div>
+        <div id='guessContainer'>
+          <input
+            id='unitName'
+            value={input}
+            onChange={handleInputChange}
+            onKeyDown={handleInputChange}
+            placeholder='Enter champion name'
+            autoComplete='off'
+          />
+          <button id='guessBtn' onClick={handleGuess}>
+            Guess
+          </button>
+        </div>
+
+        <div id='hintsContainer'>
           <button id='listChampsBtn' onClick={handleListChamps}>
-            List of TFT Champions
+            All TFT Champions
           </button>
           <button id='hintBtn' onClick={handleHint}>
             Hint
