@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Modal from '../components/Modal';
 import styles from '../styles/Home.module.css';
 
 const champions = [
@@ -76,6 +77,8 @@ export default function Home() {
   const [input, setInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [itemData, setItemData] = useState({}); // State to store item data
+  const [clickPending, setClickPending] = useState(false);
+  const [modalOpen, setModalOpen] = useState(true);
 
   // This useEffect handles data fetching independently
   useEffect(() => {
@@ -230,9 +233,6 @@ export default function Home() {
     setSuggestions(filtered);
   }, [input, guessedChampions]);
 
-  // Handle selecting a suggestion
-  const [clickPending, setClickPending] = useState(false);
-
   const handleSelect = (champion) => {
     setInput(champion); // Set input to the selected champion
     console.log('champion', champion);
@@ -241,6 +241,7 @@ export default function Home() {
     setClickPending(true); // Set the flag to trigger the click
   };
 
+  //makes sure guessBtn is always clicked after setInput is completeled since it is async
   useEffect(() => {
     if (clickPending) {
       document.getElementById('guessBtn').click();
@@ -327,11 +328,29 @@ export default function Home() {
     return `${baseUrl}${itemName}.png`;
   }
 
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
   return (
     <center className='back'>
       <div>
         <div className='logo'></div>
         <h1>{`BIS-dle ${currentMode}`}</h1>
+        <button onClick={handleOpenModal}>How to Play</button>
+        <Modal isOpen={modalOpen} onClose={handleCloseModal}>
+          <h2>How to Play</h2>
+          <p>Welcome to the game! Here's how you play:</p>
+          <ul>
+            <li>Guess the right champion give the triple item combination.</li>
+            <li>Use hints if you're stuck.</li>
+            <li>Have fun and test your TFT knowledge!</li>
+          </ul>
+        </Modal>
         <p>Guess the Set 11 Teamfight Tactics champion given its best-in-slot (BIS) item combination!</p>
         <p>(not rly BIS but most frequently slammed items in a few recent challenger games)</p>
         <button onClick={toggleMode}>
