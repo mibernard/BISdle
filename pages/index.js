@@ -362,6 +362,7 @@ export default function Home() {
         <div id='guessContainer'>
           <input
             id='unitName'
+            name='myText'
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleInputChange}
@@ -389,7 +390,7 @@ export default function Home() {
         {suggestions.length > 0 && (
           <div id='autocomplete-list'>
             {suggestions.map((item, index) => (
-              <div key={index} onClick={() => handleSelect(item)}>
+              <div class='Champion' key={index} onClick={() => handleSelect(item)}>
                 {item}
               </div>
             ))}
