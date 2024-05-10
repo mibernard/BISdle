@@ -13,7 +13,7 @@ const champions = [
   'Azir',
   'Bard',
   'Caitlyn',
-  'chogath',
+  'Chogath',
   'Darius',
   'Diana',
   'Galio',
@@ -30,8 +30,8 @@ const champions = [
   'KhaZix',
   'Kindred',
   'Kobuko',
-  'kogmaw',
-  'leesin',
+  'Kogmaw',
+  'Leesin',
   'Lillia',
   'Lissandra',
   'Lux',
@@ -42,7 +42,7 @@ const champions = [
   'Ornn',
   'Qiyana',
   'Rakan',
-  'reksai',
+  'Reksai',
   'Riven',
   'Senna',
   'Sett',
@@ -51,7 +51,7 @@ const champions = [
   'Soraka',
   'Sylas',
   'Syndra',
-  'tahmkench',
+  'Tahmkench',
   'Teemo',
   'Thresh',
   'Tristana',
@@ -162,6 +162,7 @@ export default function Home() {
       // setFeedback(getFeedbackForCorrectGuess());
     } else {
       document.getElementById('feedback').style.color = 'red';
+      document.getElementById('unitName').focus();
       setFeedback(`It is not ${input}, try again!`);
       setIncorrectGuesses([...incorrectGuesses, unitName]);
     }
