@@ -314,8 +314,8 @@ export default function Home() {
       <div>
         <div className='logo'></div>
         <h1>{currentMode}</h1>
-        <p>Guess the champion given its best in slot (BIS)!</p>
-        <p>(not rly BIS but most frequent items in a few recent games)</p>
+        <p>Guess the Set 11 Teamfight Tactics champion given its best in slot (BIS)!</p>
+        <p>(not rly BIS but most frequent items in a few recent challenger games)</p>
         <button onClick={toggleMode}>
           {currentMode === 'Daily' ? 'Switch to Unlimited Mode' : 'Switch to Daily Mode'}
         </button>
