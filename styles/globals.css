@@ -132,3 +132,13 @@ button:active {
   cursor: pointer;
   transition: 0.1s;
 }
+
+li{
+  float:left;
+  margin-top:5px;
+}
+
+h2{
+  position:relative;
+  width:50%;
+}
