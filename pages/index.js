@@ -72,7 +72,6 @@ export default function Home() {
   const [guessedChampions, setGuessedChampions] = useState([]);
   const [unitName, setUnitName] = useState('');
   const [feedback, setFeedback] = useState('');
-  const [incorrectGuesses, setIncorrectGuesses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -108,7 +107,6 @@ export default function Home() {
     setCurrentMode(newMode);
     setFeedback('');
     setInput('');
-    setIncorrectGuesses([]);
     setGuessedChampions([]);
   };
 
@@ -127,6 +125,7 @@ export default function Home() {
     console.log('current index:', currentIndex);
     setInput('');
     setFeedback('');
+    setGuessedChampions([]);
     getTopItemsForChampion(currentIndex);
   };
 
@@ -157,17 +156,16 @@ export default function Home() {
     if (isCorrect) {
       document.getElementById('feedback').style.color = 'green';
       setFeedback(`Correct! It is ${unitName.split('_')[1]}.`);
-      document.getElementById('unitName').blur();
+      document.getElementById('unitInput').blur();
       // document.getElementById('feedback').innerHTML = getFeedbackForCorrectGuess();
       // setFeedback(getFeedbackForCorrectGuess());
     } else {
       document.getElementById('feedback').style.color = 'red';
-      document.getElementById('unitName').focus();
+      document.getElementById('unitInput').focus();
       setFeedback(`It is not ${input}, try again!`);
-      setIncorrectGuesses([...incorrectGuesses, unitName]);
+      setGuessedChampions([...guessedChampions, input.toLowerCase()]);
     }
     setInput('');
-    setGuessedChampions([...guessedChampions, unitName.toLowerCase()]);
   };
 
   const handleListChamps = () => {
@@ -253,7 +251,7 @@ export default function Home() {
   // Clear suggestions when clicking outside the input
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.matches('#unitName')) {
+      if (!event.target.matches('#unitInput')) {
         setSuggestions([]);
       }
     };
@@ -362,7 +360,7 @@ export default function Home() {
         <div id='itemImgContainer'></div>
         <div id='guessContainer'>
           <input
-            id='unitName'
+            id='unitInput'
             name='myText'
             value={input}
             onChange={handleInputChange}
