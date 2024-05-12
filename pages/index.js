@@ -78,6 +78,7 @@ export default function Home() {
   const [itemData, setItemData] = useState({}); // State to store item data
   const [clickPending, setClickPending] = useState(false);
   const [modalOpen, setModalOpen] = useState(true);
+  const [guessCount, setGuessCount] = useState(0);
 
   // This useEffect handles data fetching independently
   useEffect(() => {
@@ -108,6 +109,7 @@ export default function Home() {
     setFeedback('');
     setInput('');
     setGuessedChampions([]);
+    setGuessCount(0);
   };
 
   const handleInputChange = (event) => {
@@ -126,6 +128,7 @@ export default function Home() {
     setInput('');
     setFeedback('');
     setGuessedChampions([]);
+    setGuessCount(0);
     getTopItemsForChampion(currentIndex);
   };
 
@@ -153,9 +156,13 @@ export default function Home() {
     // console.log('current index:', currentIndex, 'champions[currentIndex]:', champions[currentIndex]);
     const isCorrect = input.toLowerCase() === unitName.toLowerCase().split('_')[1];
     console.log('input:', input.toLowerCase(), 'answer:', unitName.toLowerCase().split('_')[1]);
+    setGuessCount((guessCount += 1));
+
     if (isCorrect) {
       document.getElementById('feedback').style.color = 'green';
-      setFeedback(`Correct! It is ${unitName.split('_')[1]}.`);
+      setFeedback(
+        `Correct! It is ${unitName.split('_')[1]}. It took you ${guessCount} ${guessCount > 1 ? 'tries' : 'try'}.`
+      );
       document.getElementById('unitInput').blur();
       // document.getElementById('feedback').innerHTML = getFeedbackForCorrectGuess();
       // setFeedback(getFeedbackForCorrectGuess());
