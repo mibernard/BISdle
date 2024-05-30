@@ -1,4 +1,4 @@
-# BISDLE
+# BISDLE - [bisdle.vercel.app](https://bisdle.vercel.app)
 ## Determine the TeamfightTactics champion given their BIS (best in slot) item combination!
 
 BISdle is a wordle-like web application that challenges players to guess the best-in-slot (BIS) item combinations for champions in the game Teamfight Tactics (TFT). The application uses data from Riot Games' TFT API to determine the most frequent item combinations based on actual game data and presents these as puzzles for users to solve.
