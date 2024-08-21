@@ -1,11 +1,11 @@
-import React from 'react';
-import styles from './Modal.module.css'; // Assume you have some basic styles
+import React, { forwardRef } from 'react';
+import styles from './Modal.module.css';
 
-const Modal = ({ isOpen, onClose, children }) => {
+const Modal = forwardRef(({ isOpen, onClose, children }, ref) => {
   if (!isOpen) return null;
 
   return (
-    <div className={styles.modalOverlay}>
+    <div ref={ref} className={styles.modalOverlay}>
       <div className={styles.modal}>
         <button className={styles.closeButton} onClick={onClose}>
           ×
@@ -14,6 +14,6 @@ const Modal = ({ isOpen, onClose, children }) => {
       </div>
     </div>
   );
-};
+});
 
 export default Modal;

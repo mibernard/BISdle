@@ -1,69 +1,68 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Modal from '../components/Modal';
 import styles from '../styles/Home.module.css';
 
 const champions = [
-  'Aatrox',
   'Ahri',
-  'Alune',
-  'Amumu',
-  'Annie',
-  'Aphelios',
+  'Akali',
   'Ashe',
-  'Azir',
   'Bard',
-  'Caitlyn',
-  'Chogath',
-  'Darius',
+  'Blitzcrank',
+  'Briar',
+  'Camille',
+  'Cassiopeia',
   'Diana',
+  'Elise',
+  'Ezreal',
+  'Fiora',
   'Galio',
-  'Garen',
-  'Gnar',
+  'Gwen',
+  'Hecarim',
   'Hwei',
-  'Illaoi',
-  'Irelia',
-  'Janna',
   'Jax',
-  'KaiSa',
-  'Kayle',
-  'Kayn',
-  'KhaZix',
-  'Kindred',
-  'Kobuko',
-  'Kogmaw',
-  'Leesin',
+  'Jayce',
+  'Jinx',
+  'Kalista',
+  'Karma',
+  'Kassadin',
+  'Katarina',
+  'KogMaw',
   'Lillia',
-  'Lissandra',
-  'Lux',
-  'Malphite',
+  'Milio',
+  'Mordekaiser',
   'Morgana',
-  'Nautilus',
+  'Nami',
+  'Nasus',
   'Neeko',
-  'Ornn',
-  'Qiyana',
+  'Nilah',
+  'Nomsy',
+  'Norra & Yuumi',
+  'Nunu',
+  'Olaf',
+  'Poppy',
   'Rakan',
-  'Reksai',
-  'Riven',
-  'Senna',
-  'Sett',
+  'Rumble',
+  'Ryze',
+  'Seraphine',
   'Shen',
-  'Sivir',
+  'Shyvana',
+  'Smolder',
   'Soraka',
-  'Sylas',
+  'Swain',
   'Syndra',
-  'Tahmkench',
-  'Teemo',
-  'Thresh',
+  'Tahm Kench',
+  'Taric',
   'Tristana',
-  'Udyr',
-  'Volibear',
+  'Twitch',
+  'Varus',
+  'Veigar',
+  'Vex',
+  'Warwick',
   'Wukong',
-  'Xayah',
-  'Yasuo',
-  'Yone',
-  'Yorick',
-  'Zoe',
-  'Zyra'
+  'Xerath',
+  'Ziggs',
+  'Zilean',
+  'Zoe'
 ];
 
 export default function Home() {
@@ -79,6 +78,7 @@ export default function Home() {
   const [clickPending, setClickPending] = useState(false);
   const [modalOpen, setModalOpen] = useState(true);
   const [guessCount, setGuessCount] = useState(0);
+  const modalRef = useRef(null);
 
   // This useEffect handles data fetching independently
   useEffect(() => {
@@ -161,7 +161,9 @@ export default function Home() {
     if (isCorrect) {
       document.getElementById('feedback').style.color = 'green';
       setFeedback(
-        `Correct! It is ${unitName.split('_')[1]}. It took you ${guessCount} ${guessCount > 1 ? 'tries' : 'try'}.`
+        (prevString) =>
+          prevString +
+          `\nCorrect! It is ${unitName.split('_')[1]}. It took you ${guessCount} ${guessCount > 1 ? 'tries' : 'try'}.`
       );
       document.getElementById('unitInput').blur();
       // document.getElementById('feedback').innerHTML = getFeedbackForCorrectGuess();
@@ -169,7 +171,7 @@ export default function Home() {
     } else {
       document.getElementById('feedback').style.color = 'red';
       document.getElementById('unitInput').focus();
-      setFeedback(`It is not ${input}, try again!`);
+      setFeedback((prevString) => prevString + `\nIt is not ${input}, try again!`);
       setGuessedChampions([...guessedChampions, input.toLowerCase()]);
     }
     setInput('');
@@ -181,12 +183,14 @@ export default function Home() {
 
   const handleHint = () => {
     document.getElementById('feedback').style.color = '#fffbe6';
-    setFeedback(`The champion's name starts with ${unitName.split('_')[1].charAt(0).toUpperCase()}`);
+    setFeedback(
+      (prevString) => prevString + `\nThe champion's name starts with ${unitName.split('_')[1].charAt(0).toUpperCase()}`
+    );
   };
 
   const handleAnswer = () => {
     document.getElementById('feedback').style.color = '#fffbe6';
-    setFeedback(`The champion's name is ${unitName.split('_')[1]}`);
+    setFeedback((prevString) => prevString + `\nThe champion's name is ${unitName.split('_')[1]}`);
   };
 
   function getTodayIndex() {
@@ -342,17 +346,34 @@ export default function Home() {
     setModalOpen(false);
   };
 
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        console.log('Clicked outside modal');
+        setModalOpen(false);
+      }
+    };
+
+    if (modalOpen) {
+      document.addEventListener('mousedown', handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [modalOpen]);
+
   return (
-    <center className='back'>
-      <div>
+    <>
+      <center className='back'>
         <div className='logo'></div>
         <h1>{`BIS-dle ${currentMode}`}</h1>
         <button onClick={handleOpenModal}>How to Play</button>
-        <Modal isOpen={modalOpen} onClose={handleCloseModal}>
+        <Modal isOpen={modalOpen} onClose={handleCloseModal} ref={modalRef}>
           <h2>How to Play</h2>
           <p>Welcome to the game! Here's how you play:</p>
           <ul>
-            <li>Guess the right champion give the triple item combination.</li>
+            <li>Guess the right champion given the triple item combination.</li>
             <li>Use hints if you're stuck.</li>
             <li>Have fun and test your TFT knowledge!</li>
           </ul>
@@ -392,17 +413,19 @@ export default function Home() {
           </button>
         </div>
 
-        <div id='feedback'>{feedback}</div>
+        <div id='feedback' style={{ whiteSpace: 'pre-wrap' }}>
+          {feedback}
+        </div>
         {suggestions.length > 0 && (
           <div id='autocomplete-list'>
             {suggestions.map((item, index) => (
-              <div class='Champion' key={index} onClick={() => handleSelect(item)}>
+              <div className='Champion' key={index} onClick={() => handleSelect(item)}>
                 {item}
               </div>
             ))}
           </div>
         )}
-      </div>
-    </center>
+      </center>
+    </>
   );
 }
