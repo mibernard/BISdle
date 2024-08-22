@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Modal from '../components/Modal';
 import Footer from '../components/Footer';
 import championNames from '../lib/champions';
+import JSConfetti from 'js-confetti';
 
 export default function Home() {
   const [currentMode, setCurrentMode] = useState('Daily');
@@ -79,6 +80,10 @@ export default function Home() {
 
     if (isCorrect) {
       document.getElementById('feedback').style.color = 'green';
+      const jsConfetti = new JSConfetti();
+      jsConfetti.addConfetti({
+        emojis: ['🌈', '⚡️', '💥', '✨', '💫', '🌸']
+      });
       setFeedback(
         (prevString) =>
           prevString +
@@ -106,7 +111,7 @@ export default function Home() {
   };
 
   const handleAnswer = () => {
-    document.getElementById('feedback').style.color = '#fffbe6';
+    // document.getElementById('feedback').style.color = '#fffbe6';
     setFeedback((prevString) => prevString + `\nThe champion's name is ${unitName.split('_')[1]}`);
   };
 
