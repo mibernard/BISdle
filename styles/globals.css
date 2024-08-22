@@ -15,12 +15,24 @@ body {
     url('https://cdn.glitch.global/c482ca3f-5f21-4ad8-b3a2-4674f54d04f7/pengu.png?v=1715377921432'); */
   background: linear-gradient(to left, rgba(0, 0, 0, 0), #010007 40%, #010007 60%, rgba(0, 0, 0, 0) 100%),
     url('https://edge.rivalrycdn.com/cdn-cgi/image/q=100/https://images.prismic.io/rivalryglhf/ZofEqB5LeNNTw0LO_Yuumi.jpg?auto=format,compress');
+  /* background: linear-gradient(rgba(1, 0, 7, 0.6), rgba(1, 0, 7, 0.6)),
+    url('https://edge.rivalrycdn.com/cdn-cgi/image/q=100/https://images.prismic.io/rivalryglhf/ZofEqB5LeNNTw0LO_Yuumi.jpg?auto=format,compress'); */
 
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: fixed;
   background-size: cover;
   color: #fffbe6;
+  min-height: 100vh; /* 100% of the viewport height */
+  padding-bottom: 50px; /* Add extra space at the bottom */
+  /* display: flex; */
+  /* justify-content: center; */
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .itemImg {
@@ -109,12 +121,66 @@ button:active {
 }
 
 #autocomplete-list {
-  margin-top: 5px;
-  width: 15%;
+  position: absolute;
+  background-color: white;
+  /* border: 1px solid #ccc; */
+  border-top: none;
+  max-height: 200px; /* Set a max-height for scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+  width: 100%; /* Ensure it matches the input width */
+  z-index: 1000; /* Make sure it sits on top of other content */
+  overflow-x: hidden;
+
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Styling the scrollbar for Chrome, Safari, and Opera */
+#autocomplete-list::-webkit-scrollbar {
+  width: 8px; /* Scrollbar width */
+}
+
+#autocomplete-list::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}
+
+#autocomplete-list::-webkit-scrollbar-thumb {
+  background-color: #cdbe91; /* Custom scrollbar handle color */
+  border-radius: 4px; /* Roundness of the scrollbar handle */
+}
+
+#autocomplete-list::-webkit-scrollbar-thumb:hover {
+  background: #b0a783; /* Darker color on hover */
+}
+
+#autocomplete-list::-webkit-scrollbar-button {
+  display: none; /* Remove buttons */
+}
+
+/* Styling the scrollbar for Firefox */
+#autocomplete-list {
+  scrollbar-width: thin;
+  scrollbar-color: #cdbe91 transparent; /* Scrollbar handle and transparent track */
+  background: #1e2328;
+  border: #cdbe91 solid 1px;
+}
+
+#autocomplete-list .Champion {
+  padding: 10px;
+  cursor: pointer;
+  /* white-space: nowrap; */
+}
+
+#autocomplete-list .Champion:hover {
+  background-color: #f0f0f0;
+}
+
+#guessContainer {
+  position: relative;
 }
 
 .Champion {
-  margin-top: 5px;
+  /* margin-top: 5px; */
   font-family: 'Marcellus SC', serif;
   font-size: 20px;
   letter-spacing: 1px;
@@ -144,4 +210,8 @@ li {
 h2 {
   position: relative;
   width: 50%;
+}
+
+#feedback {
+  text-align: center;
 }

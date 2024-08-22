@@ -1,69 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Modal from '../components/Modal';
-import styles from '../styles/Home.module.css';
-
-const champions = [
-  'Ahri',
-  'Akali',
-  'Ashe',
-  'Bard',
-  'Blitzcrank',
-  'Briar',
-  'Camille',
-  'Cassiopeia',
-  'Diana',
-  'Elise',
-  'Ezreal',
-  'Fiora',
-  'Galio',
-  'Gwen',
-  'Hecarim',
-  'Hwei',
-  'Jax',
-  'Jayce',
-  'Jinx',
-  'Kalista',
-  'Karma',
-  'Kassadin',
-  'Katarina',
-  'KogMaw',
-  'Lillia',
-  'Milio',
-  'Mordekaiser',
-  'Morgana',
-  'Nami',
-  'Nasus',
-  'Neeko',
-  'Nilah',
-  'Nomsy',
-  'Norra',
-  'Nunu',
-  'Olaf',
-  'Poppy',
-  'Rakan',
-  'Rumble',
-  'Ryze',
-  'Seraphine',
-  'Shen',
-  'Shyvana',
-  'Smolder',
-  'Soraka',
-  'Swain',
-  'Syndra',
-  'TahmKench',
-  'Taric',
-  'Tristana',
-  'Twitch',
-  'Varus',
-  'Veigar',
-  'Vex',
-  'Warwick',
-  'Wukong',
-  'Xerath',
-  'Ziggs',
-  'Zilean',
-  'Zoe'
-];
+import Footer from '../components/Footer';
+import championNames from '../lib/champions';
 
 export default function Home() {
   const [currentMode, setCurrentMode] = useState('Daily');
@@ -132,25 +70,6 @@ export default function Home() {
     getTopItemsForChampion(currentIndex);
   };
 
-  // const getFeedbackForCorrectGuess = () => {
-  //   const unit = unitName.split('_')[1];
-
-  //   const itemDetails = Object.entries(itemData[Object.keys(itemData)[currentIndex]]).map(([item, count], index) => (
-  //     // item = itemMapping[item] || item;
-  //     <div key={index}>
-  //       {item.split('Item_')[1]}: {count} times
-  //     </div>
-  //   ));
-
-  //   return (
-  //     <>
-  //       <div>Correct! It is {unit}.</div>
-  //       <div>Item frequencies:</div>
-  //       {itemDetails}
-  //     </>
-  //   );
-  // };
-
   const handleGuess = () => {
     if (!unitName) return;
     // console.log('current index:', currentIndex, 'champions[currentIndex]:', champions[currentIndex]);
@@ -166,8 +85,6 @@ export default function Home() {
           `\nCorrect! It is ${unitName.split('_')[1]}. It took you ${guessCount} ${guessCount > 1 ? 'tries' : 'try'}.`
       );
       document.getElementById('unitInput').blur();
-      // document.getElementById('feedback').innerHTML = getFeedbackForCorrectGuess();
-      // setFeedback(getFeedbackForCorrectGuess());
     } else {
       document.getElementById('feedback').style.color = 'red';
       document.getElementById('unitInput').focus();
@@ -236,7 +153,7 @@ export default function Home() {
       setSuggestions([]);
       return;
     }
-    const filtered = champions.filter(
+    const filtered = championNames.filter(
       (champion) =>
         champion.toLowerCase().startsWith(input.toLowerCase()) && !guessedChampions.includes(champion.toLowerCase())
     );
@@ -365,7 +282,7 @@ export default function Home() {
 
   return (
     <>
-      <center className='back'>
+      <div className='app'>
         <div className='logo'></div>
         {/* <h1>{`BISdle ${currentMode}`}</h1> */}
 
@@ -387,7 +304,7 @@ export default function Home() {
         <button onClick={toggleMode}>
           {currentMode === 'Daily' ? 'Switch to Unlimited Mode' : 'Switch to Daily Mode'}
         </button>
-        <p>Guess the Set 12 Teamfight Tactics champion given its best-in-slot (BIS) item combination!</p>
+        {/* <p>Guess the Set 12 Teamfight Tactics champion given its best-in-slot (BIS) item combination!</p> */}
         {/* <p>(not rly BIS but most frequently slammed items in a few recent challenger games)</p> */}
 
         {currentMode === 'Unlimited' && <button onClick={handleNewItems}>Get new BIS</button>}
@@ -403,6 +320,15 @@ export default function Home() {
             placeholder='Enter champion name'
             autoComplete='off'
           />
+          {suggestions.length > 0 && (
+            <div id='autocomplete-list'>
+              {suggestions.map((item, index) => (
+                <div className='Champion' key={index} onClick={() => handleSelect(item)}>
+                  {item}
+                </div>
+              ))}
+            </div>
+          )}
           <button id='guessBtn' onClick={handleGuess}>
             Guess
           </button>
@@ -423,16 +349,9 @@ export default function Home() {
         <div id='feedback' style={{ whiteSpace: 'pre-wrap' }}>
           {feedback}
         </div>
-        {suggestions.length > 0 && (
-          <div id='autocomplete-list'>
-            {suggestions.map((item, index) => (
-              <div className='Champion' key={index} onClick={() => handleSelect(item)}>
-                {item}
-              </div>
-            ))}
-          </div>
-        )}
-      </center>
+
+        <Footer></Footer>
+      </div>
     </>
   );
 }

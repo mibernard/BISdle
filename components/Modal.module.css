@@ -14,7 +14,7 @@
 .modal {
   background: black;
   padding: 2rem;
-  border-radius: 5px;
+  border-radius: 10px;
   width: 90%;
   max-width: 500px;
   border: 2px solid #cdbe91;
