@@ -3,6 +3,7 @@ import Modal from '../components/Modal';
 import Footer from '../components/Footer';
 import championNames from '../lib/champions';
 import JSConfetti from 'js-confetti';
+import Head from 'next/head';
 
 export default function Home() {
   const [currentMode, setCurrentMode] = useState('Daily');
@@ -287,6 +288,10 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>BISdle - TFT Wordle</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
+      </Head>
       <div className='app'>
         <div className='logo'></div>
         {/* <h1>{`BISdle ${currentMode}`}</h1> */}
@@ -296,9 +301,11 @@ export default function Home() {
           {/* <hr></hr> */}
           <p>Welcome to BISdle! Here's how you play:</p>
           <ul>
-            <li>Guess today's champion from Riot's game "Teamfight Tactics". </li>
+            <li>
+              Guess today's champion from Riot's game "Teamfight Tactics" using the champions BIS (best-in-slot) item
+              combination!
+            </li>
             <li>The daily champion changes every 24 hours.</li>
-            <li>Use the BIS (best-in-slot) item combination to figure out the champion.</li>
             <li>The item combination is taken from challenger games and may not be true BIS.</li>
             <li>Use a hint if you're stuck or press answer if you give up.</li>
             <li>If you want to keep playing, switch to Unlimited Mode!</li>
