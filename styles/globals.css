@@ -22,7 +22,7 @@ body {
   background-position: center center;
   background-attachment: fixed;
   background-size: cover;
-  color: #fffbe6;
+  color: #000000;
   min-height: 100vh; /* 100% of the viewport height */
   padding-bottom: 50px; /* Add extra space at the bottom */
   /* display: flex; */
