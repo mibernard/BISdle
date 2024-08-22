@@ -367,22 +367,29 @@ export default function Home() {
     <>
       <center className='back'>
         <div className='logo'></div>
-        <h1>{`BIS-dle ${currentMode}`}</h1>
-        <button onClick={handleOpenModal}>How to Play</button>
+        {/* <h1>{`BISdle ${currentMode}`}</h1> */}
+
         <Modal isOpen={modalOpen} onClose={handleCloseModal} ref={modalRef}>
           <h2>How to Play</h2>
-          <p>Welcome to the game! Here's how you play:</p>
+          {/* <hr></hr> */}
+          <p>Welcome to BISdle! Here's how you play:</p>
           <ul>
-            <li>Guess the right champion given the triple item combination.</li>
-            <li>Use hints if you're stuck.</li>
+            <li>Guess today's champion from Riot's game "Teamfight Tactics". </li>
+            <li>The daily champion changes every 24 hours.</li>
+            <li>Use the BIS (best-in-slot) item combination to figure out the champion.</li>
+            <li>The item combination is taken from challenger games and may not be true BIS.</li>
+            <li>Use a hint if you're stuck or press answer if you give up.</li>
+            <li>If you want to keep playing, switch to Unlimited Mode!</li>
             <li>Have fun and test your TFT knowledge!</li>
           </ul>
         </Modal>
-        <p>Guess the Set 11 Teamfight Tactics champion given its best-in-slot (BIS) item combination!</p>
-        <p>(not rly BIS but most frequently slammed items in a few recent challenger games)</p>
+        <button onClick={handleOpenModal}>How to Play</button>
         <button onClick={toggleMode}>
           {currentMode === 'Daily' ? 'Switch to Unlimited Mode' : 'Switch to Daily Mode'}
         </button>
+        <p>Guess the Set 12 Teamfight Tactics champion given its best-in-slot (BIS) item combination!</p>
+        {/* <p>(not rly BIS but most frequently slammed items in a few recent challenger games)</p> */}
+
         {currentMode === 'Unlimited' && <button onClick={handleNewItems}>Get new BIS</button>}
         <div>{loading ? 'Loading...' : ''}</div>
         <div id='itemImgContainer'></div>

@@ -13,11 +13,12 @@
 
 .modal {
   background: black;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 2rem;
+  border-radius: 5px;
   width: 90%;
   max-width: 500px;
   border: 2px solid #cdbe91;
+  text-align: left;
 }
 
 .closeButton {
@@ -26,4 +27,32 @@
   border: none;
   background: none;
   cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+.modal h2 {
+  margin: 0;
+  /* padding-bottom: 1rem; */
+}
+.modal ul {
+  list-style-type: circle;
+  margin: 0;
+  /* padding: 0; */
+  padding-left: 1.5rem;
+}
+.modal p {
+  padding: 0;
+  /* margin: 0; */
+}
+
+@media screen and (max-width: 768px) {
+  .modal {
+    width: 80%; /* 80% width on mobile screens */
+    padding: 1.5rem;
+  }
+  .modal ul {
+    padding-left: 20px; /* Optional: remove default left padding */
+    margin: 0; /* Optional: reset margin if needed */
+  }
 }

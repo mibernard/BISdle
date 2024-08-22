@@ -1,18 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 
-.raleway> {
-  font-family: "Raleway", sans-serif;
+.raleway > {
+  font-family: 'Raleway', sans-serif;
   font-optical-sizing: auto;
   font-weight: 100;
   font-style: normal;
 }
 
 body {
-  font-family: "Raleway", sans-serif;
+  font-family: 'Raleway', sans-serif;
   margin: 20px;
   padding: 0;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0), #010007, #010007, rgba(0, 0, 0, 0) 100%),
-    url('https://cdn.glitch.global/c482ca3f-5f21-4ad8-b3a2-4674f54d04f7/pengu.png?v=1715377921432');
+  /* background: linear-gradient(to left, rgba(0, 0, 0, 0), #010007, #010007, rgba(0, 0, 0, 0) 100%),
+    url('https://cdn.glitch.global/c482ca3f-5f21-4ad8-b3a2-4674f54d04f7/pengu.png?v=1715377921432'); */
+  background: linear-gradient(to left, rgba(0, 0, 0, 0), #010007 40%, #010007 60%, rgba(0, 0, 0, 0) 100%),
+    url('https://edge.rivalrycdn.com/cdn-cgi/image/q=100/https://images.prismic.io/rivalryglhf/ZofEqB5LeNNTw0LO_Yuumi.jpg?auto=format,compress');
+
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: fixed;
@@ -105,13 +108,13 @@ button:active {
   }
 }
 
-#autocomplete-list{
-  margin-top:5px;
+#autocomplete-list {
+  margin-top: 5px;
   width: 15%;
 }
 
-.Champion{
-  margin-top:5px;
+.Champion {
+  margin-top: 5px;
   font-family: 'Marcellus SC', serif;
   font-size: 20px;
   letter-spacing: 1px;
@@ -119,13 +122,13 @@ button:active {
   background: #1e2328;
   color: #cdbe91;
   box-shadow: inset 0 0 2px #000000;
-  border:solid;
+  border: solid;
   border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29);
   border-image-slice: 1;
   border-width: 2px;
 }
 
-.Champion:hover{
+.Champion:hover {
   text-shadow: 0 0 5px #ffffff80;
   box-shadow: 0 0 8px 0 #ffffff50;
   background: linear-gradient(to bottom, #1e2328, #433d2b);
@@ -133,12 +136,12 @@ button:active {
   transition: 0.1s;
 }
 
-li{
-  float:left;
-  margin-top:5px;
+li {
+  float: left;
+  margin-top: 5px;
 }
 
-h2{
-  position:relative;
-  width:50%;
+h2 {
+  position: relative;
+  width: 50%;
 }
