@@ -7,6 +7,10 @@
   font-style: normal;
 }
 
+html {
+  background-color: black;
+}
+
 body {
   font-family: 'Raleway', sans-serif;
   margin: 20px;
@@ -22,7 +26,7 @@ body {
   background-position: center center;
   background-attachment: fixed;
   background-size: cover;
-  color: #000000;
+  color: #fffbe6;
   min-height: 100vh; /* 100% of the viewport height */
   padding-bottom: 50px; /* Add extra space at the bottom */
   /* display: flex; */
