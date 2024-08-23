@@ -302,7 +302,7 @@ export default function Home() {
           <p>Welcome to BISdle! Here's how you play:</p>
           <ul>
             <li>
-              Guess today's champion from Riot's game "Teamfight Tactics" using the champions BIS (best-in-slot) item
+              Guess today's champion from Riot's game "Teamfight Tactics" using the champion's BIS (best-in-slot) item
               combination!
             </li>
             <li>The daily champion changes every 24 hours.</li>
