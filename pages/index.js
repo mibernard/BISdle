@@ -10,7 +10,7 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(null);
   const [guessedChampions, setGuessedChampions] = useState([]);
   const [unitName, setUnitName] = useState('');
-  const [feedback, setFeedback] = useState('');
+  const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -46,7 +46,7 @@ export default function Home() {
   const toggleMode = () => {
     const newMode = currentMode === 'Daily' ? 'Unlimited' : 'Daily';
     setCurrentMode(newMode);
-    setFeedback('');
+    setFeedback([]);
     setInput('');
     setGuessedChampions([]);
     setGuessCount(0);
@@ -66,7 +66,7 @@ export default function Home() {
     setCurrentIndex(getRandomIndex());
     console.log('current index:', currentIndex);
     setInput('');
-    setFeedback('');
+    setFeedback([]);
     setGuessedChampions([]);
     setGuessCount(0);
     getTopItemsForChampion(currentIndex);
@@ -74,29 +74,30 @@ export default function Home() {
 
   const handleGuess = () => {
     if (!unitName) return;
-    // console.log('current index:', currentIndex, 'champions[currentIndex]:', champions[currentIndex]);
     const isCorrect = input.toLowerCase() === unitName.toLowerCase().split('_')[1];
-    console.log('input:', input.toLowerCase(), 'answer:', unitName.toLowerCase().split('_')[1]);
-    setGuessCount((guessCount += 1));
+    setGuessCount((prevCount) => prevCount + 1);
+
+    const newFeedback = {
+      text: isCorrect
+        ? `Correct! It is ${unitName.split('_')[1]}. It took you ${guessCount + 1} ${
+            guessCount + 1 > 1 ? 'tries' : 'try'
+          }.`
+        : `It is not ${input}, try again!`,
+      isCorrect: isCorrect,
+      color: isCorrect ? 'lightgreen' : 'salmon'
+    };
 
     if (isCorrect) {
-      document.getElementById('feedback').style.color = 'green';
       const jsConfetti = new JSConfetti();
       jsConfetti.addConfetti({
         emojis: ['🌈', '⚡️', '💥', '✨', '💫', '🌸']
       });
-      setFeedback(
-        (prevString) =>
-          prevString +
-          `\nCorrect! It is ${unitName.split('_')[1]}. It took you ${guessCount} ${guessCount > 1 ? 'tries' : 'try'}.`
-      );
       document.getElementById('unitInput').blur();
     } else {
-      document.getElementById('feedback').style.color = 'red';
       document.getElementById('unitInput').focus();
-      setFeedback((prevString) => prevString + `\nIt is not ${input}, try again!`);
-      setGuessedChampions([...guessedChampions, input.toLowerCase()]);
     }
+
+    setFeedback((prevFeedback) => [...prevFeedback, newFeedback]);
     setInput('');
   };
 
@@ -105,15 +106,21 @@ export default function Home() {
   };
 
   const handleHint = () => {
-    document.getElementById('feedback').style.color = '#fffbe6';
-    setFeedback(
-      (prevString) => prevString + `\nThe champion's name starts with ${unitName.split('_')[1].charAt(0).toUpperCase()}`
-    );
+    const hint = {
+      text: `The champion's name starts with ${unitName.split('_')[1].charAt(0).toUpperCase()}`,
+      isCorrect: false, // Assuming false since it's a hint, not a correct or incorrect guess
+      color: 'lightblue' // Specific color for hints
+    };
+    setFeedback((prevFeedback) => [...prevFeedback, hint]);
   };
 
   const handleAnswer = () => {
-    // document.getElementById('feedback').style.color = '#fffbe6';
-    setFeedback((prevString) => prevString + `\nThe champion's name is ${unitName.split('_')[1]}`);
+    const answer = {
+      text: `The champion's name is ${unitName.split('_')[1]}`,
+      isCorrect: true, // You can decide whether to mark this as correct or simply informational
+      color: 'lavender' // Specific color for answers
+    };
+    setFeedback((prevFeedback) => [...prevFeedback, answer]);
   };
 
   function getTodayIndex() {
@@ -359,7 +366,11 @@ export default function Home() {
         </div>
 
         <div id='feedback' style={{ whiteSpace: 'pre-wrap' }}>
-          {feedback}
+          {feedback.map((f, index) => (
+            <div key={index} style={{ color: f.color || 'inherit' }}>
+              {f.text}
+            </div>
+          ))}
         </div>
 
         <Footer></Footer>
