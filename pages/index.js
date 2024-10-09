@@ -58,7 +58,13 @@ export default function Home() {
     if (!input) return;
     if (event.key === 'Enter') {
       event.preventDefault(); // Prevent the default form submission
-      document.getElementById('guessBtn').click(); // Programmatically click the guess button
+      if (suggestions.length > 0) {
+        // Select the top suggestion if it exists
+        handleSelect(suggestions[0]);
+      } else {
+        // If no suggestions, proceed with current input
+        document.getElementById('guessBtn').click();
+      }
     }
   };
 
@@ -72,10 +78,15 @@ export default function Home() {
     getTopItemsForChampion(currentIndex);
   };
 
+  const isValidChampionName = (input) => {
+    return championNames.some((champion) => champion.toLowerCase() === input.toLowerCase());
+  };
+
   const handleGuess = () => {
     if (!unitName) return;
     const isCorrect = input.toLowerCase() === unitName.toLowerCase().split('_')[1];
     setGuessCount((prevCount) => prevCount + 1);
+    setGuessedChampions((prev) => [...prev, input.toLowerCase()]); // Add to guessed list
 
     const newFeedback = {
       text: isCorrect
@@ -354,7 +365,7 @@ export default function Home() {
               ))}
             </div>
           )}
-          <button id='guessBtn' onClick={handleGuess}>
+          <button id='guessBtn' onClick={handleGuess} disabled={!isValidChampionName(input)}>
             Guess
           </button>
         </div>
