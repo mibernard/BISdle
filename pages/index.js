@@ -313,7 +313,11 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>BISdle - TFT Wordle</title>
+        <title>BISdle - TFT Champion Guessing Game</title>
+        <meta
+          name='description'
+          content='Play BISdle, the ultimate guessing game for Teamfight Tactics fans! Guess the champion based on BIS items and test your TFT knowledge!'
+        />
         <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
       </Head>
       <div className='app'>

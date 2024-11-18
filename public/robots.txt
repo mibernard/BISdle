@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://bisdle.vercel.app
+
+# Sitemaps
+Sitemap: https://bisdle.vercel.app/sitemap.xml
