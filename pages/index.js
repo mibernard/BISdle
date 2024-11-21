@@ -277,7 +277,7 @@ export default function Home() {
   function getImageUrl(itemName) {
     // const baseUrl = 'https://cdn.matches.lol/latest/img/tft-item/';
     // const baseUrl = 'https://rerollcdn.com/items/';
-    const baseUrl = 'https://cdn.teamfight.lol/tft/item/TFTSet12/';
+    const baseUrl = 'https://cdn.teamfight.lol/tft/item/TFTSet13/';
     const parts = itemName.split('_');
     const splitItemName = parts.slice(2).join('_');
 
