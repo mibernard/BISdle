@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Modal from '../components/Modal';
 import Footer from '../components/Footer';
-import championNames from '../lib/champions';
+import championNames from '../lib/champions.js';
 import JSConfetti from 'js-confetti';
 import Head from 'next/head';
 
