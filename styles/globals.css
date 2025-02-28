@@ -17,7 +17,7 @@ body {
   /* background: linear-gradient(to left, rgba(0, 0, 0, 0), #010007, #010007, rgba(0, 0, 0, 0) 100%),
     url('https://cdn.glitch.global/c482ca3f-5f21-4ad8-b3a2-4674f54d04f7/pengu.png?v=1715377921432'); */
   background: linear-gradient(to left, rgba(0, 0, 0, 0), #010007 40%, #010007 60%, rgba(0, 0, 0, 0) 100%),
-    url('https://edge.rivalrycdn.com/cdn-cgi/image/q=100/https://images.prismic.io/rivalryglhf/ZofEqB5LeNNTw0LO_Yuumi.jpg?auto=format,compress');
+    url('../assets/Powder-Arcane-TFT.png');
   /* background: linear-gradient(rgba(1, 0, 7, 0.6), rgba(1, 0, 7, 0.6)),
     url('https://edge.rivalrycdn.com/cdn-cgi/image/q=100/https://images.prismic.io/rivalryglhf/ZofEqB5LeNNTw0LO_Yuumi.jpg?auto=format,compress'); */
 
