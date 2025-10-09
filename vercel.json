@@ -1,0 +1,9 @@
+{
+  "crons": [
+    {
+      "path": "/api/refreshCache",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
+
