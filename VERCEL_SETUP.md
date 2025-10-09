@@ -28,18 +28,7 @@ That's it! Your site will:
 
 ## 🔧 Optional Enhancements
 
-### Option A: Add Vercel KV (Better Persistence)
-
-**Why?** Ensures cache persists across all serverless instances.
-
-**Setup**:
-1. In Vercel Dashboard → Storage → Create Database → KV
-2. Install package: `npm install @vercel/kv`
-3. Deploy: `vercel --prod`
-
-**Cost**: Free (256MB included)
-
-### Option B: Add Cron Job (Proactive Refresh)
+### Option A: Add Cron Job (Proactive Refresh)
 
 **Why?** Refreshes cache daily before it expires, ensuring users never wait.
 
@@ -52,14 +41,6 @@ That's it! Your site will:
 3. Deploy: `vercel --prod`
 
 **Cost**: Free (1 cron job included)
-
-### Option C: Both KV + Cron (Recommended for Production)
-
-Combine both for the best experience:
-- Guaranteed cache persistence
-- Proactive daily refresh
-- Zero downtime
-- Maximum reliability
 
 ## 📊 Monitoring
 
@@ -115,8 +96,8 @@ Check if caching is working:
 ### Problem: Still seeing high API usage
 **Solution**: 
 1. Check Vercel logs to see if Edge caching is working
-2. Consider adding Vercel KV for better persistence
-3. Verify `Cache-Control` headers are being sent
+2. Verify `Cache-Control` headers are being sent in response
+3. Set up the cron job for proactive cache refresh
 
 ## 📞 Need Help?
 
