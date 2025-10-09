@@ -11,16 +11,6 @@ let cachedData = null;
 let cacheTimestamp = null;
 let isFetching = false;
 
-// For Vercel: Try to use KV storage if available
-let kvCache = null;
-try {
-  if (process.env.KV_REST_API_URL) {
-    kvCache = require('@vercel/kv');
-  }
-} catch (e) {
-  // KV not available, will use in-memory cache only
-}
-
 /**
  * Fetches match data from Riot API and processes champion-item combinations
  */
@@ -82,11 +72,13 @@ async function fetchMatches() {
  */
 async function getCachedData() {
   // Try Vercel KV first (persists across serverless invocations)
-  if (kvCache) {
+  if (process.env.KV_REST_API_URL) {
     try {
-      const data = await kvCache.kv.get('tft-match-data');
-      const timestamp = await kvCache.kv.get('tft-match-data-timestamp');
+      const { kv } = await import('@vercel/kv');
+      const data = await kv.get('tft-match-data');
+      const timestamp = await kv.get('tft-match-data-timestamp');
       if (data && timestamp) {
+        console.log('Cache hit from Vercel KV');
         return { data, timestamp };
       }
     } catch (error) {
@@ -111,10 +103,11 @@ async function setCachedData(data, timestamp) {
   cacheTimestamp = timestamp;
 
   // Store in Vercel KV if available
-  if (kvCache) {
+  if (process.env.KV_REST_API_URL) {
     try {
-      await kvCache.kv.set('tft-match-data', data);
-      await kvCache.kv.set('tft-match-data-timestamp', timestamp);
+      const { kv } = await import('@vercel/kv');
+      await kv.set('tft-match-data', data);
+      await kv.set('tft-match-data-timestamp', timestamp);
       console.log('Data cached in Vercel KV');
     } catch (error) {
       console.log('Failed to cache in KV:', error.message);
