@@ -71,21 +71,6 @@ async function fetchMatches() {
  * Get cached data from Vercel KV or in-memory cache
  */
 async function getCachedData() {
-  // Try Vercel KV first (persists across serverless invocations)
-  if (process.env.KV_REST_API_URL) {
-    try {
-      const { kv } = await import('@vercel/kv');
-      const data = await kv.get('tft-match-data');
-      const timestamp = await kv.get('tft-match-data-timestamp');
-      if (data && timestamp) {
-        console.log('Cache hit from Vercel KV');
-        return { data, timestamp };
-      }
-    } catch (error) {
-      console.log('KV cache miss or error:', error.message);
-    }
-  }
-
   // Fallback to in-memory cache (works locally, limited on Vercel)
   if (cachedData && cacheTimestamp) {
     return { data: cachedData, timestamp: cacheTimestamp };
@@ -95,24 +80,12 @@ async function getCachedData() {
 }
 
 /**
- * Set cached data in both Vercel KV and in-memory
+ * Set cached data in memory
  */
 async function setCachedData(data, timestamp) {
   // Store in memory
   cachedData = data;
   cacheTimestamp = timestamp;
-
-  // Store in Vercel KV if available
-  if (process.env.KV_REST_API_URL) {
-    try {
-      const { kv } = await import('@vercel/kv');
-      await kv.set('tft-match-data', data);
-      await kv.set('tft-match-data-timestamp', timestamp);
-      console.log('Data cached in Vercel KV');
-    } catch (error) {
-      console.log('Failed to cache in KV:', error.message);
-    }
-  }
 }
 
 /**

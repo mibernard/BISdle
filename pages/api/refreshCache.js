@@ -68,15 +68,9 @@ export default async function handler(req, res) {
     console.log('Cron job triggered: Refreshing cache...');
     const data = await fetchMatchesData();
     
-    // Store in Vercel KV if available, otherwise just log
-    if (process.env.KV_REST_API_URL) {
-      // If you set up Vercel KV, store it there
-      const { kv } = await import('@vercel/kv');
-      await kv.set('tft-match-data', data);
-      await kv.set('tft-match-data-timestamp', Date.now());
-      console.log('Cache stored in Vercel KV');
-    }
-
+    // Note: This endpoint fetches fresh data to warm up the cache
+    // The actual caching is handled by Vercel's Edge Network via Cache-Control headers
+    
     res.status(200).json({
       success: true,
       message: 'Cache refreshed successfully',
