@@ -18,7 +18,7 @@
   "author": "Your Name",
   "license": "ISC",
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^6.4.2",
