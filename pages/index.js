@@ -23,6 +23,7 @@ export default function Home() {
   const [answerUsed, setAnswerUsed] = useState(false);
   const [itemImageMap, setItemImageMap] = useState({});
   const [championImageMap, setChampionImageMap] = useState({});
+  const [traitImageMap, setTraitImageMap] = useState({});
   const modalRef = useRef(null);
 
   // This useEffect handles data fetching independently
@@ -30,6 +31,7 @@ export default function Home() {
     fetchData();
     fetchDataDragonItems();
     fetchDataDragonChampions();
+    fetchDataDragonTraits();
   }, []); // Run only once on component mount
 
   // This useEffect handles setting the index based on the mode
@@ -153,24 +155,30 @@ export default function Home() {
       const traits = championInfo.traits;
       if (traits.length >= 1) {
         const className = traits[0];
-        hintText = `${className}`;
-        // Emblem image (items use PascalCase names without spaces + 'Emblem')
-        const emblemSlug = `${className.replace(/\s+/g, '')}Emblem`;
-        emblemUrl = `https://rerollcdn.com/items/${emblemSlug}.png`;
+        // Check if the class is literally "No Class"
+        if (className === 'No Class') {
+          hintText = 'The champion has no class';
+        } else {
+          hintText = `${className}`;
+          // Get trait image from Data Dragon
+          emblemUrl = traitImageMap[className] || traitImageMap[className.replace(/\s+/g, '')] || '';
+          console.log('Trait name:', className, 'Trait URL:', emblemUrl);
+        }
       } else {
-        // Fallback to first letter if no trait data
-        hintText = `The champion's name starts with ${championName.charAt(0).toUpperCase()}`;
+        // No class data available
+        hintText = 'The champion has no class';
       }
     } else {
-      // Fallback to first letter if no trait data
-      hintText = `The champion's name starts with ${championName.charAt(0).toUpperCase()}`;
+      // No champion data available
+      hintText = 'The champion has no class';
     }
     
     const hint = {
       text: hintText,
-      isCorrect: false, // Assuming false since it's a hint, not a correct or incorrect guess
-      color: 'lightblue', // Specific color for hints
-      emblemUrl
+      isCorrect: false,
+      color: 'lightblue',
+      emblemUrl,
+      isHint: true // Always mark as hint so it uses styled container
     };
     setFeedback((prevFeedback) => [...prevFeedback, hint]);
     setHintUsed(true);
@@ -347,6 +355,39 @@ export default function Home() {
       console.log('Sample champion keys:', Object.keys(champImageMap).slice(0, 10));
     } catch (error) {
       console.error('Failed to load Data Dragon champions:', error);
+    }
+  };
+
+  // Fetch TFT trait images from Data Dragon
+  const fetchDataDragonTraits = async () => {
+    try {
+      // 1. Get latest version
+      const versionsRes = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
+      const versions = await versionsRes.json();
+      const latestVersion = versions[0];
+      console.log('Data Dragon version for traits:', latestVersion);
+
+      // 2. Fetch TFT traits data
+      const traitsRes = await fetch(
+        `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/tft-trait.json`
+      );
+      const traitsData = await traitsRes.json();
+
+      // 3. Build trait name → image URL map
+      const traitImgMap = {};
+      Object.values(traitsData.data).forEach((trait) => {
+        // Map trait name to image URL
+        traitImgMap[trait.name] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-trait/${trait.image.full}`;
+        // Also try mapping without spaces for easier lookup
+        const nameWithoutSpaces = trait.name.replace(/\s+/g, '');
+        traitImgMap[nameWithoutSpaces] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-trait/${trait.image.full}`;
+      });
+
+      setTraitImageMap(traitImgMap);
+      console.log('Loaded Data Dragon trait images:', Object.keys(traitImgMap).length);
+      console.log('Sample trait keys:', Object.keys(traitImgMap).slice(0, 10));
+    } catch (error) {
+      console.error('Failed to load Data Dragon traits:', error);
     }
   };
 
@@ -556,10 +597,12 @@ export default function Home() {
         <div id='feedback' style={{ whiteSpace: 'pre-wrap' }}>
           {feedback.map((f, index) => (
             <div key={index} style={{ color: f.color || 'inherit' }}>
-              {f.emblemUrl ? (
+              {f.isHint ? (
                 <div className='hint-box'>
-                  <img className='emblem' src={f.emblemUrl} alt='Class Emblem' width={40} height={40} />
-                  <span className='hint-text'>The champion's class is {f.text}</span>
+                  {f.emblemUrl && <img className='emblem' src={f.emblemUrl} alt='Class Emblem' width={40} height={40} />}
+                  <span className='hint-text'>
+                    {f.emblemUrl ? `The champion's class is ${f.text}` : f.text}
+                  </span>
                 </div>
               ) : f.hasOwnProperty('championImageUrl') ? (
                 <div className='answer-box'>
