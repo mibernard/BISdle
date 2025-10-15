@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Modal from '../components/Modal';
 import Footer from '../components/Footer';
 import championNames from '../lib/champions.js';
+import championData from '../lib/championData.js';
 import JSConfetti from 'js-confetti';
 import Head from 'next/head';
 
@@ -18,11 +19,17 @@ export default function Home() {
   const [clickPending, setClickPending] = useState(false);
   const [modalOpen, setModalOpen] = useState(true);
   const [guessCount, setGuessCount] = useState(0);
+  const [hintUsed, setHintUsed] = useState(false);
+  const [answerUsed, setAnswerUsed] = useState(false);
+  const [itemImageMap, setItemImageMap] = useState({});
+  const [championImageMap, setChampionImageMap] = useState({});
   const modalRef = useRef(null);
 
   // This useEffect handles data fetching independently
   useEffect(() => {
     fetchData();
+    fetchDataDragonItems();
+    fetchDataDragonChampions();
   }, []); // Run only once on component mount
 
   // This useEffect handles setting the index based on the mode
@@ -38,10 +45,10 @@ export default function Home() {
 
   // This useEffect handles displaying items once everything is ready
   useEffect(() => {
-    if (currentIndex !== null && itemData && Object.keys(itemData).length > 0) {
+    if (currentIndex !== null && itemData && Object.keys(itemData).length > 0 && Object.keys(itemImageMap).length > 0) {
       getTopItemsForChampion(currentIndex);
     }
-  }, [currentIndex, itemData]); // Run when currentIndex or itemData changes
+  }, [currentIndex, itemData, itemImageMap]); // Run when currentIndex, itemData, or itemImageMap changes
 
   const toggleMode = () => {
     const newMode = currentMode === 'Daily' ? 'Unlimited' : 'Daily';
@@ -50,6 +57,8 @@ export default function Home() {
     setInput('');
     setGuessedChampions([]);
     setGuessCount(0);
+    setHintUsed(false);
+    setAnswerUsed(false);
   };
 
   const handleInputChange = (event) => {
@@ -75,6 +84,8 @@ export default function Home() {
     setFeedback([]);
     setGuessedChampions([]);
     setGuessCount(0);
+    setHintUsed(false);
+    setAnswerUsed(false);
     getTopItemsForChampion(currentIndex);
   };
 
@@ -88,14 +99,20 @@ export default function Home() {
     setGuessCount((prevCount) => prevCount + 1);
     setGuessedChampions((prev) => [...prev, input.toLowerCase()]); // Add to guessed list
 
+    // Get the guessed champion's image URL
+    const guessedChampName = input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
+    const guessedChampImageUrl = championImageMap[guessedChampName] || '';
+
     const newFeedback = {
       text: isCorrect
         ? `Correct! It is ${unitName.split('_')[1]}. It took you ${guessCount + 1} ${
             guessCount + 1 > 1 ? 'tries' : 'try'
           }.`
-        : `It is not ${input}, try again!`,
+        : `It is not ${guessedChampName}, try again!`,
       isCorrect: isCorrect,
-      color: isCorrect ? 'lightgreen' : 'salmon'
+      color: isCorrect ? 'lightgreen' : 'salmon',
+      guessChampionImageUrl: guessedChampImageUrl,
+      isGuess: true
     };
 
     if (isCorrect) {
@@ -117,21 +134,78 @@ export default function Home() {
   };
 
   const handleHint = () => {
+    if (hintUsed) {
+      const hint = {
+        text: "You've already used your hint for this champion!",
+        isCorrect: false,
+        color: 'orange'
+      };
+      setFeedback((prevFeedback) => [...prevFeedback, hint]);
+      return;
+    }
+
+    const championName = unitName.split('_')[1];
+    const championInfo = championData[championName];
+    
+    let hintText = '';
+    let emblemUrl = '';
+    if (championInfo && championInfo.traits) {
+      const traits = championInfo.traits;
+      if (traits.length >= 1) {
+        const className = traits[0];
+        hintText = `${className}`;
+        // Emblem image (items use PascalCase names without spaces + 'Emblem')
+        const emblemSlug = `${className.replace(/\s+/g, '')}Emblem`;
+        emblemUrl = `https://rerollcdn.com/items/${emblemSlug}.png`;
+      } else {
+        // Fallback to first letter if no trait data
+        hintText = `The champion's name starts with ${championName.charAt(0).toUpperCase()}`;
+      }
+    } else {
+      // Fallback to first letter if no trait data
+      hintText = `The champion's name starts with ${championName.charAt(0).toUpperCase()}`;
+    }
+    
     const hint = {
-      text: `The champion's name starts with ${unitName.split('_')[1].charAt(0).toUpperCase()}`,
+      text: hintText,
       isCorrect: false, // Assuming false since it's a hint, not a correct or incorrect guess
-      color: 'lightblue' // Specific color for hints
+      color: 'lightblue', // Specific color for hints
+      emblemUrl
     };
     setFeedback((prevFeedback) => [...prevFeedback, hint]);
+    setHintUsed(true);
   };
 
   const handleAnswer = () => {
+    if (answerUsed) {
+      const alreadyAnswered = {
+        text: "You've already revealed the answer!",
+        isCorrect: false,
+        color: 'orange'
+      };
+      setFeedback((prevFeedback) => [...prevFeedback, alreadyAnswered]);
+      return;
+    }
+
+    const championName = unitName.split('_')[1];
+    console.log('Champion name:', championName);
+    console.log('Champion image map keys:', Object.keys(championImageMap));
+    
+    // Try different variations of the champion name
+    let championImageUrl = championImageMap[championName] || 
+                          championImageMap[`TFT13_${championName}`] ||
+                          championImageMap[`TFT_TrainingDummy`] || '';
+    
+    console.log('Champion image URL:', championImageUrl);
+    
     const answer = {
-      text: `The champion's name is ${unitName.split('_')[1]}`,
-      isCorrect: true, // You can decide whether to mark this as correct or simply informational
-      color: 'lavender' // Specific color for answers
+      text: championName,
+      isCorrect: true,
+      color: 'lavender',
+      championImageUrl
     };
     setFeedback((prevFeedback) => [...prevFeedback, answer]);
+    setAnswerUsed(true);
   };
 
   function getTodayIndex() {
@@ -214,6 +288,68 @@ export default function Home() {
     };
   }, []);
 
+  // Fetch TFT item images from Data Dragon
+  const fetchDataDragonItems = async () => {
+    try {
+      // 1. Get latest version
+      const versionsRes = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
+      const versions = await versionsRes.json();
+      const latestVersion = versions[0];
+      console.log('Data Dragon version:', latestVersion);
+
+      // 2. Fetch TFT items data
+      const itemsRes = await fetch(
+        `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/tft-item.json`
+      );
+      const itemsData = await itemsRes.json();
+
+      // 3. Build item name → image URL map
+      const imageMap = {};
+      Object.values(itemsData.data).forEach((item) => {
+        // Map item ID (e.g., "TFT_Item_BFSword") to image URL
+        imageMap[item.id] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-item/${item.image.full}`;
+      });
+
+      setItemImageMap(imageMap);
+      console.log('Loaded Data Dragon item images:', Object.keys(imageMap).length);
+    } catch (error) {
+      console.error('Failed to load Data Dragon items:', error);
+    }
+  };
+
+  // Fetch TFT champion images from Data Dragon
+  const fetchDataDragonChampions = async () => {
+    try {
+      // 1. Get latest version
+      const versionsRes = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
+      const versions = await versionsRes.json();
+      const latestVersion = versions[0];
+      console.log('Data Dragon version for champions:', latestVersion);
+
+      // 2. Fetch TFT champions data
+      const championsRes = await fetch(
+        `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/tft-champion.json`
+      );
+      const championsData = await championsRes.json();
+
+      // 3. Build champion name → image URL map
+      const champImageMap = {};
+      Object.values(championsData.data).forEach((champ) => {
+        // Map champion ID to image URL
+        champImageMap[champ.id] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-champion/${champ.image.full}`;
+        // Also map the champion name without the TFT prefix for easier lookup
+        const simpleName = champ.id.replace(/^TFT\d*_/, '');
+        champImageMap[simpleName] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-champion/${champ.image.full}`;
+      });
+
+      setChampionImageMap(champImageMap);
+      console.log('Loaded Data Dragon champion images:', Object.keys(champImageMap).length);
+      console.log('Sample champion keys:', Object.keys(champImageMap).slice(0, 10));
+    } catch (error) {
+      console.error('Failed to load Data Dragon champions:', error);
+    }
+  };
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -231,7 +367,7 @@ export default function Home() {
     }
   };
 
-  const getTopItemsForChampion = (index) => {
+  const getTopItemsForChampion = async (index) => {
     if (!itemData || Object.keys(itemData).length === 0) {
       console.log('No item data available', index);
       return;
@@ -256,11 +392,28 @@ export default function Home() {
     }
 
     const sortedItems = Object.entries(items).sort((a, b) => b[1] - a[1]);
-    const topThreeItems = sortedItems.slice(0, 3).map((item) => item[0]);
+    
+    // Validate items and get next valid items if 404s occur
+    const validItems = [];
+    let itemIndex = 0;
+    
+    while (validItems.length < 3 && itemIndex < sortedItems.length) {
+      const item = sortedItems[itemIndex][0];
+      const imageUrl = getImageUrl(item);
+      
+      // Check if image exists
+      const isValid = await checkImageExists(imageUrl);
+      if (isValid) {
+        validItems.push(item);
+      } else {
+        console.log(`Image not found for ${item}, trying next item...`);
+      }
+      itemIndex++;
+    }
 
     const container = document.getElementById('itemImgContainer');
     container.innerHTML = ''; // Clear previous items
-    topThreeItems.forEach((item) => {
+    validItems.forEach((item) => {
       const imgElement = document.createElement('img');
       imgElement.src = getImageUrl(item);
       imgElement.alt = item;
@@ -270,19 +423,33 @@ export default function Home() {
       imgElement.style.margin = '6px'; // Set image width
       container.appendChild(imgElement);
     });
-    console.log(`Top 3 items for ${championName}:`, topThreeItems.map(getImageUrl));
-    return { championName, topThreeItems };
+    console.log(`Top 3 valid items for ${championName}:`, validItems.map(getImageUrl));
+    return { championName, topThreeItems: validItems };
+  };
+  
+  // Helper function to check if image exists
+  const checkImageExists = (url) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+    });
   };
 
   function getImageUrl(itemName) {
-    // const baseUrl = 'https://cdn.matches.lol/latest/img/tft-item/';
-    // const baseUrl = 'https://rerollcdn.com/items/';
-    const baseUrl = 'https://cdn.teamfight.lol/tft/item/TFTSet13/';
-    const parts = itemName.split('_');
-    const splitItemName = parts.slice(2).join('_');
+    // First, try Data Dragon (official Riot CDN)
+    if (itemImageMap[itemName]) {
+      return itemImageMap[itemName];
+    }
 
-    // return `${baseUrl}${splitItemName}.png`;
-    return `${baseUrl}${itemName}.png`;
+    // Fallback to CommunityDragon for missing items
+    const cdnBaseUrl = 'https://raw.communitydragon.org/latest/game/assets/maps/particles/tft/item_icons/';
+    const parts = itemName.split('_');
+    const cleanName = parts.slice(2).join('_'); // Remove TFT_Item_ prefix
+    
+    // Try to construct CommunityDragon URL (lowercase with underscores)
+    return `${cdnBaseUrl}${cleanName.toLowerCase()}.png`;
   }
 
   const handleOpenModal = () => {
@@ -335,7 +502,7 @@ export default function Home() {
             </li>
             <li>The daily champion changes every 24 hours.</li>
             <li>The item combination is taken from challenger games and may not be true BIS.</li>
-            <li>Use a hint if you're stuck or press answer if you give up.</li>
+            <li>Use a hint to reveal the champion's class, or press answer if you give up.</li>
             <li>If you want to keep playing, switch to Unlimited Mode!</li>
             <li>Have fun and test your TFT knowledge!</li>
           </ul>
@@ -357,7 +524,7 @@ export default function Home() {
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleInputChange}
-            placeholder='Enter champion name'
+            placeholder='Enter champion name...'
             autoComplete='off'
           />
           {suggestions.length > 0 && (
@@ -378,10 +545,10 @@ export default function Home() {
           <button id='listChampsBtn' onClick={handleListChamps}>
             All TFT Champions
           </button>
-          <button id='hintBtn' onClick={handleHint}>
+          <button id='hintBtn' onClick={handleHint} disabled={hintUsed} title={hintUsed ? 'Hint already used' : 'Reveal class hint'}>
             Hint
           </button>
-          <button id='answerBtn' onClick={handleAnswer}>
+          <button id='answerBtn' onClick={handleAnswer} disabled={answerUsed} title={answerUsed ? 'Answer already revealed' : 'Reveal champion'}>
             Answer
           </button>
         </div>
@@ -389,7 +556,24 @@ export default function Home() {
         <div id='feedback' style={{ whiteSpace: 'pre-wrap' }}>
           {feedback.map((f, index) => (
             <div key={index} style={{ color: f.color || 'inherit' }}>
-              {f.text}
+              {f.emblemUrl ? (
+                <div className='hint-box'>
+                  <img className='emblem' src={f.emblemUrl} alt='Class Emblem' width={40} height={40} />
+                  <span className='hint-text'>The champion's class is {f.text}</span>
+                </div>
+              ) : f.hasOwnProperty('championImageUrl') ? (
+                <div className='answer-box'>
+                  {f.championImageUrl && <img className='champion-image' src={f.championImageUrl} alt={f.text} width={60} height={60} />}
+                  <span className='answer-text'>The champion is {f.text}</span>
+                </div>
+              ) : f.isGuess ? (
+                <div className={f.isCorrect ? 'guess-box-correct' : 'guess-box-incorrect'}>
+                  {f.guessChampionImageUrl && <img className='champion-image' src={f.guessChampionImageUrl} alt={f.text} width={60} height={60} />}
+                  <span className='guess-text'>{f.text}</span>
+                </div>
+              ) : (
+                <span>{f.text}</span>
+              )}
             </div>
           ))}
         </div>

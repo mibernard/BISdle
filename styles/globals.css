@@ -90,6 +90,12 @@ button:hover {
   transition: 0.1s;
 }
 
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(30%);
+}
+
 button:active {
   text-shadow: none;
   box-shadow: none;
@@ -97,8 +103,8 @@ button:active {
 }
 
 .logo {
-  height: 25rem;
-  width: 25rem;
+  height: 20rem;
+  width: 20rem;
   background: url('/images/bisdle7.png');
   background-repeat: no-repeat;
   background-size: contain;
@@ -109,16 +115,48 @@ button:active {
   body {
     font-size: 14px;
   }
-  .logo {
-    height: 200px;
-    width: 200px;
-  }
   input,
   button {
-    font-size: 14px;
+    font-size: 26px;
   }
   .itemImg {
     width: 70px;
+  }
+
+  .hint-box {
+    padding: 15px 20px;
+    gap: 10px;
+    max-width: 300px;
+  }
+  
+  .hint-text {
+    font-size: 14px;
+  }
+
+  .answer-box {
+    padding: 18px 25px;
+    gap: 15px;
+    max-width: 350px;
+  }
+  
+  .answer-text {
+    font-size: 16px;
+  }
+
+  .champion-image {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .guess-box-correct,
+  .guess-box-incorrect {
+    padding: 15px 20px;
+    gap: 15px;
+    max-width: 350px;
+  }
+  
+  .guess-text {
+    font-size: 14px;
   }
 }
 
@@ -216,4 +254,97 @@ h2 {
 
 #feedback {
   text-align: center;
+}
+
+/* Hint box styling */
+.hint-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px 30px;
+  margin: 20px auto;
+  max-width: 500px;
+  background: #1e2328;
+  border: 2px solid transparent;
+  border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
+  box-shadow: inset 0 0 2px #000000, 0 0 8px 0 #ffffff20;
+}
+
+.hint-text {
+  font-family: 'Marcellus SC', serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: #cdbe91;
+}
+
+/* Answer box styling */
+.answer-box {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 25px 35px;
+  margin: 20px auto;
+  max-width: 550px;
+  background: #1e2328;
+  border: 2px solid transparent;
+  border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
+  box-shadow: inset 0 0 2px #000000, 0 0 12px 0 #cdbe9150;
+}
+
+.answer-text {
+  font-family: 'Marcellus SC', serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: #cdbe91;
+  font-weight: 600;
+}
+
+.champion-image {
+  border: 2px solid transparent;
+  border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
+  box-shadow: 0 0 12px 0 #cdbe9180;
+  border-radius: 50%;
+}
+
+/* Emblem styling for class hint */
+.emblem {
+  border: 2px solid transparent;
+  border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
+  box-shadow: 0 0 8px 0 #ffffff20;
+  border-radius: 4px;
+}
+
+/* Guess box styling - Correct */
+.guess-box-correct {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 30px;
+  margin: 15px auto;
+  max-width: 550px;
+  background: linear-gradient(135deg, #1e3a1e 0%, #2d5a2d 100%);
+  border: 2px solid transparent;
+  border-image: linear-gradient(to bottom, #6daa6d, #4a8a4a) 1;
+  box-shadow: inset 0 0 2px #000000, 0 0 12px 0 #4ade8050;
+}
+
+/* Guess box styling - Incorrect */
+.guess-box-incorrect {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 30px;
+  margin: 15px auto;
+  max-width: 550px;
+  background: linear-gradient(135deg, #3a1e1e 0%, #5a2d2d 100%);
+  border: 2px solid transparent;
+  border-image: linear-gradient(to bottom, #aa6d6d, #8a4a4a) 1;
+  box-shadow: inset 0 0 2px #000000, 0 0 12px 0 #de4a4a50;
+}
+
+.guess-text {
+  font-family: 'Marcellus SC', serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: #cdbe91;
 }
