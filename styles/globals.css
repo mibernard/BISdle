@@ -181,6 +181,10 @@ button:active {
     display: none;
   }
 
+  #unitInput {
+    width: 90%;
+  }
+
   .itemImg {
     width: 70px;
   }
