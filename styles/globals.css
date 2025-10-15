@@ -182,7 +182,16 @@ button:active {
   }
 
   #unitInput {
-    width: 90%;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 10px 0 !important;
+  }
+
+  #guessContainer {
+    width: 95% !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
   }
 
   .itemImg {
