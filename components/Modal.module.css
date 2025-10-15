@@ -42,8 +42,8 @@
 
 .modal h2 {
   margin: 0;
-  margin-right: 2rem;
-  /* padding-bottom: 1rem; */
+  /* margin-right: 2rem; */
+  padding-bottom: 1rem;
 }
 .modal ul {
   list-style-type: circle;

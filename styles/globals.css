@@ -176,6 +176,11 @@ button:active {
   button {
     font-size: 26px;
   }
+
+  #guessBtn {
+    display: none;
+  }
+
   .itemImg {
     width: 70px;
   }
@@ -185,7 +190,7 @@ button:active {
     gap: 10px;
     max-width: 300px;
   }
-  
+
   .hint-text {
     font-size: 14px;
   }
@@ -195,7 +200,7 @@ button:active {
     gap: 15px;
     max-width: 350px;
   }
-  
+
   .answer-text {
     font-size: 16px;
   }
@@ -211,14 +216,14 @@ button:active {
     gap: 15px;
     max-width: 350px;
   }
-  
+
   .guess-text {
     font-size: 14px;
   }
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 5px;
   }
 
   .stat-value {
@@ -344,7 +349,7 @@ li {
 
 h2 {
   position: relative;
-  width: 50%;
+  /* width: 50%; */
 }
 
 #feedback {
@@ -473,11 +478,13 @@ h2 {
 /* Stats Modal Styling */
 .stats-container {
   color: #cdbe91;
-  padding: 10px;
+  /* padding: 10px; */
 }
 
 .stats-grid {
   display: grid;
+  /* align-items: center; */
+  /* justify-items: center; */
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   margin-bottom: 30px;

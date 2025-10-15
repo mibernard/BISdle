@@ -70,20 +70,27 @@ export default function Home() {
 
   // Load and save daily game state (for persistence across page refreshes)
   useEffect(() => {
-    console.log('📥 Load useEffect triggered. Mode:', currentMode, 'Index:', currentIndex, 'LoadFlag:', hasLoadedDailyState.current);
-    
+    console.log(
+      '📥 Load useEffect triggered. Mode:',
+      currentMode,
+      'Index:',
+      currentIndex,
+      'LoadFlag:',
+      hasLoadedDailyState.current
+    );
+
     // Only attempt to load if we have a valid index (not null and not NaN)
     if (currentMode === 'Daily' && currentIndex !== null && !isNaN(currentIndex) && !hasLoadedDailyState.current) {
       const today = new Date().toDateString();
       const savedDailyState = localStorage.getItem('bisdleDailyGameState');
-      
+
       console.log('Attempting to load daily state. Current index:', currentIndex, 'Today:', today);
-      
+
       if (savedDailyState) {
         try {
           const parsedState = JSON.parse(savedDailyState);
           console.log('Found saved state:', parsedState);
-          
+
           // Check if the saved state is from today and for the same champion
           if (parsedState.date === today && parsedState.championIndex === currentIndex) {
             console.log('✅ Loading saved daily state for today');
@@ -95,7 +102,12 @@ export default function Home() {
             setAnswerUsed(parsedState.answerUsed || false);
             setDailyCompleted(parsedState.dailyCompleted || false);
           } else {
-            console.log('❌ Saved state is for different date or champion. Saved date:', parsedState.date, 'Saved index:', parsedState.championIndex);
+            console.log(
+              '❌ Saved state is for different date or champion. Saved date:',
+              parsedState.date,
+              'Saved index:',
+              parsedState.championIndex
+            );
           }
         } catch (e) {
           console.error('Error parsing saved state:', e);
@@ -103,7 +115,7 @@ export default function Home() {
       } else {
         console.log('No saved daily state found - starting fresh');
       }
-      
+
       // Always mark as loaded after attempting to load
       hasLoadedDailyState.current = true;
       console.log('Daily state load complete. Flag set to true.');
@@ -133,7 +145,14 @@ export default function Home() {
       });
       localStorage.setItem('bisdleDailyGameState', JSON.stringify(dailyGameState));
     } else {
-      console.log('⏸️ Skipping save. Mode:', currentMode, 'Index:', currentIndex, 'LoadFlag:', hasLoadedDailyState.current);
+      console.log(
+        '⏸️ Skipping save. Mode:',
+        currentMode,
+        'Index:',
+        currentIndex,
+        'LoadFlag:',
+        hasLoadedDailyState.current
+      );
     }
   }, [currentMode, currentIndex, feedback, guessedChampions, guessCount, hintUsed, answerUsed, dailyCompleted]);
 
@@ -143,19 +162,23 @@ export default function Home() {
       const now = new Date();
       const tomorrow = new Date();
       tomorrow.setHours(24, 0, 0, 0); // Midnight tonight/tomorrow
-      
+
       const diff = tomorrow - now;
-      
+
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      
-      setCountdown(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+
+      setCountdown(
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
+          .toString()
+          .padStart(2, '0')}`
+      );
     };
-    
+
     updateCountdown(); // Initial call
     const interval = setInterval(updateCountdown, 1000); // Update every second
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -190,7 +213,7 @@ export default function Home() {
   const toggleMode = () => {
     const newMode = currentMode === 'Daily' ? 'Unlimited' : 'Daily';
     setCurrentMode(newMode);
-    
+
     // If switching to Unlimited, reset everything
     if (newMode === 'Unlimited') {
       setFeedback([]);
@@ -241,12 +264,12 @@ export default function Home() {
 
   const handleGuess = () => {
     if (!unitName) return;
-    
+
     // Prevent guessing if in Daily mode and already completed
     if (currentMode === 'Daily' && dailyCompleted) {
       return;
     }
-    
+
     const isCorrect = input.toLowerCase() === unitName.toLowerCase().split('_')[1];
     setGuessCount((prevCount) => prevCount + 1);
     setGuessedChampions((prev) => [...prev, input.toLowerCase()]); // Add to guessed list
@@ -274,20 +297,20 @@ export default function Home() {
         emojis: ['🌈', '⚡️', '💥', '✨', '💫', '🌸']
       });
       document.getElementById('unitInput').blur();
-      
+
       // Mark daily as completed if in Daily mode
       if (currentMode === 'Daily') {
         setDailyCompleted(true);
       }
-      
+
       // Only update stats if the answer wasn't revealed
       if (!answerUsed) {
         const guesses = guessCount + 1;
         const guessKey = guesses <= 5 ? guesses : '6+';
-        
+
         // Update the appropriate stats based on current mode
         if (currentMode === 'Daily') {
-          setDailyStats(prevStats => ({
+          setDailyStats((prevStats) => ({
             gamesPlayed: prevStats.gamesPlayed + 1,
             gamesWon: prevStats.gamesWon + 1,
             currentStreak: prevStats.currentStreak + 1,
@@ -298,7 +321,7 @@ export default function Home() {
             }
           }));
         } else {
-          setUnlimitedStats(prevStats => ({
+          setUnlimitedStats((prevStats) => ({
             gamesPlayed: prevStats.gamesPlayed + 1,
             gamesWon: prevStats.gamesWon + 1,
             currentStreak: prevStats.currentStreak + 1,
@@ -335,7 +358,7 @@ export default function Home() {
 
     const championName = unitName.split('_')[1];
     const championInfo = championData[championName];
-    
+
     let hintText = '';
     let emblemUrl = '';
     if (championInfo && championInfo.classes) {
@@ -356,7 +379,7 @@ export default function Home() {
       // No champion data available
       hintText = 'The champion has no class';
     }
-    
+
     const hint = {
       text: hintText,
       isCorrect: false,
@@ -366,15 +389,15 @@ export default function Home() {
     };
     setFeedback((prevFeedback) => [...prevFeedback, hint]);
     setHintUsed(true);
-    
+
     // Increment hints used counter based on current mode
     if (currentMode === 'Daily') {
-      setDailyStats(prevStats => ({
+      setDailyStats((prevStats) => ({
         ...prevStats,
         hintsUsed: prevStats.hintsUsed + 1
       }));
     } else {
-      setUnlimitedStats(prevStats => ({
+      setUnlimitedStats((prevStats) => ({
         ...prevStats,
         hintsUsed: prevStats.hintsUsed + 1
       }));
@@ -395,14 +418,16 @@ export default function Home() {
     const championName = unitName.split('_')[1];
     console.log('Champion name:', championName);
     console.log('Champion image map keys:', Object.keys(championImageMap));
-    
+
     // Try different variations of the champion name
-    let championImageUrl = championImageMap[championName] || 
-                          championImageMap[`TFT13_${championName}`] ||
-                          championImageMap[`TFT_TrainingDummy`] || '';
-    
+    let championImageUrl =
+      championImageMap[championName] ||
+      championImageMap[`TFT13_${championName}`] ||
+      championImageMap[`TFT_TrainingDummy`] ||
+      '';
+
     console.log('Champion image URL:', championImageUrl);
-    
+
     const answer = {
       text: championName,
       isCorrect: true,
@@ -413,7 +438,7 @@ export default function Home() {
     setAnswerUsed(true);
   };
 
-  function getTodayIndex() { 
+  function getTodayIndex() {
     const day = new Date().getDate();
     const month = new Date().getMonth() + 1; // January is 0 in JavaScript, hence +1
     let num = Math.round(((day + 7) / month) * 3913).toString();
@@ -503,9 +528,7 @@ export default function Home() {
       console.log('Data Dragon version:', latestVersion);
 
       // 2. Fetch TFT items data
-      const itemsRes = await fetch(
-        `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/tft-item.json`
-      );
+      const itemsRes = await fetch(`https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/tft-item.json`);
       const itemsData = await itemsRes.json();
 
       // 3. Build item name → image URL map
@@ -541,10 +564,14 @@ export default function Home() {
       const champImageMap = {};
       Object.values(championsData.data).forEach((champ) => {
         // Map champion ID to image URL
-        champImageMap[champ.id] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-champion/${champ.image.full}`;
+        champImageMap[
+          champ.id
+        ] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-champion/${champ.image.full}`;
         // Also map the champion name without the TFT prefix for easier lookup
         const simpleName = champ.id.replace(/^TFT\d*_/, '');
-        champImageMap[simpleName] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-champion/${champ.image.full}`;
+        champImageMap[
+          simpleName
+        ] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-champion/${champ.image.full}`;
       });
 
       setChampionImageMap(champImageMap);
@@ -574,10 +601,14 @@ export default function Home() {
       const traitImgMap = {};
       Object.values(traitsData.data).forEach((trait) => {
         // Map trait name to image URL
-        traitImgMap[trait.name] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-trait/${trait.image.full}`;
+        traitImgMap[
+          trait.name
+        ] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-trait/${trait.image.full}`;
         // Also try mapping without spaces for easier lookup
         const nameWithoutSpaces = trait.name.replace(/\s+/g, '');
-        traitImgMap[nameWithoutSpaces] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-trait/${trait.image.full}`;
+        traitImgMap[
+          nameWithoutSpaces
+        ] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-trait/${trait.image.full}`;
       });
 
       setTraitImageMap(traitImgMap);
@@ -630,15 +661,15 @@ export default function Home() {
     }
 
     const sortedItems = Object.entries(items).sort((a, b) => b[1] - a[1]);
-    
+
     // Validate items and get next valid items if 404s occur
     const validItems = [];
     let itemIndex = 0;
-    
+
     while (validItems.length < 3 && itemIndex < sortedItems.length) {
       const item = sortedItems[itemIndex][0];
       const imageUrl = getImageUrl(item);
-      
+
       // Check if image exists
       const isValid = await checkImageExists(imageUrl);
       if (isValid) {
@@ -664,7 +695,7 @@ export default function Home() {
     console.log(`Top 3 valid items for ${championName}:`, validItems.map(getImageUrl));
     return { championName, topThreeItems: validItems };
   };
-  
+
   // Helper function to check if image exists
   const checkImageExists = (url) => {
     return new Promise((resolve) => {
@@ -685,7 +716,7 @@ export default function Home() {
     const cdnBaseUrl = 'https://raw.communitydragon.org/latest/game/assets/maps/particles/tft/item_icons/';
     const parts = itemName.split('_');
     const cleanName = parts.slice(2).join('_'); // Remove TFT_Item_ prefix
-    
+
     // Try to construct CommunityDragon URL (lowercase with underscores)
     return `${cdnBaseUrl}${cleanName.toLowerCase()}.png`;
   }
@@ -737,14 +768,34 @@ export default function Home() {
         {/* Navbar */}
         <nav className='navbar'>
           <button className='nav-icon-btn' onClick={handleOpenModal} title='How to Play'>
-            <svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='28'
+              height='28'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+            >
               <circle cx='12' cy='12' r='10'></circle>
               <path d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3'></path>
               <line x1='12' y1='17' x2='12.01' y2='17'></line>
             </svg>
           </button>
           <button className='nav-icon-btn' onClick={handleOpenStatsModal} title='Statistics'>
-            <svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='28'
+              height='28'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+            >
               <line x1='18' y1='20' x2='18' y2='10'></line>
               <line x1='12' y1='20' x2='12' y2='4'></line>
               <line x1='6' y1='20' x2='6' y2='14'></line>
@@ -781,25 +832,35 @@ export default function Home() {
           <div className='stats-container'>
             <div className='stats-grid'>
               <div className='stat-item'>
-                <div className='stat-value'>{currentMode === 'Daily' ? dailyStats.gamesPlayed : unlimitedStats.gamesPlayed}</div>
+                <div className='stat-value'>
+                  {currentMode === 'Daily' ? dailyStats.gamesPlayed : unlimitedStats.gamesPlayed}
+                </div>
                 <div className='stat-label'>Played</div>
               </div>
               <div className='stat-item'>
-                <div className='stat-value'>{currentMode === 'Daily' ? dailyStats.hintsUsed : unlimitedStats.hintsUsed}</div>
+                <div className='stat-value'>
+                  {currentMode === 'Daily' ? dailyStats.hintsUsed : unlimitedStats.hintsUsed}
+                </div>
                 <div className='stat-label'>Hints Used</div>
               </div>
               <div className='stat-item'>
-                <div className='stat-value'>{currentMode === 'Daily' ? dailyStats.currentStreak : unlimitedStats.currentStreak}</div>
+                <div className='stat-value'>
+                  {currentMode === 'Daily' ? dailyStats.currentStreak : unlimitedStats.currentStreak}
+                </div>
                 <div className='stat-label'>Current Streak</div>
               </div>
               <div className='stat-item'>
-                <div className='stat-value'>{currentMode === 'Daily' ? dailyStats.maxStreak : unlimitedStats.maxStreak}</div>
+                <div className='stat-value'>
+                  {currentMode === 'Daily' ? dailyStats.maxStreak : unlimitedStats.maxStreak}
+                </div>
                 <div className='stat-label'>Max Streak</div>
               </div>
             </div>
             <div className='guess-distribution'>
               <h3>Guess Distribution</h3>
-              {Object.entries(currentMode === 'Daily' ? dailyStats.guessDistribution : unlimitedStats.guessDistribution).map(([guesses, count]) => {
+              {Object.entries(
+                currentMode === 'Daily' ? dailyStats.guessDistribution : unlimitedStats.guessDistribution
+              ).map(([guesses, count]) => {
                 const currentStats = currentMode === 'Daily' ? dailyStats : unlimitedStats;
                 const maxCount = Math.max(...Object.values(currentStats.guessDistribution));
                 const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
@@ -807,8 +868,8 @@ export default function Home() {
                   <div key={guesses} className='distribution-row'>
                     <div className='distribution-label'>{guesses}</div>
                     <div className='distribution-bar-container'>
-                      <div 
-                        className='distribution-bar' 
+                      <div
+                        className='distribution-bar'
                         style={{ width: `${percentage}%`, minWidth: count > 0 ? '20px' : '0' }}
                       >
                         {count > 0 && <span className='distribution-count'>{count}</span>}
@@ -850,41 +911,61 @@ export default function Home() {
               ))}
             </div>
           )}
-          <button id='guessBtn' onClick={handleGuess} disabled={!isValidChampionName(input) || (currentMode === 'Daily' && dailyCompleted)}>
+          <button
+            id='guessBtn'
+            onClick={handleGuess}
+            disabled={!isValidChampionName(input) || (currentMode === 'Daily' && dailyCompleted)}
+          >
             Guess
           </button>
         </div>
 
         <div id='hintsContainer'>
-          <button id='listChampsBtn' onClick={handleListChamps}>
-            All TFT Champions
-          </button>
-          <button id='hintBtn' onClick={handleHint} disabled={hintUsed} title={hintUsed ? 'Hint already used' : 'Reveal class hint'}>
+          <button
+            id='hintBtn'
+            onClick={handleHint}
+            disabled={hintUsed}
+            title={hintUsed ? 'Hint already used' : 'Reveal class hint'}
+          >
             Hint
           </button>
-          <button id='answerBtn' onClick={handleAnswer} disabled={answerUsed} title={answerUsed ? 'Answer already revealed' : 'Reveal champion'}>
+          <button
+            id='answerBtn'
+            onClick={handleAnswer}
+            disabled={answerUsed}
+            title={answerUsed ? 'Answer already revealed' : 'Reveal champion'}
+          >
             Answer
           </button>
         </div>
 
+        <div className='listChampsBtnContainer'>
+          <button id='listChampsBtn' onClick={handleListChamps}>
+            All TFT Champions
+          </button>
+        </div>
         <div id='feedback' style={{ whiteSpace: 'pre-wrap' }}>
           {feedback.map((f, index) => (
             <div key={index} style={{ color: f.color || 'inherit' }}>
               {f.isHint ? (
                 <div className='hint-box'>
-                  {f.emblemUrl && <img className='emblem' src={f.emblemUrl} alt='Class Emblem' width={40} height={40} />}
-                  <span className='hint-text'>
-                    {f.emblemUrl ? `The champion's class is ${f.text}` : f.text}
-                  </span>
+                  {f.emblemUrl && (
+                    <img className='emblem' src={f.emblemUrl} alt='Class Emblem' width={40} height={40} />
+                  )}
+                  <span className='hint-text'>{f.emblemUrl ? `The champion's class is ${f.text}` : f.text}</span>
                 </div>
               ) : f.hasOwnProperty('championImageUrl') ? (
                 <div className='answer-box'>
-                  {f.championImageUrl && <img className='champion-image' src={f.championImageUrl} alt={f.text} width={60} height={60} />}
+                  {f.championImageUrl && (
+                    <img className='champion-image' src={f.championImageUrl} alt={f.text} width={60} height={60} />
+                  )}
                   <span className='answer-text'>The champion is {f.text}</span>
                 </div>
               ) : f.isGuess ? (
                 <div className={f.isCorrect ? 'guess-box-correct' : 'guess-box-incorrect'}>
-                  {f.guessChampionImageUrl && <img className='champion-image' src={f.guessChampionImageUrl} alt={f.text} width={60} height={60} />}
+                  {f.guessChampionImageUrl && (
+                    <img className='champion-image' src={f.guessChampionImageUrl} alt={f.text} width={60} height={60} />
+                  )}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <span className='guess-text'>{f.text}</span>
                     {f.showCountdown && (
