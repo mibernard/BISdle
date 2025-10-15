@@ -5,7 +5,7 @@ import axios from 'axios';
 
 async function fetchMatchesData() {
   const region = 'americas';
-  const puuid = 'JtYuuhjFb2_dBhoDOB-Qq09d_5GaGi91hsSBcGchiFzn15dFqk1vuZQptgRE0E5FJYsDqkbNLU-L7w'; //wasianiverson's puuid
+  const puuid = 'k1mmHTo465mrs4jVnOd6AGyjzJ6SSJOk0VgvBgEt6vELFO4K9juwI4fcNDRAOzM-VtASmLbipjyWUA'; //wasianiverson's puuid
   const matchesUrl = `https://${region}.api.riotgames.com/tft/match/v1/matches/by-puuid/${puuid}/ids?count=10`;
   const apiKey = process.env.RIOT_API_KEY;
 

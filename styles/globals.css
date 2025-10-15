@@ -97,9 +97,9 @@ button:active {
 }
 
 .logo {
-  height: 200px;
-  width: 200px;
-  background: url('https://cdn.glitch.global/c482ca3f-5f21-4ad8-b3a2-4674f54d04f7/bisdle.png?v=1715377934811');
+  height: 25rem;
+  width: 25rem;
+  background: url('/images/bisdle7.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
