@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -12,7 +13,11 @@ const Footer = () => {
         color: 'tan'
       }}
     >
-      
+      <div style={{ marginBottom: '15px' }}>
+        <Link href='/about'>
+          <a style={{ color: '#cdbe91', textDecoration: 'none', fontSize: '14px' }}>About BISdle</a>
+        </Link>
+      </div>
       <p>Bisdle.vercel.app - 2025</p>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
         <a href='https://github.com/mibernard' target='_blank' aria-label='GitHub' style={{ margin: '0 10px' }}>
@@ -35,16 +40,16 @@ const Footer = () => {
           />
         </a>
         <a href='https://ko-fi.com/J3J51MVB8P' target='_blank' rel='noopener noreferrer'>
-          <img 
-            height='36' 
-            style={{ border: '0px', height: '30px', margin: '0 10px' }} 
-            src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' 
-            border='0' 
-            alt='Buy Me a Coffee at ko-fi.com' 
+          <img
+            height='36'
+            style={{ border: '0px', height: '30px', margin: '0 10px' }}
+            src='https://storage.ko-fi.com/cdn/kofi6.png?v=6'
+            border='0'
+            alt='Buy Me a Coffee at ko-fi.com'
           />
         </a>
       </div>
-      
+
       {/* <p style={{ fontSize: '12px' }}>In Collaboration With</p>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
         <a href='https://github.com/BrendanLThompson' target='_blank' aria-label='GitHub' style={{ margin: '0 10px' }}>
