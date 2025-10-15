@@ -5,6 +5,7 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+        <link rel="icon" href="/favicon.png?v=2" />
           {/* Google AdSense */}
           <script 
             async 
