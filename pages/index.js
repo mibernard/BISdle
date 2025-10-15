@@ -45,6 +45,7 @@ export default function Home() {
   const [itemImageMap, setItemImageMap] = useState({});
   const [championImageMap, setChampionImageMap] = useState({});
   const [traitImageMap, setTraitImageMap] = useState({});
+  const [forceLoadTrigger, setForceLoadTrigger] = useState(0); // Used to force load useEffect to run
   const modalRef = useRef(null);
   const hasLoadedDailyState = useRef(false);
 
@@ -55,30 +56,36 @@ export default function Home() {
 
     if (savedDailyStats) {
       const parsed = JSON.parse(savedDailyStats);
-      // Ensure all fields exist (for backward compatibility)
-      setDailyStats({
-        gamesPlayed: parsed.gamesPlayed || 0,
-        gamesWon: parsed.gamesWon || 0,
-        currentStreak: parsed.currentStreak || 0,
-        maxStreak: parsed.maxStreak || 0,
-        hintsUsed: parsed.hintsUsed || 0,
-        answersUsed: parsed.answersUsed || 0,
+      // Ensure all fields exist and are valid numbers (for backward compatibility)
+      const cleanedStats = {
+        gamesPlayed: Number(parsed.gamesPlayed) || 0,
+        gamesWon: Number(parsed.gamesWon) || 0,
+        currentStreak: Number(parsed.currentStreak) || 0,
+        maxStreak: Number(parsed.maxStreak) || 0,
+        hintsUsed: Number(parsed.hintsUsed) || 0,
+        answersUsed: Number(parsed.answersUsed) || 0,
         guessDistribution: parsed.guessDistribution || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, '6+': 0 }
-      });
+      };
+      setDailyStats(cleanedStats);
+      // Save the cleaned stats back to localStorage
+      localStorage.setItem('bisdleDailyStats', JSON.stringify(cleanedStats));
     }
 
     if (savedUnlimitedStats) {
       const parsed = JSON.parse(savedUnlimitedStats);
-      // Ensure all fields exist (for backward compatibility)
-      setUnlimitedStats({
-        gamesPlayed: parsed.gamesPlayed || 0,
-        gamesWon: parsed.gamesWon || 0,
-        currentStreak: parsed.currentStreak || 0,
-        maxStreak: parsed.maxStreak || 0,
-        hintsUsed: parsed.hintsUsed || 0,
-        answersUsed: parsed.answersUsed || 0,
+      // Ensure all fields exist and are valid numbers (for backward compatibility)
+      const cleanedStats = {
+        gamesPlayed: Number(parsed.gamesPlayed) || 0,
+        gamesWon: Number(parsed.gamesWon) || 0,
+        currentStreak: Number(parsed.currentStreak) || 0,
+        maxStreak: Number(parsed.maxStreak) || 0,
+        hintsUsed: Number(parsed.hintsUsed) || 0,
+        answersUsed: Number(parsed.answersUsed) || 0,
         guessDistribution: parsed.guessDistribution || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, '6+': 0 }
-      });
+      };
+      setUnlimitedStats(cleanedStats);
+      // Save the cleaned stats back to localStorage
+      localStorage.setItem('bisdleUnlimitedStats', JSON.stringify(cleanedStats));
     }
   }, []);
 
@@ -100,7 +107,9 @@ export default function Home() {
       'Index:',
       currentIndex,
       'LoadFlag:',
-      hasLoadedDailyState.current
+      hasLoadedDailyState.current,
+      'Trigger:',
+      forceLoadTrigger
     );
 
     // Only attempt to load if we have a valid index (not null and not NaN)
@@ -108,7 +117,22 @@ export default function Home() {
       const today = new Date().toDateString();
       const savedDailyState = localStorage.getItem('bisdleDailyGameState');
 
-      console.log('Attempting to load daily state. Current index:', currentIndex, 'Today:', today);
+      // Calculate what today's index SHOULD be
+      const expectedTodayIndex = getTodayIndex();
+      console.log(
+        'Attempting to load daily state. Current index:',
+        currentIndex,
+        'Expected today index:',
+        expectedTodayIndex,
+        'Today:',
+        today
+      );
+
+      // Only proceed if currentIndex matches the expected daily index
+      if (currentIndex !== expectedTodayIndex) {
+        console.log("⏳ Waiting for index to be set to today's index...");
+        return; // Don't mark as loaded yet, wait for the correct index
+      }
 
       if (savedDailyState) {
         try {
@@ -144,7 +168,7 @@ export default function Home() {
       hasLoadedDailyState.current = true;
       console.log('Daily state load complete. Flag set to true.');
     }
-  }, [currentMode, currentIndex]);
+  }, [currentMode, currentIndex, forceLoadTrigger]);
 
   // Save daily game state whenever it changes
   useEffect(() => {
@@ -236,22 +260,30 @@ export default function Home() {
 
   const toggleMode = () => {
     const newMode = currentMode === 'Daily' ? 'Unlimited' : 'Daily';
-    setCurrentMode(newMode);
+    console.log('🔄 Toggling mode from', currentMode, 'to', newMode);
 
-    // If switching to Unlimited, reset everything
-    if (newMode === 'Unlimited') {
-      setFeedback([]);
-      setInput('');
-      setGuessedChampions([]);
-      setGuessCount(0);
-      setHintUsed(false);
-      setAnswerUsed(false);
-      setDailyCompleted(false);
-      hasLoadedDailyState.current = false;
+    // Reset the flag BEFORE changing mode
+    hasLoadedDailyState.current = false;
+
+    // Clear state first
+    setFeedback([]);
+    setInput('');
+    setGuessedChampions([]);
+    setGuessCount(0);
+    setHintUsed(false);
+    setAnswerUsed(false);
+    setDailyCompleted(false);
+
+    // If switching to Daily, increment the trigger
+    if (newMode === 'Daily') {
+      console.log('📅 Switching to Daily - will load saved state');
+      setForceLoadTrigger((prev) => prev + 1);
     } else {
-      // Switching to Daily - reset the flag so state can be loaded
-      hasLoadedDailyState.current = false;
+      console.log('🎲 Switching to Unlimited');
     }
+
+    // Set mode last
+    setCurrentMode(newMode);
   };
 
   const handleInputChange = (event) => {
@@ -335,6 +367,7 @@ export default function Home() {
         // Update the appropriate stats based on current mode
         if (currentMode === 'Daily') {
           setDailyStats((prevStats) => ({
+            ...prevStats, // Preserve all existing fields
             gamesPlayed: prevStats.gamesPlayed + 1,
             gamesWon: prevStats.gamesWon + 1,
             currentStreak: prevStats.currentStreak + 1,
@@ -346,6 +379,7 @@ export default function Home() {
           }));
         } else {
           setUnlimitedStats((prevStats) => ({
+            ...prevStats, // Preserve all existing fields
             gamesPlayed: prevStats.gamesPlayed + 1,
             gamesWon: prevStats.gamesWon + 1,
             currentStreak: prevStats.currentStreak + 1,
@@ -418,12 +452,12 @@ export default function Home() {
     if (currentMode === 'Daily') {
       setDailyStats((prevStats) => ({
         ...prevStats,
-        hintsUsed: prevStats.hintsUsed + 1
+        hintsUsed: (prevStats.hintsUsed || 0) + 1
       }));
     } else {
       setUnlimitedStats((prevStats) => ({
         ...prevStats,
-        hintsUsed: prevStats.hintsUsed + 1
+        hintsUsed: (prevStats.hintsUsed || 0) + 1
       }));
     }
   };
@@ -465,12 +499,12 @@ export default function Home() {
     if (currentMode === 'Daily') {
       setDailyStats((prevStats) => ({
         ...prevStats,
-        answersUsed: prevStats.answersUsed + 1
+        answersUsed: (prevStats.answersUsed || 0) + 1
       }));
     } else {
       setUnlimitedStats((prevStats) => ({
         ...prevStats,
-        answersUsed: prevStats.answersUsed + 1
+        answersUsed: (prevStats.answersUsed || 0) + 1
       }));
     }
   };
@@ -841,7 +875,9 @@ export default function Home() {
         </nav>
 
         <div className='logo'></div>
-        {/* <h1>{`BISdle ${currentMode}`}</h1> */}
+        <h2
+          style={{ marginTop: '0px', fontFamily: 'Marcellus SC', color: '#cdbe91', letterSpacing: '1px' }}
+        >{`Guess the Champion!`}</h2>
 
         <Modal isOpen={modalOpen} onClose={handleCloseModal} ref={modalRef}>
           <h2>How to Play</h2>
@@ -876,13 +912,13 @@ export default function Home() {
               </div>
               <div className='stat-item'>
                 <div className='stat-value'>
-                  {currentMode === 'Daily' ? dailyStats.hintsUsed : unlimitedStats.hintsUsed}
+                  {currentMode === 'Daily' ? dailyStats.hintsUsed || 0 : unlimitedStats.hintsUsed || 0}
                 </div>
                 <div className='stat-label'>Hints Used</div>
               </div>
               <div className='stat-item'>
                 <div className='stat-value'>
-                  {currentMode === 'Daily' ? dailyStats.answersUsed : unlimitedStats.answersUsed}
+                  {currentMode === 'Daily' ? dailyStats.answersUsed || 0 : unlimitedStats.answersUsed || 0}
                 </div>
                 <div className='stat-label'>Answers Used</div>
               </div>
