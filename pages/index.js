@@ -18,13 +18,146 @@ export default function Home() {
   const [itemData, setItemData] = useState({}); // State to store item data
   const [clickPending, setClickPending] = useState(false);
   const [modalOpen, setModalOpen] = useState(true);
+  const [statsModalOpen, setStatsModalOpen] = useState(false);
   const [guessCount, setGuessCount] = useState(0);
+  const [dailyStats, setDailyStats] = useState({
+    gamesPlayed: 0,
+    gamesWon: 0,
+    currentStreak: 0,
+    maxStreak: 0,
+    hintsUsed: 0,
+    guessDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, '6+': 0 }
+  });
+  const [unlimitedStats, setUnlimitedStats] = useState({
+    gamesPlayed: 0,
+    gamesWon: 0,
+    currentStreak: 0,
+    maxStreak: 0,
+    hintsUsed: 0,
+    guessDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, '6+': 0 }
+  });
+  const [countdown, setCountdown] = useState('');
   const [hintUsed, setHintUsed] = useState(false);
   const [answerUsed, setAnswerUsed] = useState(false);
+  const [dailyCompleted, setDailyCompleted] = useState(false);
   const [itemImageMap, setItemImageMap] = useState({});
   const [championImageMap, setChampionImageMap] = useState({});
   const [traitImageMap, setTraitImageMap] = useState({});
   const modalRef = useRef(null);
+  const hasLoadedDailyState = useRef(false);
+
+  // Load stats from localStorage
+  useEffect(() => {
+    const savedDailyStats = localStorage.getItem('bisdleDailyStats');
+    const savedUnlimitedStats = localStorage.getItem('bisdleUnlimitedStats');
+    if (savedDailyStats) {
+      setDailyStats(JSON.parse(savedDailyStats));
+    }
+    if (savedUnlimitedStats) {
+      setUnlimitedStats(JSON.parse(savedUnlimitedStats));
+    }
+  }, []);
+
+  // Save daily stats to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('bisdleDailyStats', JSON.stringify(dailyStats));
+  }, [dailyStats]);
+
+  // Save unlimited stats to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('bisdleUnlimitedStats', JSON.stringify(unlimitedStats));
+  }, [unlimitedStats]);
+
+  // Load and save daily game state (for persistence across page refreshes)
+  useEffect(() => {
+    console.log('📥 Load useEffect triggered. Mode:', currentMode, 'Index:', currentIndex, 'LoadFlag:', hasLoadedDailyState.current);
+    
+    // Only attempt to load if we have a valid index (not null and not NaN)
+    if (currentMode === 'Daily' && currentIndex !== null && !isNaN(currentIndex) && !hasLoadedDailyState.current) {
+      const today = new Date().toDateString();
+      const savedDailyState = localStorage.getItem('bisdleDailyGameState');
+      
+      console.log('Attempting to load daily state. Current index:', currentIndex, 'Today:', today);
+      
+      if (savedDailyState) {
+        try {
+          const parsedState = JSON.parse(savedDailyState);
+          console.log('Found saved state:', parsedState);
+          
+          // Check if the saved state is from today and for the same champion
+          if (parsedState.date === today && parsedState.championIndex === currentIndex) {
+            console.log('✅ Loading saved daily state for today');
+            // Restore the saved state
+            setFeedback(parsedState.feedback || []);
+            setGuessedChampions(parsedState.guessedChampions || []);
+            setGuessCount(parsedState.guessCount || 0);
+            setHintUsed(parsedState.hintUsed || false);
+            setAnswerUsed(parsedState.answerUsed || false);
+            setDailyCompleted(parsedState.dailyCompleted || false);
+          } else {
+            console.log('❌ Saved state is for different date or champion. Saved date:', parsedState.date, 'Saved index:', parsedState.championIndex);
+          }
+        } catch (e) {
+          console.error('Error parsing saved state:', e);
+        }
+      } else {
+        console.log('No saved daily state found - starting fresh');
+      }
+      
+      // Always mark as loaded after attempting to load
+      hasLoadedDailyState.current = true;
+      console.log('Daily state load complete. Flag set to true.');
+    }
+  }, [currentMode, currentIndex]);
+
+  // Save daily game state whenever it changes
+  useEffect(() => {
+    if (currentMode === 'Daily' && currentIndex !== null && !isNaN(currentIndex) && hasLoadedDailyState.current) {
+      const today = new Date().toDateString();
+      const dailyGameState = {
+        date: today,
+        championIndex: currentIndex,
+        feedback: feedback,
+        guessedChampions: guessedChampions,
+        guessCount: guessCount,
+        hintUsed: hintUsed,
+        answerUsed: answerUsed,
+        dailyCompleted: dailyCompleted
+      };
+      console.log('💾 Saving daily state:', {
+        date: dailyGameState.date,
+        championIndex: dailyGameState.championIndex,
+        feedbackCount: dailyGameState.feedback.length,
+        guessCount: dailyGameState.guessCount,
+        completed: dailyGameState.dailyCompleted
+      });
+      localStorage.setItem('bisdleDailyGameState', JSON.stringify(dailyGameState));
+    } else {
+      console.log('⏸️ Skipping save. Mode:', currentMode, 'Index:', currentIndex, 'LoadFlag:', hasLoadedDailyState.current);
+    }
+  }, [currentMode, currentIndex, feedback, guessedChampions, guessCount, hintUsed, answerUsed, dailyCompleted]);
+
+  // Countdown timer for daily reset
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date();
+      const tomorrow = new Date();
+      tomorrow.setHours(24, 0, 0, 0); // Midnight tonight/tomorrow
+      
+      const diff = tomorrow - now;
+      
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
+      setCountdown(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+    };
+    
+    updateCountdown(); // Initial call
+    const interval = setInterval(updateCountdown, 1000); // Update every second
+    
+    return () => clearInterval(interval);
+  }, []);
 
   // This useEffect handles data fetching independently
   useEffect(() => {
@@ -39,8 +172,10 @@ export default function Home() {
     let index = 0;
     if (currentMode === 'Daily') {
       index = getTodayIndex();
+      console.log('🎯 Setting daily index:', index);
     } else if (currentMode === 'Unlimited') {
       index = getRandomIndex();
+      console.log('🎲 Setting unlimited index:', index);
     }
     setCurrentIndex(index);
   }, [currentMode, itemData]); // Depend on currentMode and itemData
@@ -55,12 +190,21 @@ export default function Home() {
   const toggleMode = () => {
     const newMode = currentMode === 'Daily' ? 'Unlimited' : 'Daily';
     setCurrentMode(newMode);
-    setFeedback([]);
-    setInput('');
-    setGuessedChampions([]);
-    setGuessCount(0);
-    setHintUsed(false);
-    setAnswerUsed(false);
+    
+    // If switching to Unlimited, reset everything
+    if (newMode === 'Unlimited') {
+      setFeedback([]);
+      setInput('');
+      setGuessedChampions([]);
+      setGuessCount(0);
+      setHintUsed(false);
+      setAnswerUsed(false);
+      setDailyCompleted(false);
+      hasLoadedDailyState.current = false;
+    } else {
+      // Switching to Daily - reset the flag so state can be loaded
+      hasLoadedDailyState.current = false;
+    }
   };
 
   const handleInputChange = (event) => {
@@ -97,6 +241,12 @@ export default function Home() {
 
   const handleGuess = () => {
     if (!unitName) return;
+    
+    // Prevent guessing if in Daily mode and already completed
+    if (currentMode === 'Daily' && dailyCompleted) {
+      return;
+    }
+    
     const isCorrect = input.toLowerCase() === unitName.toLowerCase().split('_')[1];
     setGuessCount((prevCount) => prevCount + 1);
     setGuessedChampions((prev) => [...prev, input.toLowerCase()]); // Add to guessed list
@@ -108,13 +258,14 @@ export default function Home() {
     const newFeedback = {
       text: isCorrect
         ? `Correct! It is ${unitName.split('_')[1]}. It took you ${guessCount + 1} ${
-            guessCount + 1 > 1 ? 'tries' : 'try'
-          }.`
+            guessCount + 1 > 1 ? 'tries!' : 'try!'
+          }`
         : `It is not ${guessedChampName}, try again!`,
       isCorrect: isCorrect,
       color: isCorrect ? 'lightgreen' : 'salmon',
       guessChampionImageUrl: guessedChampImageUrl,
-      isGuess: true
+      isGuess: true,
+      showCountdown: isCorrect && currentMode === 'Daily'
     };
 
     if (isCorrect) {
@@ -123,6 +274,42 @@ export default function Home() {
         emojis: ['🌈', '⚡️', '💥', '✨', '💫', '🌸']
       });
       document.getElementById('unitInput').blur();
+      
+      // Mark daily as completed if in Daily mode
+      if (currentMode === 'Daily') {
+        setDailyCompleted(true);
+      }
+      
+      // Only update stats if the answer wasn't revealed
+      if (!answerUsed) {
+        const guesses = guessCount + 1;
+        const guessKey = guesses <= 5 ? guesses : '6+';
+        
+        // Update the appropriate stats based on current mode
+        if (currentMode === 'Daily') {
+          setDailyStats(prevStats => ({
+            gamesPlayed: prevStats.gamesPlayed + 1,
+            gamesWon: prevStats.gamesWon + 1,
+            currentStreak: prevStats.currentStreak + 1,
+            maxStreak: Math.max(prevStats.currentStreak + 1, prevStats.maxStreak),
+            guessDistribution: {
+              ...prevStats.guessDistribution,
+              [guessKey]: prevStats.guessDistribution[guessKey] + 1
+            }
+          }));
+        } else {
+          setUnlimitedStats(prevStats => ({
+            gamesPlayed: prevStats.gamesPlayed + 1,
+            gamesWon: prevStats.gamesWon + 1,
+            currentStreak: prevStats.currentStreak + 1,
+            maxStreak: Math.max(prevStats.currentStreak + 1, prevStats.maxStreak),
+            guessDistribution: {
+              ...prevStats.guessDistribution,
+              [guessKey]: prevStats.guessDistribution[guessKey] + 1
+            }
+          }));
+        }
+      }
     } else {
       document.getElementById('unitInput').focus();
     }
@@ -151,21 +338,18 @@ export default function Home() {
     
     let hintText = '';
     let emblemUrl = '';
-    if (championInfo && championInfo.traits) {
-      const traits = championInfo.traits;
-      if (traits.length >= 1) {
-        const className = traits[0];
-        // Check if the class is literally "No Class"
-        if (className === 'No Class') {
-          hintText = 'The champion has no class';
-        } else {
-          hintText = `${className}`;
-          // Get trait image from Data Dragon
-          emblemUrl = traitImageMap[className] || traitImageMap[className.replace(/\s+/g, '')] || '';
-          console.log('Trait name:', className, 'Trait URL:', emblemUrl);
-        }
+    if (championInfo && championInfo.classes) {
+      const classes = championInfo.classes;
+      if (classes.length > 0) {
+        // Randomly select a class from the available classes
+        const randomIndex = Math.floor(Math.random() * classes.length);
+        const className = classes[randomIndex];
+        hintText = `${className}`;
+        // Get trait image from Data Dragon
+        emblemUrl = traitImageMap[className] || traitImageMap[className.replace(/\s+/g, '')] || '';
+        console.log('Class name:', className, 'Class URL:', emblemUrl);
       } else {
-        // No class data available
+        // No classes available (empty array)
         hintText = 'The champion has no class';
       }
     } else {
@@ -182,6 +366,19 @@ export default function Home() {
     };
     setFeedback((prevFeedback) => [...prevFeedback, hint]);
     setHintUsed(true);
+    
+    // Increment hints used counter based on current mode
+    if (currentMode === 'Daily') {
+      setDailyStats(prevStats => ({
+        ...prevStats,
+        hintsUsed: prevStats.hintsUsed + 1
+      }));
+    } else {
+      setUnlimitedStats(prevStats => ({
+        ...prevStats,
+        hintsUsed: prevStats.hintsUsed + 1
+      }));
+    }
   };
 
   const handleAnswer = () => {
@@ -216,7 +413,7 @@ export default function Home() {
     setAnswerUsed(true);
   };
 
-  function getTodayIndex() {
+  function getTodayIndex() { 
     const day = new Date().getDate();
     const month = new Date().getMonth() + 1; // January is 0 in JavaScript, hence +1
     let num = Math.round(((day + 7) / month) * 3913).toString();
@@ -501,6 +698,14 @@ export default function Home() {
     setModalOpen(false);
   };
 
+  const handleOpenStatsModal = () => {
+    setStatsModalOpen(true);
+  };
+
+  const handleCloseStatsModal = () => {
+    setStatsModalOpen(false);
+  };
+
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -529,6 +734,24 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
       </Head>
       <div className='app'>
+        {/* Navbar */}
+        <nav className='navbar'>
+          <button className='nav-icon-btn' onClick={handleOpenModal} title='How to Play'>
+            <svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+              <circle cx='12' cy='12' r='10'></circle>
+              <path d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3'></path>
+              <line x1='12' y1='17' x2='12.01' y2='17'></line>
+            </svg>
+          </button>
+          <button className='nav-icon-btn' onClick={handleOpenStatsModal} title='Statistics'>
+            <svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+              <line x1='18' y1='20' x2='18' y2='10'></line>
+              <line x1='12' y1='20' x2='12' y2='4'></line>
+              <line x1='6' y1='20' x2='6' y2='14'></line>
+            </svg>
+          </button>
+        </nav>
+
         <div className='logo'></div>
         {/* <h1>{`BISdle ${currentMode}`}</h1> */}
 
@@ -547,8 +770,57 @@ export default function Home() {
             <li>If you want to keep playing, switch to Unlimited Mode!</li>
             <li>Have fun and test your TFT knowledge!</li>
           </ul>
+          <div className='daily-reset-timer'>
+            <div className='timer-label'>Next Daily Champion In:</div>
+            <div className='timer-countdown'>{countdown}</div>
+          </div>
         </Modal>
-        <button onClick={handleOpenModal}>How to Play</button>
+
+        <Modal isOpen={statsModalOpen} onClose={handleCloseStatsModal} ref={modalRef}>
+          <h2>Statistics - {currentMode}</h2>
+          <div className='stats-container'>
+            <div className='stats-grid'>
+              <div className='stat-item'>
+                <div className='stat-value'>{currentMode === 'Daily' ? dailyStats.gamesPlayed : unlimitedStats.gamesPlayed}</div>
+                <div className='stat-label'>Played</div>
+              </div>
+              <div className='stat-item'>
+                <div className='stat-value'>{currentMode === 'Daily' ? dailyStats.hintsUsed : unlimitedStats.hintsUsed}</div>
+                <div className='stat-label'>Hints Used</div>
+              </div>
+              <div className='stat-item'>
+                <div className='stat-value'>{currentMode === 'Daily' ? dailyStats.currentStreak : unlimitedStats.currentStreak}</div>
+                <div className='stat-label'>Current Streak</div>
+              </div>
+              <div className='stat-item'>
+                <div className='stat-value'>{currentMode === 'Daily' ? dailyStats.maxStreak : unlimitedStats.maxStreak}</div>
+                <div className='stat-label'>Max Streak</div>
+              </div>
+            </div>
+            <div className='guess-distribution'>
+              <h3>Guess Distribution</h3>
+              {Object.entries(currentMode === 'Daily' ? dailyStats.guessDistribution : unlimitedStats.guessDistribution).map(([guesses, count]) => {
+                const currentStats = currentMode === 'Daily' ? dailyStats : unlimitedStats;
+                const maxCount = Math.max(...Object.values(currentStats.guessDistribution));
+                const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
+                return (
+                  <div key={guesses} className='distribution-row'>
+                    <div className='distribution-label'>{guesses}</div>
+                    <div className='distribution-bar-container'>
+                      <div 
+                        className='distribution-bar' 
+                        style={{ width: `${percentage}%`, minWidth: count > 0 ? '20px' : '0' }}
+                      >
+                        {count > 0 && <span className='distribution-count'>{count}</span>}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </Modal>
+
         <button onClick={toggleMode}>
           {currentMode === 'Daily' ? 'Switch to Unlimited Mode' : 'Switch to Daily Mode'}
         </button>
@@ -567,6 +839,7 @@ export default function Home() {
             onKeyDown={handleInputChange}
             placeholder='Enter champion name...'
             autoComplete='off'
+            disabled={currentMode === 'Daily' && dailyCompleted}
           />
           {suggestions.length > 0 && (
             <div id='autocomplete-list'>
@@ -577,7 +850,7 @@ export default function Home() {
               ))}
             </div>
           )}
-          <button id='guessBtn' onClick={handleGuess} disabled={!isValidChampionName(input)}>
+          <button id='guessBtn' onClick={handleGuess} disabled={!isValidChampionName(input) || (currentMode === 'Daily' && dailyCompleted)}>
             Guess
           </button>
         </div>
@@ -612,7 +885,15 @@ export default function Home() {
               ) : f.isGuess ? (
                 <div className={f.isCorrect ? 'guess-box-correct' : 'guess-box-incorrect'}>
                   {f.guessChampionImageUrl && <img className='champion-image' src={f.guessChampionImageUrl} alt={f.text} width={60} height={60} />}
-                  <span className='guess-text'>{f.text}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <span className='guess-text'>{f.text}</span>
+                    {f.showCountdown && (
+                      <div className='countdown-display'>
+                        <span className='countdown-label'>Next daily champion in:</span>
+                        <span className='countdown-time'>{countdown}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <span>{f.text}</span>

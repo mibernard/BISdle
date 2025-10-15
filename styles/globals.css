@@ -37,6 +37,53 @@ body {
   align-items: center;
 }
 
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(1, 0, 7, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  border-bottom: 1px solid rgba(200, 170, 109, 0.2);
+}
+
+.nav-icon-btn {
+  background: transparent;
+  border: 2px solid #c8aa6d;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 0 8px;
+  padding: 0;
+  transition: all 0.2s ease;
+  color: #cdbe91;
+}
+
+.nav-icon-btn:hover {
+  background: rgba(200, 170, 109, 0.1);
+  border-color: #cdbe91;
+  box-shadow: 0 0 12px rgba(200, 170, 109, 0.3);
+  transform: scale(1.05);
+}
+
+.nav-icon-btn:active {
+  transform: scale(0.95);
+}
+
+.nav-icon-btn svg {
+  color: #cdbe91;
+}
+
 .itemImg {
   width: 100px;
 }
@@ -67,6 +114,15 @@ input {
 
 input[type='text']:focus {
   outline: none; /* Removes the default focus highlight */
+}
+
+input:disabled {
+  background: #0f1215;
+  color: #5a5a5a;
+  cursor: not-allowed;
+  opacity: 0.6;
+  border-image: linear-gradient(to bottom, #4a4a4a, #2a2a2a);
+  border-image-slice: 1;
 }
 
 button {
@@ -109,6 +165,7 @@ button:active {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
+  margin-top: 80px;
 }
 
 @media (max-width: 768px) {
@@ -157,6 +214,44 @@ button:active {
   
   .guess-text {
     font-size: 14px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+  }
+
+  .nav-icon-btn {
+    width: 40px;
+    height: 40px;
+    margin: 0 5px;
+  }
+
+  .nav-icon-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .timer-countdown {
+    font-size: 32px;
+    letter-spacing: 2px;
+  }
+
+  .timer-label {
+    font-size: 11px;
+  }
+
+  .daily-reset-timer {
+    padding: 12px 15px;
+    margin-top: 15px;
   }
 }
 
@@ -312,6 +407,152 @@ h2 {
   border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
   box-shadow: 0 0 8px 0 #ffffff20;
   border-radius: 4px;
+}
+
+/* Daily Reset Timer Styling */
+.daily-reset-timer {
+  margin-top: 20px;
+  margin-bottom: 0;
+  padding: 15px 20px;
+  background: rgba(30, 35, 40, 0.5);
+  border: 2px solid rgba(200, 170, 109, 0.3);
+  border-radius: 12px;
+  text-align: center;
+  clear: both;
+}
+
+.timer-label {
+  font-size: 13px;
+  color: #a89968;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+
+.timer-countdown {
+  font-size: 42px;
+  font-weight: bold;
+  color: #cdbe91;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px rgba(200, 170, 109, 0.5);
+  margin: 0;
+  padding: 0;
+}
+
+/* Countdown display in feedback */
+.countdown-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 15px;
+  background: rgba(30, 35, 40, 0.5);
+  border: 2px solid rgba(200, 170, 109, 0.3);
+  border-radius: 8px;
+  margin-top: 5px;
+}
+
+.countdown-label {
+  font-size: 14px;
+  color: #a89968;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.countdown-time {
+  font-size: 28px;
+  font-weight: bold;
+  color: #cdbe91;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(200, 170, 109, 0.4);
+}
+
+/* Stats Modal Styling */
+.stats-container {
+  color: #cdbe91;
+  padding: 10px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 10px;
+  background: rgba(30, 35, 40, 0.5);
+  border: 1px solid rgba(200, 170, 109, 0.3);
+  border-radius: 8px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #cdbe91;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #a89968;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.guess-distribution {
+  margin-top: 20px;
+}
+
+.guess-distribution h3 {
+  color: #cdbe91;
+  margin-bottom: 15px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.distribution-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.distribution-label {
+  width: 30px;
+  text-align: center;
+  font-weight: bold;
+  color: #cdbe91;
+}
+
+.distribution-bar-container {
+  flex: 1;
+  height: 30px;
+  background: rgba(30, 35, 40, 0.5);
+  border: 1px solid rgba(200, 170, 109, 0.2);
+  border-radius: 4px;
+  margin-left: 10px;
+  overflow: hidden;
+}
+
+.distribution-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #c8aa6d 0%, #7a5c29 100%);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  transition: width 0.3s ease;
+}
+
+.distribution-count {
+  color: #1e2328;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 /* Guess box styling - Correct */
