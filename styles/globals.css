@@ -172,6 +172,14 @@ button:active {
   body {
     font-size: 14px;
   }
+
+  .logo {
+    height: 15rem !important;
+    width: 15rem !important;
+    margin-top: 70px !important;
+    margin-bottom: 0px !important;
+  }
+
   input,
   button {
     font-size: 26px;

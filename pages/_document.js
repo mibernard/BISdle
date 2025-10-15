@@ -5,7 +5,6 @@ class MyDocument extends Document {
     return (
       <Html lang='en'>
         <Head>
-          <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
           <link rel='icon' href='/favicon.png?v=2' />
           {/* Google AdSense */}
           <script
