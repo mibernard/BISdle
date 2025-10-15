@@ -26,6 +26,7 @@ export default function Home() {
     currentStreak: 0,
     maxStreak: 0,
     hintsUsed: 0,
+    answersUsed: 0,
     guessDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, '6+': 0 }
   });
   const [unlimitedStats, setUnlimitedStats] = useState({
@@ -34,6 +35,7 @@ export default function Home() {
     currentStreak: 0,
     maxStreak: 0,
     hintsUsed: 0,
+    answersUsed: 0,
     guessDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, '6+': 0 }
   });
   const [countdown, setCountdown] = useState('');
@@ -50,11 +52,33 @@ export default function Home() {
   useEffect(() => {
     const savedDailyStats = localStorage.getItem('bisdleDailyStats');
     const savedUnlimitedStats = localStorage.getItem('bisdleUnlimitedStats');
+
     if (savedDailyStats) {
-      setDailyStats(JSON.parse(savedDailyStats));
+      const parsed = JSON.parse(savedDailyStats);
+      // Ensure all fields exist (for backward compatibility)
+      setDailyStats({
+        gamesPlayed: parsed.gamesPlayed || 0,
+        gamesWon: parsed.gamesWon || 0,
+        currentStreak: parsed.currentStreak || 0,
+        maxStreak: parsed.maxStreak || 0,
+        hintsUsed: parsed.hintsUsed || 0,
+        answersUsed: parsed.answersUsed || 0,
+        guessDistribution: parsed.guessDistribution || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, '6+': 0 }
+      });
     }
+
     if (savedUnlimitedStats) {
-      setUnlimitedStats(JSON.parse(savedUnlimitedStats));
+      const parsed = JSON.parse(savedUnlimitedStats);
+      // Ensure all fields exist (for backward compatibility)
+      setUnlimitedStats({
+        gamesPlayed: parsed.gamesPlayed || 0,
+        gamesWon: parsed.gamesWon || 0,
+        currentStreak: parsed.currentStreak || 0,
+        maxStreak: parsed.maxStreak || 0,
+        hintsUsed: parsed.hintsUsed || 0,
+        answersUsed: parsed.answersUsed || 0,
+        guessDistribution: parsed.guessDistribution || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, '6+': 0 }
+      });
     }
   }, []);
 
@@ -436,6 +460,19 @@ export default function Home() {
     };
     setFeedback((prevFeedback) => [...prevFeedback, answer]);
     setAnswerUsed(true);
+
+    // Increment answers used counter based on current mode
+    if (currentMode === 'Daily') {
+      setDailyStats((prevStats) => ({
+        ...prevStats,
+        answersUsed: prevStats.answersUsed + 1
+      }));
+    } else {
+      setUnlimitedStats((prevStats) => ({
+        ...prevStats,
+        answersUsed: prevStats.answersUsed + 1
+      }));
+    }
   };
 
   function getTodayIndex() {
@@ -842,6 +879,12 @@ export default function Home() {
                   {currentMode === 'Daily' ? dailyStats.hintsUsed : unlimitedStats.hintsUsed}
                 </div>
                 <div className='stat-label'>Hints Used</div>
+              </div>
+              <div className='stat-item'>
+                <div className='stat-value'>
+                  {currentMode === 'Daily' ? dailyStats.answersUsed : unlimitedStats.answersUsed}
+                </div>
+                <div className='stat-label'>Answers Used</div>
               </div>
               <div className='stat-item'>
                 <div className='stat-value'>

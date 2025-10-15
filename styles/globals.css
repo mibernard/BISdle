@@ -243,8 +243,12 @@ button:active {
   }
 
   .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 5px;
+    gap: 10px;
+  }
+
+  .stat-item {
+    flex: 0 1 calc(50% - 10px);
+    min-width: 120px;
   }
 
   .stat-value {
@@ -503,10 +507,10 @@ h2 {
 }
 
 .stats-grid {
-  display: grid;
-  /* align-items: center; */
-  /* justify-items: center; */
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
   gap: 15px;
   margin-bottom: 30px;
 }
@@ -517,6 +521,8 @@ h2 {
   background: rgba(30, 35, 40, 0.5);
   border: 1px solid rgba(200, 170, 109, 0.3);
   border-radius: 8px;
+  flex: 0 1 calc(25% - 12px);
+  min-width: 100px;
 }
 
 .stat-value {
@@ -581,6 +587,7 @@ h2 {
   color: #1e2328;
   font-weight: bold;
   font-size: 14px;
+  margin-right: 10px;
 }
 
 /* Guess box styling - Correct */

@@ -24,6 +24,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  color: #cdbe91;
 }
 
 .closeButton {
@@ -44,20 +45,33 @@
   margin: 0;
   /* margin-right: 2rem; */
   padding-bottom: 1rem;
+  color: #cdbe91;
 }
 .modal ul {
   list-style-type: circle;
   margin: 0;
   /* padding: 0; */
   padding-left: 1.5rem;
+  color: #cdbe91;
 }
 .modal li {
   line-height: 1.75rem;
   margin-top: 0;
+  color: #cdbe91;
 }
 .modal p {
   padding: 0;
   /* margin: 0; */
+  color: #cdbe91;
+}
+.modal h3 {
+  color: #cdbe91;
+}
+.modal span {
+  color: #cdbe91;
+}
+.modal div {
+  color: #cdbe91;
 }
 
 /* Custom scrollbar for modal */
