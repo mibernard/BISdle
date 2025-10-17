@@ -344,7 +344,8 @@ export default function Home() {
       color: isCorrect ? 'lightgreen' : 'salmon',
       guessChampionImageUrl: guessedChampImageUrl,
       isGuess: true,
-      showCountdown: isCorrect && currentMode === 'Daily'
+      showCountdown: isCorrect && currentMode === 'Daily',
+      showNewChampionBtn: isCorrect && currentMode === 'Unlimited'
     };
 
     if (isCorrect) {
@@ -1052,6 +1053,11 @@ export default function Home() {
                         <span className='countdown-label'>Next daily champion in:</span>
                         <span className='countdown-time'>{countdown}</span>
                       </div>
+                    )}
+                    {f.showNewChampionBtn && (
+                      <button className='new-champion-btn' onClick={handleNewItems}>
+                        Guess New Champion
+                      </button>
                     )}
                   </div>
                 </div>

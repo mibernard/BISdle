@@ -283,6 +283,19 @@ button:active {
     padding: 12px 15px;
     margin-top: 15px;
   }
+
+  .new-champion-btn {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+
+  .countdown-time {
+    font-size: 24px;
+  }
+
+  .countdown-label {
+    font-size: 12px;
+  }
 }
 
 #autocomplete-list {
@@ -498,6 +511,34 @@ h2 {
   font-family: 'Courier New', monospace;
   letter-spacing: 2px;
   text-shadow: 0 0 8px rgba(200, 170, 109, 0.4);
+}
+
+/* New Champion Button (Unlimited Mode) */
+.new-champion-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #c8aa6d 0%, #a89968 100%);
+  color: #010007;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(200, 170, 109, 0.3);
+  margin-top: 5px;
+}
+
+.new-champion-btn:hover {
+  background: linear-gradient(135deg, #d4b87a 0%, #c8aa6d 100%);
+  box-shadow: 0 6px 16px rgba(200, 170, 109, 0.5);
+  transform: translateY(-2px);
+}
+
+.new-champion-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(200, 170, 109, 0.4);
 }
 
 /* Stats Modal Styling */
