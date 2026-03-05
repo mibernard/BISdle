@@ -16,7 +16,8 @@ body {
   height: 100%;
   /* background: linear-gradient(to left, rgba(0, 0, 0, 0), #010007, #010007, rgba(0, 0, 0, 0) 100%),
     url('https://cdn.glitch.global/c482ca3f-5f21-4ad8-b3a2-4674f54d04f7/pengu.png?v=1715377921432'); */
-  background: linear-gradient(to left, rgba(0, 0, 0, 0), #010007 40%, #010007 60%, rgba(0, 0, 0, 0) 100%),
+  background:
+    linear-gradient(to left, rgba(0, 0, 0, 0), #010007 40%, #010007 60%, rgba(0, 0, 0, 0) 100%),
     url('/images/Powder-Arcane-TFT.png');
   /* background: linear-gradient(rgba(1, 0, 7, 0.6), rgba(1, 0, 7, 0.6)),
     url('https://edge.rivalrycdn.com/cdn-cgi/image/q=100/https://images.prismic.io/rivalryglhf/ZofEqB5LeNNTw0LO_Yuumi.jpg?auto=format,compress'); */
@@ -296,6 +297,44 @@ button:active {
   .countdown-label {
     font-size: 12px;
   }
+
+  .hints-container {
+    padding: 20px 15px;
+    margin: 20px 10px;
+  }
+
+  .hints-title {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .hints-buttons {
+    gap: 10px;
+  }
+
+  .hint-btn,
+  .cost-hint-btn,
+  .answer-btn {
+    font-size: 12px;
+    padding: 10px 16px;
+  }
+
+  .cost-hint-box,
+  .hint-box {
+    padding: 15px 20px;
+    max-width: 350px;
+    gap: 10px;
+  }
+
+  .cost-hint-text,
+  .hint-text {
+    font-size: 14px;
+  }
+
+  .gold-icon {
+    width: 30px !important;
+    height: 30px !important;
+  }
 }
 
 #autocomplete-list {
@@ -405,7 +444,10 @@ h2 {
   background: #1e2328;
   border: 2px solid transparent;
   border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
-  box-shadow: inset 0 0 2px #000000, 0 0 8px 0 #ffffff20;
+  box-shadow:
+    inset 0 0 2px #000000,
+    0 0 8px 0 #ffffff20;
+  border-radius: 8px;
 }
 
 .hint-text {
@@ -426,7 +468,9 @@ h2 {
   background: #1e2328;
   border: 2px solid transparent;
   border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
-  box-shadow: inset 0 0 2px #000000, 0 0 12px 0 #cdbe9150;
+  box-shadow:
+    inset 0 0 2px #000000,
+    0 0 12px 0 #cdbe9150;
 }
 
 .answer-text {
@@ -438,10 +482,10 @@ h2 {
 }
 
 .champion-image {
-  border: 2px solid transparent;
+  /* border: 2px solid transparent; */
   border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
   box-shadow: 0 0 12px 0 #cdbe9180;
-  border-radius: 50%;
+  /* border-radius: 50%; */
 }
 
 /* Emblem styling for class hint */
@@ -450,6 +494,124 @@ h2 {
   border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
   box-shadow: 0 0 8px 0 #ffffff20;
   border-radius: 4px;
+}
+
+/* Cost Hint box styling */
+.cost-hint-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px 30px;
+  margin: 20px auto;
+  max-width: 500px;
+  background: #1e2328;
+  border: 2px solid transparent;
+  border-image: linear-gradient(to bottom, #ffd700, #b8860b) 1;
+  box-shadow:
+    inset 0 0 2px #000000,
+    0 0 8px 0 #ffd70050;
+  border-radius: 8px;
+}
+
+.cost-hint-text {
+  font-family: 'Marcellus SC', serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: #ffd700;
+}
+
+.gold-icon {
+  filter: drop-shadow(0 0 8px #ffd70080);
+}
+
+/* Hints Container styling */
+.hints-container {
+  margin: 30px auto;
+  padding: 25px;
+  max-width: 600px;
+  background: rgba(30, 35, 40, 0.8);
+  border: 2px solid transparent;
+  border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
+  box-shadow:
+    inset 0 0 2px #000000,
+    0 0 12px 0 #cdbe9130;
+  backdrop-filter: blur(5px);
+  border-radius: 10px;
+}
+
+.hints-title {
+  text-align: center;
+  font-family: 'Marcellus SC', serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: #cdbe91;
+  margin: 0 0 20px 0;
+  text-shadow: 0 0 5px rgba(205, 190, 145, 0.3);
+}
+
+.hints-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.hint-btn,
+.cost-hint-btn,
+.answer-btn {
+  font-family: 'Marcellus SC', serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 12px 20px;
+  background: #1e2328;
+  color: #cdbe91;
+  border: 2px solid transparent;
+  border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 0 2px #000000;
+}
+
+.hint-btn:hover:not(:disabled),
+.cost-hint-btn:hover:not(:disabled),
+.answer-btn:hover:not(:disabled) {
+  background: linear-gradient(to bottom, #1e2328, #433d2b);
+  box-shadow: 0 0 8px 0 #ffffff50;
+  text-shadow: 0 0 5px #ffffff80;
+  transform: translateY(-2px);
+}
+
+.hint-btn:disabled,
+.cost-hint-btn:disabled,
+.answer-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #0f1214;
+}
+
+.cost-hint-btn {
+  border-image: linear-gradient(to bottom, #ffd700, #b8860b) 1;
+}
+
+.cost-hint-btn:hover:not(:disabled) {
+  box-shadow: 0 0 8px 0 #ffd70050;
+}
+
+.answer-btn {
+  background: linear-gradient(135deg, #c8aa6d 0%, #a89968 100%);
+  color: #010007;
+  font-weight: 600;
+  border: none;
+}
+
+.answer-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #d4b87a 0%, #c8aa6d 100%);
+  box-shadow: 0 4px 12px rgba(200, 170, 109, 0.5);
+}
+
+.answer-btn:disabled {
+  background: #4a4538;
+  color: #6a6454;
 }
 
 /* Daily Reset Timer Styling */
@@ -642,7 +804,10 @@ h2 {
   background: linear-gradient(135deg, #1e3a1e 0%, #2d5a2d 100%);
   border: 2px solid transparent;
   border-image: linear-gradient(to bottom, #6daa6d, #4a8a4a) 1;
-  box-shadow: inset 0 0 2px #000000, 0 0 12px 0 #4ade8050;
+  box-shadow:
+    inset 0 0 2px #000000,
+    0 0 12px 0 #4ade8050;
+  border-radius: 8px;
 }
 
 /* Guess box styling - Incorrect */
@@ -656,7 +821,10 @@ h2 {
   background: linear-gradient(135deg, #3a1e1e 0%, #5a2d2d 100%);
   border: 2px solid transparent;
   border-image: linear-gradient(to bottom, #aa6d6d, #8a4a4a) 1;
-  box-shadow: inset 0 0 2px #000000, 0 0 12px 0 #de4a4a50;
+  box-shadow:
+    inset 0 0 2px #000000,
+    0 0 12px 0 #de4a4a50;
+  border-radius: 8px;
 }
 
 .guess-text {

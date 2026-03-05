@@ -1,10 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Modal from '../components/Modal';
 import Footer from '../components/Footer';
-import championNames from '../lib/champions.js';
-import championData from '../lib/championData.js';
+import championData from '../lib/championData.json';
 import JSConfetti from 'js-confetti';
 import Head from 'next/head';
+
+// Maps compact TFT IDs (e.g. "XinZhao") to proper display names (e.g. "Xin Zhao")
+const championNameMap = Object.fromEntries(
+  Object.keys(championData).map((name) => [name.replace(/\s+/g, '').toLowerCase(), name])
+);
+
+function getDisplayName(rawId) {
+  return championNameMap[rawId.replace(/\s+/g, '').toLowerCase()] || rawId;
+}
 
 export default function Home() {
   const [currentMode, setCurrentMode] = useState('Daily');
@@ -40,11 +48,13 @@ export default function Home() {
   });
   const [countdown, setCountdown] = useState('');
   const [hintUsed, setHintUsed] = useState(false);
+  const [costHintUsed, setCostHintUsed] = useState(false);
   const [answerUsed, setAnswerUsed] = useState(false);
   const [dailyCompleted, setDailyCompleted] = useState(false);
   const [itemImageMap, setItemImageMap] = useState({});
   const [championImageMap, setChampionImageMap] = useState({});
   const [traitImageMap, setTraitImageMap] = useState({});
+  const [championCostData, setChampionCostData] = useState({});
   const [forceLoadTrigger, setForceLoadTrigger] = useState(0); // Used to force load useEffect to run
   const modalRef = useRef(null);
   const hasLoadedDailyState = useRef(false);
@@ -147,6 +157,7 @@ export default function Home() {
             setGuessedChampions(parsedState.guessedChampions || []);
             setGuessCount(parsedState.guessCount || 0);
             setHintUsed(parsedState.hintUsed || false);
+            setCostHintUsed(parsedState.costHintUsed || false);
             setAnswerUsed(parsedState.answerUsed || false);
             setDailyCompleted(parsedState.dailyCompleted || false);
           } else {
@@ -181,6 +192,7 @@ export default function Home() {
         guessedChampions: guessedChampions,
         guessCount: guessCount,
         hintUsed: hintUsed,
+        costHintUsed: costHintUsed,
         answerUsed: answerUsed,
         dailyCompleted: dailyCompleted
       };
@@ -202,7 +214,17 @@ export default function Home() {
         hasLoadedDailyState.current
       );
     }
-  }, [currentMode, currentIndex, feedback, guessedChampions, guessCount, hintUsed, answerUsed, dailyCompleted]);
+  }, [
+    currentMode,
+    currentIndex,
+    feedback,
+    guessedChampions,
+    guessCount,
+    hintUsed,
+    costHintUsed,
+    answerUsed,
+    dailyCompleted
+  ]);
 
   // Countdown timer for daily reset
   useEffect(() => {
@@ -233,9 +255,7 @@ export default function Home() {
   // This useEffect handles data fetching independently
   useEffect(() => {
     fetchData();
-    fetchDataDragonItems();
-    fetchDataDragonChampions();
-    fetchDataDragonTraits();
+    fetchDataDragonData();
   }, []); // Run only once on component mount
 
   // This useEffect handles setting the index based on the mode
@@ -271,6 +291,7 @@ export default function Home() {
     setGuessedChampions([]);
     setGuessCount(0);
     setHintUsed(false);
+    setCostHintUsed(false);
     setAnswerUsed(false);
     setDailyCompleted(false);
 
@@ -304,18 +325,18 @@ export default function Home() {
 
   const handleNewItems = () => {
     setCurrentIndex(getRandomIndex());
-    console.log('current index:', currentIndex);
     setInput('');
     setFeedback([]);
     setGuessedChampions([]);
     setGuessCount(0);
     setHintUsed(false);
+    setCostHintUsed(false);
     setAnswerUsed(false);
-    getTopItemsForChampion(currentIndex);
+    // getTopItemsForChampion is called by the useEffect watching currentIndex
   };
 
   const isValidChampionName = (input) => {
-    return championNames.some((champion) => champion.toLowerCase() === input.toLowerCase());
+    return Object.keys(championData).some((champion) => champion.toLowerCase() === input.toLowerCase());
   };
 
   const handleGuess = () => {
@@ -326,20 +347,20 @@ export default function Home() {
       return;
     }
 
-    const isCorrect = input.toLowerCase() === unitName.toLowerCase().split('_')[1];
+    const correctName = getDisplayName(unitName.split('_')[1]);
+    const isCorrect = input.toLowerCase() === correctName.toLowerCase();
     setGuessCount((prevCount) => prevCount + 1);
     setGuessedChampions((prev) => [...prev, input.toLowerCase()]); // Add to guessed list
 
-    // Get the guessed champion's image URL
-    const guessedChampName = input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
-    const guessedChampImageUrl = championImageMap[guessedChampName] || '';
+    // Get the guessed champion's image URL (keyed by display name or compact name)
+    const guessedChampImageUrl = championImageMap[input] || championImageMap[input.replace(/\s+/g, '')] || '';
 
     const newFeedback = {
       text: isCorrect
-        ? `Correct! It is ${unitName.split('_')[1]}. It took you ${guessCount + 1} ${
+        ? `Correct! It is ${correctName}. It took you ${guessCount + 1} ${
             guessCount + 1 > 1 ? 'tries!' : 'try!'
           }`
-        : `It is not ${guessedChampName}, try again!`,
+        : `It is not ${input}, try again!`,
       isCorrect: isCorrect,
       color: isCorrect ? 'lightgreen' : 'salmon',
       guessChampionImageUrl: guessedChampImageUrl,
@@ -415,7 +436,7 @@ export default function Home() {
       return;
     }
 
-    const championName = unitName.split('_')[1];
+    const championName = getDisplayName(unitName.split('_')[1]);
     const championInfo = championData[championName];
 
     let hintText = '';
@@ -463,6 +484,52 @@ export default function Home() {
     }
   };
 
+  const handleCostHint = () => {
+    if (costHintUsed) {
+      const hint = {
+        text: "You've already used your cost hint for this champion!",
+        isCorrect: false,
+        color: 'orange'
+      };
+      setFeedback((prevFeedback) => [...prevFeedback, hint]);
+      return;
+    }
+
+    const championName = unitName.split('_')[1];
+    const cost = championCostData[championName] || championCostData[unitName];
+
+    if (cost) {
+      const costHint = {
+        text: `${cost}`,
+        isCorrect: false,
+        color: '#FFD700', // Gold color
+        isCostHint: true // Flag to render cost hint with gold icon
+      };
+      setFeedback((prevFeedback) => [...prevFeedback, costHint]);
+      setCostHintUsed(true);
+
+      // Increment hints used counter based on current mode
+      if (currentMode === 'Daily') {
+        setDailyStats((prevStats) => ({
+          ...prevStats,
+          hintsUsed: (prevStats.hintsUsed || 0) + 1
+        }));
+      } else {
+        setUnlimitedStats((prevStats) => ({
+          ...prevStats,
+          hintsUsed: (prevStats.hintsUsed || 0) + 1
+        }));
+      }
+    } else {
+      const errorHint = {
+        text: 'Cost information not available',
+        isCorrect: false,
+        color: 'orange'
+      };
+      setFeedback((prevFeedback) => [...prevFeedback, errorHint]);
+    }
+  };
+
   const handleAnswer = () => {
     if (answerUsed) {
       const alreadyAnswered = {
@@ -474,18 +541,13 @@ export default function Home() {
       return;
     }
 
-    const championName = unitName.split('_')[1];
-    console.log('Champion name:', championName);
-    console.log('Champion image map keys:', Object.keys(championImageMap));
+    const championName = getDisplayName(unitName.split('_')[1]);
+    const compactName = unitName.split('_')[1];
 
-    // Try different variations of the champion name
     let championImageUrl =
       championImageMap[championName] ||
-      championImageMap[`TFT13_${championName}`] ||
-      championImageMap[`TFT_TrainingDummy`] ||
+      championImageMap[compactName] ||
       '';
-
-    console.log('Champion image URL:', championImageUrl);
 
     const answer = {
       text: championName,
@@ -553,7 +615,7 @@ export default function Home() {
       setSuggestions([]);
       return;
     }
-    const filtered = championNames.filter(
+    const filtered = Object.keys(championData).filter(
       (champion) =>
         champion.toLowerCase().startsWith(input.toLowerCase()) && !guessedChampions.includes(champion.toLowerCase())
     );
@@ -561,11 +623,9 @@ export default function Home() {
   }, [input, guessedChampions]);
 
   const handleSelect = (champion) => {
-    setInput(champion); // Set input to the selected champion
-    console.log('champion', champion);
-    setGuessedChampions((prev) => [...prev, champion.toLowerCase()]); // Add to guessed list
-    setSuggestions([]); // Clear suggestions
-    setClickPending(true); // Set the flag to trigger the click
+    setInput(champion);
+    setSuggestions([]);
+    setClickPending(true);
   };
 
   //makes sure guessBtn is always clicked after setInput is completeled since it is async
@@ -590,104 +650,77 @@ export default function Home() {
     };
   }, []);
 
-  // Fetch TFT item images from Data Dragon
-  const fetchDataDragonItems = async () => {
-    try {
-      // 1. Get latest version
-      const versionsRes = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
-      const versions = await versionsRes.json();
-      const latestVersion = versions[0];
-      console.log('Data Dragon version:', latestVersion);
+  const fetchDataDragonItems = async (version) => {
+    const itemsRes = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/tft-item.json`);
+    const itemsData = await itemsRes.json();
 
-      // 2. Fetch TFT items data
-      const itemsRes = await fetch(`https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/tft-item.json`);
-      const itemsData = await itemsRes.json();
+    const imageMap = {};
+    Object.values(itemsData.data).forEach((item) => {
+      imageMap[item.id] = `https://ddragon.leagueoflegends.com/cdn/${version}/img/tft-item/${item.image.full}`;
+    });
 
-      // 3. Build item name → image URL map
-      const imageMap = {};
-      Object.values(itemsData.data).forEach((item) => {
-        // Map item ID (e.g., "TFT_Item_BFSword") to image URL
-        imageMap[item.id] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-item/${item.image.full}`;
-      });
-
-      setItemImageMap(imageMap);
-      console.log('Loaded Data Dragon item images:', Object.keys(imageMap).length);
-    } catch (error) {
-      console.error('Failed to load Data Dragon items:', error);
-    }
+    setItemImageMap(imageMap);
   };
 
-  // Fetch TFT champion images from Data Dragon
-  const fetchDataDragonChampions = async () => {
-    try {
-      // 1. Get latest version
-      const versionsRes = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
-      const versions = await versionsRes.json();
-      const latestVersion = versions[0];
-      console.log('Data Dragon version for champions:', latestVersion);
+  const fetchDataDragonChampions = async (version) => {
+    const championsRes = await fetch(
+      `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/tft-champion.json`
+    );
+    const championsData = await championsRes.json();
 
-      // 2. Fetch TFT champions data
-      const championsRes = await fetch(
-        `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/tft-champion.json`
-      );
-      const championsData = await championsRes.json();
+    const champImageMap = {};
+    const costMap = {};
 
-      // 3. Build champion name → image URL map
-      const champImageMap = {};
-      Object.values(championsData.data).forEach((champ) => {
-        // Map champion ID to image URL
-        champImageMap[
-          champ.id
-        ] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-champion/${champ.image.full}`;
-        // Also map the champion name without the TFT prefix for easier lookup
-        const simpleName = champ.id.replace(/^TFT\d*_/, '');
-        champImageMap[
-          simpleName
-        ] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-champion/${champ.image.full}`;
-      });
+    Object.values(championsData.data).forEach((champ) => {
+      const simpleName = champ.id.replace(/^TFT\d*_/, '');
+      const imageUrl = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${simpleName}.png`;
+      champImageMap[champ.id] = imageUrl;
+      champImageMap[simpleName] = imageUrl;
+      const displayName = getDisplayName(simpleName);
+      champImageMap[displayName] = imageUrl;
 
-      setChampionImageMap(champImageMap);
-      console.log('Loaded Data Dragon champion images:', Object.keys(champImageMap).length);
-      console.log('Sample champion keys:', Object.keys(champImageMap).slice(0, 10));
-    } catch (error) {
-      console.error('Failed to load Data Dragon champions:', error);
-    }
+      if (champ.tier !== undefined) {
+        costMap[champ.id] = champ.tier;
+        costMap[simpleName] = champ.tier;
+      }
+    });
+
+    setChampionImageMap(champImageMap);
+    setChampionCostData(costMap);
   };
 
-  // Fetch TFT trait images from Data Dragon
-  const fetchDataDragonTraits = async () => {
+  const fetchDataDragonTraits = async (version) => {
+    const traitsRes = await fetch(
+      `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/tft-trait.json`
+    );
+    const traitsData = await traitsRes.json();
+
+    const traitImgMap = {};
+    Object.values(traitsData.data).forEach((trait) => {
+      traitImgMap[trait.name] =
+        `https://ddragon.leagueoflegends.com/cdn/${version}/img/tft-trait/${trait.image.full}`;
+      traitImgMap[trait.name.replace(/\s+/g, '')] =
+        `https://ddragon.leagueoflegends.com/cdn/${version}/img/tft-trait/${trait.image.full}`;
+    });
+
+    setTraitImageMap(traitImgMap);
+  };
+
+  // Fetches the Data Dragon version once, then loads items, champions, and traits in parallel
+  const fetchDataDragonData = async () => {
     try {
-      // 1. Get latest version
       const versionsRes = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
       const versions = await versionsRes.json();
-      const latestVersion = versions[0];
-      console.log('Data Dragon version for traits:', latestVersion);
+      const version = versions[0];
+      console.log('Data Dragon version:', version);
 
-      // 2. Fetch TFT traits data
-      const traitsRes = await fetch(
-        `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/tft-trait.json`
-      );
-      const traitsData = await traitsRes.json();
-
-      // 3. Build trait name → image URL map
-      const traitImgMap = {};
-      Object.values(traitsData.data).forEach((trait) => {
-        // Map trait name to image URL
-        traitImgMap[
-          trait.name
-        ] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-trait/${trait.image.full}`;
-        // Also try mapping without spaces for easier lookup
-        const nameWithoutSpaces = trait.name.replace(/\s+/g, '');
-        traitImgMap[
-          nameWithoutSpaces
-        ] = `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/tft-trait/${trait.image.full}`;
-      });
-
-      setTraitImageMap(traitImgMap);
-      console.log('Loaded Data Dragon trait images:', Object.keys(traitImgMap).length);
-      console.log('Sample trait keys:', Object.keys(traitImgMap).slice(0, 10));
+      await Promise.all([
+        fetchDataDragonItems(version),
+        fetchDataDragonChampions(version),
+        fetchDataDragonTraits(version),
+      ]);
     } catch (error) {
-      console.error('Failed to load Data Dragon traits:', error);
+      console.error('Failed to load Data Dragon data:', error);
     }
   };
 
@@ -1000,23 +1033,34 @@ export default function Home() {
           </button>
         </div>
 
-        <div id='hintsContainer'>
-          <button
-            id='hintBtn'
-            onClick={handleHint}
-            disabled={hintUsed}
-            title={hintUsed ? 'Hint already used' : 'Reveal class hint'}
-          >
-            Hint
-          </button>
-          <button
-            id='answerBtn'
-            onClick={handleAnswer}
-            disabled={answerUsed}
-            title={answerUsed ? 'Answer already revealed' : 'Reveal champion'}
-          >
-            Answer
-          </button>
+        <div className='hints-container'>
+          <h3 className='hints-title'>Need Help?</h3>
+          <div className='hints-buttons'>
+            <button
+              className='hint-btn'
+              onClick={handleHint}
+              disabled={hintUsed}
+              title={hintUsed ? 'Trait hint already used' : 'Reveal trait hint'}
+            >
+              Trait Hint
+            </button>
+            <button
+              className='hint-btn cost-hint-btn'
+              onClick={handleCostHint}
+              disabled={costHintUsed}
+              title={costHintUsed ? 'Cost hint already used' : 'Reveal cost hint'}
+            >
+              Cost Hint
+            </button>
+            <button
+              className='answer-btn'
+              onClick={handleAnswer}
+              disabled={answerUsed}
+              title={answerUsed ? 'Answer already revealed' : 'Reveal champion'}
+            >
+              Answer
+            </button>
+          </div>
         </div>
 
         <div className='listChampsBtnContainer'>
@@ -1034,17 +1078,28 @@ export default function Home() {
                   )}
                   <span className='hint-text'>{f.emblemUrl ? `The champion's class is ${f.text}` : f.text}</span>
                 </div>
+              ) : f.isCostHint ? (
+                <div className='cost-hint-box'>
+                  <img
+                    className='gold-icon'
+                    src='https://sunderarmor.com/ui/icon-gold.svg'
+                    alt='Gold'
+                    width={40}
+                    height={40}
+                  />
+                  <span className='cost-hint-text'>The champion costs {f.text} gold</span>
+                </div>
               ) : f.hasOwnProperty('championImageUrl') ? (
                 <div className='answer-box'>
                   {f.championImageUrl && (
-                    <img className='champion-image' src={f.championImageUrl} alt={f.text} width={60} height={60} />
+                    <img className='champion-image' src={f.championImageUrl} alt={f.text} width={60} height={60} onError={(e) => { e.target.style.display = 'none'; }} />
                   )}
                   <span className='answer-text'>The champion is {f.text}</span>
                 </div>
               ) : f.isGuess ? (
                 <div className={f.isCorrect ? 'guess-box-correct' : 'guess-box-incorrect'}>
                   {f.guessChampionImageUrl && (
-                    <img className='champion-image' src={f.guessChampionImageUrl} alt={f.text} width={60} height={60} />
+                    <img className='champion-image' src={f.guessChampionImageUrl} alt={f.text} width={60} height={60} onError={(e) => { e.target.style.display = 'none'; }} />
                   )}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <span className='guess-text'>{f.text}</span>

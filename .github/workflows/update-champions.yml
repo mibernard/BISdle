@@ -1,0 +1,39 @@
+name: Update Champion Data
+
+on:
+  schedule:
+    - cron: '0 10 * * 1' # Every Monday at 10am UTC
+  workflow_dispatch: # Allows manual trigger from the GitHub Actions UI
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Run champion data scraper
+        run: node lib/scrapeChampionData.js
+
+      - name: Commit and push if data changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet lib/championData.json || (
+            git add lib/championData.json &&
+            git commit -m "chore: update Set 16 champion data [skip ci]" &&
+            git push
+          )

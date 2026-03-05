@@ -2,40 +2,42 @@
 
 ## When a New TFT Set Releases
 
-### Required Updates (30-45 minutes)
+### Champion data updates automatically
 
-#### 1. Update Champion Names (`lib/champions.js`)
+A GitHub Actions workflow (`.github/workflows/update-champions.yml`) runs every Monday
+at 10am UTC. It scrapes https://tftactics.gg/champions/, updates `lib/championData.json`
+if anything changed, and pushes a commit — which triggers an automatic Vercel redeploy.
 
-- Visit https://tftactics.gg/champions/
-- Copy all champion names from the new set
-- Replace the array with new champions
-- Use exact spelling (e.g., `'JarvanIV'`, `'KSante'`, `'DrMundo'`)
+**You don't need to do anything.** Within a week of a new set dropping, the app will
+update itself.
 
-#### 2. Update Champion Traits (`lib/championData.js`)
+To trigger an immediate update manually (e.g. right after a new set drops):
+1. Go to your repo on GitHub
+2. Click **Actions** → **Update Champion Data** → **Run workflow**
 
-- Visit https://tftactics.gg/champions/
-- For each champion, note their traits
-- Separate into `classes` (combat traits) and `origins` (thematic traits)
-- Format: `ChampionName: { classes: ['Class1'], origins: ['Origin1'] }`
-- If no class, use empty array: `classes: []`
+To run the scraper locally:
+```bash
+node lib/scrapeChampionData.js
+```
 
-#### 3. (Optional) Update Player PUUID
+### (Optional) Update Player PUUID
 
-- If current player stops playing, find a new high-ranked player
-- Get their PUUID from Riot API:
-  ```
-  https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}
-  ```
-- Update in both:
-  - `pages/api/tftMatches.js` (line ~20)
-  - `pages/api/refreshCache.js` (line ~20)
+If the current player stops playing, find a new high-ranked player and get their PUUID
+from the Riot API:
+
+```
+https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}
+```
+
+Update in both:
+- `pages/api/tftMatches.js` (line ~20)
+- `pages/api/refreshCache.js` (line ~20)
 
 ---
 
 ## Deployment Checklist
 
-- [ ] Update `lib/champions.js`
-- [ ] Update `lib/championData.js`
+- [ ] Verify GitHub Actions workflow is enabled in repo settings
 - [ ] (Optional) Update player PUUID
 - [ ] Test locally: `npm run dev`
 - [ ] Verify champion images load
@@ -51,16 +53,34 @@
 
 ✅ Items (via Data Dragon API)  
 ✅ Trait emblems (via Data Dragon API)  
-✅ Data Dragon version (auto-fetches latest)
+✅ Champion images (via Data Dragon API — uses `img/champion/*.png` square portraits)  
+✅ Data Dragon version (auto-fetches latest)  
+✅ Champion list + traits (via GitHub Actions cron job, every Monday)
 
 ---
 
 ## Current Set Info
 
-- **Set:** TFT Set 15
-- **Champions:** 58 (as of last update)
+- **Set:** TFT Set 16
+- **Champions:** 101 (as of last update)
 - **Data Source Player:** wasianiverson
 - **PUUID:** `k1mmHTo465mrs4jVnOd6AGyjzJ6SSJOk0VgvBgEt6vELFO4K9juwI4fcNDRAOzM-VtASmLbipjyWUA`
+
+---
+
+## Architecture Notes
+
+### Champion Name Format
+`championData.json` uses proper display names with spaces (e.g. `"Xin Zhao"`, `"Dr Mundo"`,
+`"Aurelion Sol"`). A `championNameMap` in `index.js` handles the mapping from compact TFT
+IDs (e.g. `XinZhao`) to display names at runtime — no manual name formatting required.
+
+### Data Files
+| File | Purpose |
+|---|---|
+| `lib/championData.json` | Champion list + classes/origins. Single source of truth. Auto-updated by CI. |
+| `lib/scrapeChampionData.js` | Playwright scraper that writes to `championData.json`. |
+| `.github/workflows/update-champions.yml` | Scheduled GitHub Actions workflow that runs the scraper weekly. |
 
 ---
 
@@ -68,8 +88,10 @@
 
 **Images not loading?**
 
-- Check Data Dragon is updated for new set
-- Console should log Data Dragon version
+- Check that Data Dragon has been updated for the new set
+- Console should log the Data Dragon version on load
+- TFT-exclusive units (e.g. Tibbers, Rift Herald) have no regular LoL portrait — they are
+  hidden gracefully via `onError`
 
 **No champion data?**
 
@@ -80,3 +102,12 @@
 
 - User stats are stored in browser localStorage
 - They persist between sets automatically
+
+**GitHub Actions workflow failing?**
+
+- Check the Actions tab in GitHub for error logs
+- Ensure the repo has write permissions for the workflow:
+  Go to **Settings** → **Actions** → **General** → set "Workflow permissions" to
+  **Read and write permissions**
+- Re-run the scraper locally to verify it still works: `node lib/scrapeChampionData.js`
+- If tftactics.gg changes their page structure, the scraper selectors may need updating
