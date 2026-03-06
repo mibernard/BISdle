@@ -56,12 +56,8 @@ export default async function handler(req, res) {
   // Verify the request is from Vercel Cron or has the correct authorization
   const authHeader = req.headers.authorization;
   
-  // For Vercel Cron Jobs, check the authorization header
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    // Allow manual trigger in development
-    if (process.env.NODE_ENV === 'production') {
-      return res.status(401).json({ success: false, message: 'Unauthorized' });
-    }
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
   }
 
   try {

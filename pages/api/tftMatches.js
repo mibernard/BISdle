@@ -1,6 +1,3 @@
-//   //dishsoaps puuid = oK8ZzbXf2vNt3NThnpjB0ISlFca-RseO3J1REaPijty8Skl88MLKw3rBY0ZfDcLw49-3q1WCY8zVrA
-//   //k3soju1 puuid = oEQIUNhEAVbubo-O5imrcKRzpqqNZtyCk9W1drEAa-MVGCXsF5Gb0sZIgol2MjNiHY6I_fLUJtVRag
-
 import axios from 'axios';
 
 // Cache configuration

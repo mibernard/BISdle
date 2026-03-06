@@ -18,7 +18,7 @@ const Footer = () => {
           <a style={{ color: '#cdbe91', textDecoration: 'none', fontSize: '14px' }}>About BISdle</a>
         </Link>
       </div>
-      <p>Bisdle.vercel.app - 2025</p>
+      <p>Bisdle.vercel.app - {new Date().getFullYear()}</p>
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
         <a href='https://github.com/mibernard' target='_blank' aria-label='GitHub' style={{ margin: '0 10px' }}>
           <img

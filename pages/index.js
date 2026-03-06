@@ -55,9 +55,11 @@ export default function Home() {
   const [championImageMap, setChampionImageMap] = useState({});
   const [traitImageMap, setTraitImageMap] = useState({});
   const [championCostData, setChampionCostData] = useState({});
+  const [currentItems, setCurrentItems] = useState([]);
   const [forceLoadTrigger, setForceLoadTrigger] = useState(0); // Used to force load useEffect to run
   const modalRef = useRef(null);
   const hasLoadedDailyState = useRef(false);
+  const statsInitialized = useRef(false);
 
   // Load stats from localStorage
   useEffect(() => {
@@ -97,15 +99,19 @@ export default function Home() {
       // Save the cleaned stats back to localStorage
       localStorage.setItem('bisdleUnlimitedStats', JSON.stringify(cleanedStats));
     }
+
+    statsInitialized.current = true;
   }, []);
 
-  // Save daily stats to localStorage whenever they change
+  // Save daily stats to localStorage whenever they change (skip the initial render)
   useEffect(() => {
+    if (!statsInitialized.current) return;
     localStorage.setItem('bisdleDailyStats', JSON.stringify(dailyStats));
   }, [dailyStats]);
 
-  // Save unlimited stats to localStorage whenever they change
+  // Save unlimited stats to localStorage whenever they change (skip the initial render)
   useEffect(() => {
+    if (!statsInitialized.current) return;
     localStorage.setItem('bisdleUnlimitedStats', JSON.stringify(unlimitedStats));
   }, [unlimitedStats]);
 
@@ -293,6 +299,7 @@ export default function Home() {
     setHintUsed(false);
     setCostHintUsed(false);
     setAnswerUsed(false);
+    setCurrentItems([]);
     setDailyCompleted(false);
 
     // If switching to Daily, increment the trigger
@@ -332,6 +339,7 @@ export default function Home() {
     setHintUsed(false);
     setCostHintUsed(false);
     setAnswerUsed(false);
+    setCurrentItems([]);
     // getTopItemsForChampion is called by the useEffect watching currentIndex
   };
 
@@ -357,9 +365,7 @@ export default function Home() {
 
     const newFeedback = {
       text: isCorrect
-        ? `Correct! It is ${correctName}. It took you ${guessCount + 1} ${
-            guessCount + 1 > 1 ? 'tries!' : 'try!'
-          }`
+        ? `Correct! It is ${correctName}. It took you ${guessCount + 1} ${guessCount + 1 > 1 ? 'tries!' : 'try!'}`
         : `It is not ${input}, try again!`,
       isCorrect: isCorrect,
       color: isCorrect ? 'lightgreen' : 'salmon',
@@ -544,10 +550,7 @@ export default function Home() {
     const championName = getDisplayName(unitName.split('_')[1]);
     const compactName = unitName.split('_')[1];
 
-    let championImageUrl =
-      championImageMap[championName] ||
-      championImageMap[compactName] ||
-      '';
+    let championImageUrl = championImageMap[championName] || championImageMap[compactName] || '';
 
     const answer = {
       text: championName,
@@ -573,30 +576,13 @@ export default function Home() {
   };
 
   function getTodayIndex() {
-    const day = new Date().getDate();
-    const month = new Date().getMonth() + 1; // January is 0 in JavaScript, hence +1
-    let num = Math.round(((day + 7) / month) * 3913).toString();
-    // console.log('Num:', num); // Debugging output to see what num looks like
-
-    // Ensure num has at least 5 characters; pad if necessary
-    num = num.padStart(5, '0'); // Ensures there are at least 5 digits, padding with '0' if not
-
-    // Convert the specific characters to numbers; using a safer access approach
-    const index4 = +num.charAt(4); // Safely access character, if not exist will give empty string which becomes 0
-    const index3 = +num.charAt(3); // Same as above
-    let todayIndex = index4 + index3;
-
-    console.log('todayIndex before if:', todayIndex);
-    console.log('Object.keys(itemData).length:', Object.keys(itemData).length);
-
-    if (todayIndex > Object.keys(itemData).length) {
-      todayIndex = todayIndex % Object.keys(itemData).length;
-      console.log('todayIndex inside if:', todayIndex);
-    }
-
-    // console.log('champions.length:', champions.length);
-    console.log('todayIndex:', todayIndex);
-    // console.log('currentIndex:', currentIndex);
+    // Deterministic: count days since a fixed epoch, mod the number of champions
+    // in itemData (the live dataset) so the index is always in bounds.
+    const EPOCH = new Date('2024-01-01').getTime();
+    const MS_PER_DAY = 24 * 60 * 60 * 1000;
+    const daysSinceEpoch = Math.floor((Date.now() - EPOCH) / MS_PER_DAY);
+    const championCount = Object.keys(itemData).length || 1;
+    const todayIndex = daysSinceEpoch % championCount;
     // console.log('Daily Champion:', champions[currentIndex]);
 
     return todayIndex;
@@ -663,9 +649,7 @@ export default function Home() {
   };
 
   const fetchDataDragonChampions = async (version) => {
-    const championsRes = await fetch(
-      `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/tft-champion.json`
-    );
+    const championsRes = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/tft-champion.json`);
     const championsData = await championsRes.json();
 
     const champImageMap = {};
@@ -690,15 +674,12 @@ export default function Home() {
   };
 
   const fetchDataDragonTraits = async (version) => {
-    const traitsRes = await fetch(
-      `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/tft-trait.json`
-    );
+    const traitsRes = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/tft-trait.json`);
     const traitsData = await traitsRes.json();
 
     const traitImgMap = {};
     Object.values(traitsData.data).forEach((trait) => {
-      traitImgMap[trait.name] =
-        `https://ddragon.leagueoflegends.com/cdn/${version}/img/tft-trait/${trait.image.full}`;
+      traitImgMap[trait.name] = `https://ddragon.leagueoflegends.com/cdn/${version}/img/tft-trait/${trait.image.full}`;
       traitImgMap[trait.name.replace(/\s+/g, '')] =
         `https://ddragon.leagueoflegends.com/cdn/${version}/img/tft-trait/${trait.image.full}`;
     });
@@ -717,7 +698,7 @@ export default function Home() {
       await Promise.all([
         fetchDataDragonItems(version),
         fetchDataDragonChampions(version),
-        fetchDataDragonTraits(version),
+        fetchDataDragonTraits(version)
       ]);
     } catch (error) {
       console.error('Failed to load Data Dragon data:', error);
@@ -749,6 +730,11 @@ export default function Home() {
 
     const championNames = Object.keys(itemData);
     const championName = championNames[index];
+
+    if (!championName) {
+      console.warn(`No champion at index ${index} (itemData has ${championNames.length} entries)`);
+      return;
+    }
 
     setUnitName(championName);
     const items = itemData[championName];
@@ -785,18 +771,7 @@ export default function Home() {
       itemIndex++;
     }
 
-    const container = document.getElementById('itemImgContainer');
-    container.innerHTML = ''; // Clear previous items
-    validItems.forEach((item) => {
-      const imgElement = document.createElement('img');
-      imgElement.src = getImageUrl(item);
-      imgElement.alt = item;
-      imgElement.className = 'itemImg';
-      // imgElement.style.width = '100px';
-      imgElement.style.border = 'solid 3px #c8aa6d';
-      imgElement.style.margin = '6px'; // Set image width
-      container.appendChild(imgElement);
-    });
+    setCurrentItems(validItems);
     console.log(`Top 3 valid items for ${championName}:`, validItems.map(getImageUrl));
     return { championName, topThreeItems: validItems };
   };
@@ -1003,7 +978,17 @@ export default function Home() {
 
         {currentMode === 'Unlimited' && <button onClick={handleNewItems}>Get new BIS</button>}
         <div>{loading ? 'Loading...' : ''}</div>
-        <div id='itemImgContainer'></div>
+        <div id='itemImgContainer'>
+          {currentItems.map((item) => (
+            <img
+              key={item}
+              src={getImageUrl(item)}
+              alt={item}
+              className='itemImg'
+              style={{ border: 'solid 3px #c8aa6d', margin: '6px' }}
+            />
+          ))}
+        </div>
         <div id='guessContainer'>
           <input
             id='unitInput'
@@ -1017,8 +1002,8 @@ export default function Home() {
           />
           {suggestions.length > 0 && (
             <div id='autocomplete-list'>
-              {suggestions.map((item, index) => (
-                <div className='Champion' key={index} onClick={() => handleSelect(item)}>
+              {suggestions.map((item) => (
+                <div className='Champion' key={item} onClick={() => handleSelect(item)}>
                   {item}
                 </div>
               ))}
@@ -1070,7 +1055,7 @@ export default function Home() {
         </div>
         <div id='feedback' style={{ whiteSpace: 'pre-wrap' }}>
           {feedback.map((f, index) => (
-            <div key={index} style={{ color: f.color || 'inherit' }}>
+            <div key={`${f.text}-${index}`} style={{ color: f.color || 'inherit' }}>
               {f.isHint ? (
                 <div className='hint-box'>
                   {f.emblemUrl && (
@@ -1092,14 +1077,32 @@ export default function Home() {
               ) : f.hasOwnProperty('championImageUrl') ? (
                 <div className='answer-box'>
                   {f.championImageUrl && (
-                    <img className='champion-image' src={f.championImageUrl} alt={f.text} width={60} height={60} onError={(e) => { e.target.style.display = 'none'; }} />
+                    <img
+                      className='champion-image'
+                      src={f.championImageUrl}
+                      alt={f.text}
+                      width={60}
+                      height={60}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
                   )}
                   <span className='answer-text'>The champion is {f.text}</span>
                 </div>
               ) : f.isGuess ? (
                 <div className={f.isCorrect ? 'guess-box-correct' : 'guess-box-incorrect'}>
                   {f.guessChampionImageUrl && (
-                    <img className='champion-image' src={f.guessChampionImageUrl} alt={f.text} width={60} height={60} onError={(e) => { e.target.style.display = 'none'; }} />
+                    <img
+                      className='champion-image'
+                      src={f.guessChampionImageUrl}
+                      alt={f.text}
+                      width={60}
+                      height={60}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
                   )}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <span className='guess-text'>{f.text}</span>
