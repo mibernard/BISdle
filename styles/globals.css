@@ -490,7 +490,7 @@ h2 {
 /* Emblem styling for class hint */
 .emblem {
   border: 2px solid transparent;
-  border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1;
+  /* border-image: linear-gradient(to bottom, #c8aa6d, #7a5c29) 1; */
   box-shadow: 0 0 8px 0 #ffffff20;
   border-radius: 4px;
 }

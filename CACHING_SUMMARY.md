@@ -27,17 +27,17 @@ A **multi-layered caching system** designed specifically for Vercel's serverless
 res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=43200');
 ```
 
-### Layer 2: In-Memory Caching (Fallback)
-**How it works**: Stores data in Node.js memory during serverless function execution
+### Layer 2: In-Memory Caching (Local Development Only)
+**How it works**: Stores data in Node.js memory during process lifetime
 
 **Benefits**:
-- ✅ Works in local development
-- ✅ Provides some benefit on Vercel (same instance = cache hit)
+- ✅ Works in local development (long-lived process)
 - ✅ No external dependencies
 
 **Limitations**:
-- ⚠️ Limited on Vercel (different instances = cache miss)
-- ⚠️ Lost when serverless function shuts down
+- ❌ Not reliable on Vercel — each serverless invocation typically runs in a fresh instance, making in-memory cache nearly useless in production
+- ❌ Lost when serverless function shuts down
+- **Edge Network caching (Layer 1) is the actual production caching layer**
 
 ### Layer 3: Vercel KV Storage (Optional)
 **How it works**: Redis-based persistent storage across all serverless instances

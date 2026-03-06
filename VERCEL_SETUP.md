@@ -4,9 +4,9 @@
 
 The caching system is **already configured** and will work on Vercel with **zero additional setup**!
 
-- ✅ Vercel Edge Network caching (automatic)
-- ✅ In-memory caching (automatic)
+- ✅ Vercel Edge Network caching (automatic — primary mechanism)
 - ✅ Stale-while-revalidate strategy (automatic)
+- ⚠️ In-memory caching is **not reliable on Vercel** — each serverless invocation typically gets a fresh instance, so the in-memory cache rarely hits. Edge Network caching is what actually handles repeat traffic.
 
 ## 🚀 Deploy Now (Basic Setup)
 
@@ -81,7 +81,7 @@ Check if caching is working:
 
 2. **Cache Headers**: The `Cache-Control` header is set to cache for 24 hours on Vercel's Edge Network. This is the primary caching mechanism.
 
-3. **Serverless Limitations**: In-memory cache may not persist between different serverless instances, but Edge caching handles most traffic anyway.
+3. **Serverless Limitations**: In-memory cache does **not** reliably persist on Vercel — different invocations run in different instances. Edge Network caching (`Cache-Control: s-maxage`) is the actual caching layer and handles all repeat traffic.
 
 ## 🐛 Troubleshooting
 

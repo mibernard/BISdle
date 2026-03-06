@@ -5,6 +5,10 @@ import championData from '../lib/championData.json';
 import JSConfetti from 'js-confetti';
 import Head from 'next/head';
 
+const ITEM_DATA_CACHE_KEY = 'bisdleItemDataCache';
+const DATA_DRAGON_CACHE_KEY = 'bisdleDataDragonCache_v2';
+const ITEM_DATA_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+
 // Maps compact TFT IDs (e.g. "XinZhao") to proper display names (e.g. "Xin Zhao")
 const championNameMap = Object.fromEntries(
   Object.keys(championData).map((name) => [name.replace(/\s+/g, '').toLowerCase(), name])
@@ -636,6 +640,7 @@ export default function Home() {
     };
   }, []);
 
+  // Returns item image map — caller owns state-setting and caching
   const fetchDataDragonItems = async (version) => {
     const itemsRes = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/tft-item.json`);
     const itemsData = await itemsRes.json();
@@ -645,9 +650,10 @@ export default function Home() {
       imageMap[item.id] = `https://ddragon.leagueoflegends.com/cdn/${version}/img/tft-item/${item.image.full}`;
     });
 
-    setItemImageMap(imageMap);
+    return imageMap;
   };
 
+  // Returns { champImageMap, costMap } — caller owns state-setting and caching
   const fetchDataDragonChampions = async (version) => {
     const championsRes = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/tft-champion.json`);
     const championsData = await championsRes.json();
@@ -655,24 +661,26 @@ export default function Home() {
     const champImageMap = {};
     const costMap = {};
 
-    Object.values(championsData.data).forEach((champ) => {
-      const simpleName = champ.id.replace(/^TFT\d*_/, '');
-      const imageUrl = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${simpleName}.png`;
-      champImageMap[champ.id] = imageUrl;
-      champImageMap[simpleName] = imageUrl;
-      const displayName = getDisplayName(simpleName);
-      champImageMap[displayName] = imageUrl;
+    Object.values(championsData.data)
+      .filter((champ) => champ.id.startsWith('TFT16_'))
+      .forEach((champ) => {
+        const simpleName = champ.id.replace(/^TFT16_/, '');
+        const imageUrl = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${simpleName}.png`;
+        champImageMap[champ.id] = imageUrl;
+        champImageMap[simpleName] = imageUrl;
+        const displayName = getDisplayName(simpleName);
+        champImageMap[displayName] = imageUrl;
 
-      if (champ.tier !== undefined) {
-        costMap[champ.id] = champ.tier;
-        costMap[simpleName] = champ.tier;
-      }
-    });
+        if (champ.cost !== undefined) {
+          costMap[champ.id] = champ.cost;
+          costMap[simpleName] = champ.cost;
+        }
+      });
 
-    setChampionImageMap(champImageMap);
-    setChampionCostData(costMap);
+    return { champImageMap, costMap };
   };
 
+  // Returns trait image map — caller owns state-setting and caching
   const fetchDataDragonTraits = async (version) => {
     const traitsRes = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/tft-trait.json`);
     const traitsData = await traitsRes.json();
@@ -684,39 +692,97 @@ export default function Home() {
         `https://ddragon.leagueoflegends.com/cdn/${version}/img/tft-trait/${trait.image.full}`;
     });
 
-    setTraitImageMap(traitImgMap);
+    return traitImgMap;
   };
 
-  // Fetches the Data Dragon version once, then loads items, champions, and traits in parallel
+  // Fetches the Data Dragon version, then serves all image/cost maps from localStorage
+  // cache if the patch version matches — otherwise fetches fresh and saves to cache.
   const fetchDataDragonData = async () => {
     try {
       const versionsRes = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
       const versions = await versionsRes.json();
       const version = versions[0];
-      console.log('Data Dragon version:', version);
 
-      await Promise.all([
+      // Cache is keyed by version — automatically invalidates on every new patch
+      try {
+        const raw = localStorage.getItem(DATA_DRAGON_CACHE_KEY);
+        if (raw) {
+          const cached = JSON.parse(raw);
+          if (cached.version === version) {
+            setItemImageMap(cached.itemImageMap);
+            setChampionImageMap(cached.champImageMap);
+            setChampionCostData(cached.costMap);
+            setTraitImageMap(cached.traitImgMap);
+            console.log('Data Dragon served from local cache (version:', version, ')');
+            return;
+          }
+        }
+      } catch (_) {}
+
+      console.log('Fetching Data Dragon data for version:', version);
+      const [itemImageMap, { champImageMap, costMap }, traitImgMap] = await Promise.all([
         fetchDataDragonItems(version),
         fetchDataDragonChampions(version),
         fetchDataDragonTraits(version)
       ]);
+
+      setItemImageMap(itemImageMap);
+      setChampionImageMap(champImageMap);
+      setChampionCostData(costMap);
+      setTraitImageMap(traitImgMap);
+
+      try {
+        localStorage.setItem(
+          DATA_DRAGON_CACHE_KEY,
+          JSON.stringify({ version, itemImageMap, champImageMap, costMap, traitImgMap })
+        );
+      } catch (_) {}
     } catch (error) {
       console.error('Failed to load Data Dragon data:', error);
     }
   };
 
+  // Fetches Riot match data from the API, with a 24-hour localStorage cache so the
+  // Riot API is only hit once per day per browser regardless of serverless cold starts.
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/tftMatches'); // Adjust the endpoint if needed
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      const data = await response.json();
-      setItemData(data.data); // Set item data here
-      console.log('itemData:', data.data);
+      try {
+        const raw = localStorage.getItem(ITEM_DATA_CACHE_KEY);
+        if (raw) {
+          const { data, timestamp } = JSON.parse(raw);
+          if (Date.now() - timestamp < ITEM_DATA_CACHE_DURATION) {
+            setItemData(data);
+            console.log('Item data served from local cache');
+            return;
+          }
+        }
+      } catch (_) {}
+
+      const response = await fetch('/api/tftMatches');
+      if (!response.ok) throw new Error('Failed to fetch data');
+      const result = await response.json();
+      setItemData(result.data);
+
+      try {
+        localStorage.setItem(
+          ITEM_DATA_CACHE_KEY,
+          JSON.stringify({ data: result.data, timestamp: Date.now() })
+        );
+      } catch (_) {}
+
+      console.log('Fetched fresh item data from API');
     } catch (error) {
       console.error('Error fetching item data:', error);
+      // Serve stale cache rather than leaving the app empty on error
+      try {
+        const raw = localStorage.getItem(ITEM_DATA_CACHE_KEY);
+        if (raw) {
+          const { data } = JSON.parse(raw);
+          setItemData(data);
+          console.warn('Serving stale item data from cache due to fetch error');
+        }
+      } catch (_) {}
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/refreshCache",
+      "path": "/api/tftMatches",
       "schedule": "0 0 * * *"
     }
   ]

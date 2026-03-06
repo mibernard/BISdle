@@ -10,11 +10,11 @@ This application implements a multi-layered caching strategy to minimize Riot AP
 - **This works out of the box** and is the main caching mechanism
 - No additional configuration needed
 
-### 2. **In-Memory Caching** (Secondary - Works Locally)
+### 2. **In-Memory Caching** (Local Development Only)
 - Caches data in Node.js memory
-- Works great for local development
-- Limited on Vercel due to serverless architecture (each function invocation may use a different instance)
-- Still provides some benefit when the same serverless instance handles multiple requests
+- Works well in local development (long-lived process)
+- **Not reliable on Vercel**: each invocation typically spawns a fresh instance, so the in-memory cache is almost never warm in production
+- Edge Network caching (Layer 1) is the real workhorse on Vercel
 
 ### 3. **Vercel KV Storage** (Optional - Enhanced Persistence)
 If you want guaranteed persistence across all serverless invocations:
