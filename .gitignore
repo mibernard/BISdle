@@ -133,3 +133,6 @@ dist
 .env.local
 
 .randomcode
+
+# Playwright MCP browser session logs
+.playwright-mcp/
