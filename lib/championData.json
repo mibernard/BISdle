@@ -1,803 +1,506 @@
 {
   "Aatrox": {
     "classes": [
-      "Slayer"
+      "Bastion"
     ],
     "origins": [
-      "Darkin",
-      "World Ender"
-    ]
-  },
-  "Ahri": {
-    "classes": [
-      "Arcanist"
-    ],
-    "origins": [
-      "Ionia"
-    ]
-  },
-  "Ambessa": {
-    "classes": [
-      "Vanquisher"
-    ],
-    "origins": [
-      "Noxus"
-    ]
-  },
-  "Anivia": {
-    "classes": [
-      "Invoker"
-    ],
-    "origins": [
-      "Freljord"
-    ]
-  },
-  "Annie": {
-    "classes": [
-      "Arcanist"
-    ],
-    "origins": [
-      "Dark Child"
-    ]
-  },
-  "Aphelios": {
-    "classes": [],
-    "origins": [
-      "Targon"
-    ]
-  },
-  "Ashe": {
-    "classes": [
-      "Quickstriker"
-    ],
-    "origins": [
-      "Freljord"
-    ]
-  },
-  "Aurelion Sol": {
-    "classes": [
-      "Star Forger"
-    ],
-    "origins": [
-      "Targon"
-    ]
-  },
-  "Azir": {
-    "classes": [
-      "Disruptor"
-    ],
-    "origins": [
-      "Emperor",
-      "Shurima"
-    ]
-  },
-  "Bard": {
-    "classes": [],
-    "origins": [
-      "Caretaker"
-    ]
-  },
-  "Baron Nashor": {
-    "classes": [
-      "Riftscourge"
-    ],
-    "origins": [
-      "Void"
-    ]
-  },
-  "Belveth": {
-    "classes": [
-      "Slayer"
-    ],
-    "origins": [
-      "Void"
-    ]
-  },
-  "Blitzcrank": {
-    "classes": [
-      "Juggernaut"
-    ],
-    "origins": [
-      "Zaun"
-    ]
-  },
-  "Braum": {
-    "classes": [
-      "Warden"
-    ],
-    "origins": [
-      "Freljord"
+      "N.O.V.A."
     ]
   },
   "Briar": {
     "classes": [
-      "Juggernaut",
-      "Slayer"
+      "Rogue"
     ],
     "origins": [
-      "Noxus"
-    ]
-  },
-  "Brock": {
-    "classes": [],
-    "origins": [
-      "Ixtal"
+      "Anima",
+      "Primordian"
     ]
   },
   "Caitlyn": {
     "classes": [
-      "Longshot"
+      "Fateweaver"
     ],
     "origins": [
-      "Piltover"
+      "N.O.V.A."
     ]
   },
   "Chogath": {
     "classes": [
-      "Juggernaut"
+      "Brawler"
     ],
     "origins": [
-      "Void"
+      "Dark Star"
     ]
   },
-  "Darius": {
+  "Ezreal": {
     "classes": [
-      "Defender"
+      "Sniper"
     ],
     "origins": [
-      "Noxus"
-    ]
-  },
-  "Diana": {
-    "classes": [],
-    "origins": [
-      "Targon"
-    ]
-  },
-  "Dr Mundo": {
-    "classes": [
-      "Bruiser"
-    ],
-    "origins": [
-      "Zaun"
-    ]
-  },
-  "Draven": {
-    "classes": [
-      "Quickstriker"
-    ],
-    "origins": [
-      "Noxus"
-    ]
-  },
-  "Ekko": {
-    "classes": [
-      "Disruptor"
-    ],
-    "origins": [
-      "Zaun"
-    ]
-  },
-  "Fiddlesticks": {
-    "classes": [
-      "Vanquisher"
-    ],
-    "origins": [
-      "Harvester"
-    ]
-  },
-  "Fizz": {
-    "classes": [],
-    "origins": [
-      "Bilgewater",
-      "Yordle"
-    ]
-  },
-  "Galio": {
-    "classes": [
-      "Heroic"
-    ],
-    "origins": [
-      "Demacia"
-    ]
-  },
-  "Gangplank": {
-    "classes": [
-      "Slayer",
-      "Vanquisher"
-    ],
-    "origins": [
-      "Bilgewater"
-    ]
-  },
-  "Garen": {
-    "classes": [
-      "Defender"
-    ],
-    "origins": [
-      "Demacia"
-    ]
-  },
-  "Graves": {
-    "classes": [
-      "Gunslinger"
-    ],
-    "origins": [
-      "Bilgewater"
-    ]
-  },
-  "Gwen": {
-    "classes": [
-      "Disruptor"
-    ],
-    "origins": [
-      "Shadow Isles"
-    ]
-  },
-  "Illaoi": {
-    "classes": [
-      "Bruiser"
-    ],
-    "origins": [
-      "Bilgewater"
-    ]
-  },
-  "Jarvan IV": {
-    "classes": [
-      "Defender"
-    ],
-    "origins": [
-      "Demacia"
-    ]
-  },
-  "Jhin": {
-    "classes": [
-      "Gunslinger"
-    ],
-    "origins": [
-      "Ionia"
-    ]
-  },
-  "Jinx": {
-    "classes": [
-      "Gunslinger"
-    ],
-    "origins": [
-      "Zaun"
-    ]
-  },
-  "Kaisa": {
-    "classes": [
-      "Longshot"
-    ],
-    "origins": [
-      "Assimilator",
-      "Void"
-    ]
-  },
-  "Kalista": {
-    "classes": [
-      "Vanquisher"
-    ],
-    "origins": [
-      "Shadow Isles"
-    ]
-  },
-  "Kennen": {
-    "classes": [
-      "Defender"
-    ],
-    "origins": [
-      "Ionia",
-      "Yordle"
-    ]
-  },
-  "Kindred": {
-    "classes": [
-      "Quickstriker"
-    ],
-    "origins": [
-      "Eternal"
-    ]
-  },
-  "Kobuko & Yuumi": {
-    "classes": [
-      "Bruiser",
-      "Invoker"
-    ],
-    "origins": [
-      "Yordle"
-    ]
-  },
-  "Kogmaw": {
-    "classes": [
-      "Arcanist",
-      "Longshot"
-    ],
-    "origins": [
-      "Void"
-    ]
-  },
-  "Leblanc": {
-    "classes": [
-      "Invoker"
-    ],
-    "origins": [
-      "Noxus"
+      "Timebreaker"
     ]
   },
   "Leona": {
-    "classes": [],
+    "classes": [
+      "Vanguard"
+    ],
     "origins": [
-      "Targon"
+      "Arbiter"
     ]
   },
   "Lissandra": {
     "classes": [
-      "Invoker"
+      "Replicator",
+      "Shepherd"
     ],
     "origins": [
-      "Freljord"
-    ]
-  },
-  "Loris": {
-    "classes": [
-      "Warden"
-    ],
-    "origins": [
-      "Piltover"
-    ]
-  },
-  "Lucian & Senna": {
-    "classes": [
-      "Gunslinger"
-    ],
-    "origins": [
-      "Soulbound"
-    ]
-  },
-  "Lulu": {
-    "classes": [
-      "Arcanist"
-    ],
-    "origins": [
-      "Yordle"
-    ]
-  },
-  "Lux": {
-    "classes": [
-      "Arcanist"
-    ],
-    "origins": [
-      "Demacia"
-    ]
-  },
-  "Malzahar": {
-    "classes": [
-      "Disruptor"
-    ],
-    "origins": [
-      "Void"
-    ]
-  },
-  "Mel": {
-    "classes": [
-      "Disruptor"
-    ],
-    "origins": [
-      "Noxus"
-    ]
-  },
-  "Milio": {
-    "classes": [
-      "Invoker"
-    ],
-    "origins": [
-      "Ixtal"
-    ]
-  },
-  "Miss Fortune": {
-    "classes": [
-      "Gunslinger"
-    ],
-    "origins": [
-      "Bilgewater"
+      "Dark Star"
     ]
   },
   "Nasus": {
-    "classes": [],
-    "origins": [
-      "Shurima"
-    ]
-  },
-  "Nautilus": {
     "classes": [
-      "Juggernaut",
-      "Warden"
+      "Vanguard"
     ],
     "origins": [
-      "Bilgewater"
-    ]
-  },
-  "Neeko": {
-    "classes": [
-      "Arcanist",
-      "Defender"
-    ],
-    "origins": [
-      "Ixtal"
-    ]
-  },
-  "Nidalee": {
-    "classes": [
-      "Huntress"
-    ],
-    "origins": [
-      "Ixtal"
-    ]
-  },
-  "Orianna": {
-    "classes": [
-      "Invoker"
-    ],
-    "origins": [
-      "Piltover"
-    ]
-  },
-  "Ornn": {
-    "classes": [
-      "Warden"
-    ],
-    "origins": [
-      "Blacksmith"
+      "Space Groove"
     ]
   },
   "Poppy": {
     "classes": [
-      "Juggernaut"
+      "Bastion"
     ],
     "origins": [
-      "Demacia",
-      "Yordle"
-    ]
-  },
-  "Qiyana": {
-    "classes": [
-      "Slayer"
-    ],
-    "origins": [
-      "Ixtal"
+      "Meeple"
     ]
   },
   "RekSai": {
     "classes": [
-      "Vanquisher"
+      "Brawler"
     ],
     "origins": [
-      "Void"
+      "Primordian"
     ]
   },
-  "Renekton": {
-    "classes": [],
-    "origins": [
-      "Shurima"
-    ]
-  },
-  "Rift Herald": {
+  "Talon": {
     "classes": [
-      "Bruiser"
+      "Rogue"
     ],
     "origins": [
-      "Void"
-    ]
-  },
-  "Rumble": {
-    "classes": [
-      "Defender"
-    ],
-    "origins": [
-      "Yordle"
-    ]
-  },
-  "Ryze": {
-    "classes": [],
-    "origins": [
-      "Rune Mage"
-    ]
-  },
-  "Sejuani": {
-    "classes": [
-      "Defender"
-    ],
-    "origins": [
-      "Freljord"
-    ]
-  },
-  "Seraphine": {
-    "classes": [
-      "Disruptor"
-    ],
-    "origins": [
-      "Piltover"
-    ]
-  },
-  "Sett": {
-    "classes": [
-      "The Boss"
-    ],
-    "origins": [
-      "Ionia"
-    ]
-  },
-  "Shen": {
-    "classes": [
-      "Bruiser"
-    ],
-    "origins": [
-      "Ionia"
-    ]
-  },
-  "Shyvana": {
-    "classes": [
-      "Juggernaut"
-    ],
-    "origins": [
-      "Dragonborn"
-    ]
-  },
-  "Singed": {
-    "classes": [
-      "Juggernaut"
-    ],
-    "origins": [
-      "Zaun"
-    ]
-  },
-  "Sion": {
-    "classes": [
-      "Bruiser"
-    ],
-    "origins": [
-      "Noxus"
-    ]
-  },
-  "Skarner": {
-    "classes": [],
-    "origins": [
-      "Ixtal"
-    ]
-  },
-  "Sona": {
-    "classes": [
-      "Invoker"
-    ],
-    "origins": [
-      "Demacia"
-    ]
-  },
-  "Swain": {
-    "classes": [
-      "Arcanist",
-      "Juggernaut"
-    ],
-    "origins": [
-      "Noxus"
-    ]
-  },
-  "Sylas": {
-    "classes": [
-      "Arcanist",
-      "Defender"
-    ],
-    "origins": [
-      "Chainbreaker"
-    ]
-  },
-  "T-Hex": {
-    "classes": [
-      "Gunslinger"
-    ],
-    "origins": [
-      "HexMech",
-      "Piltover"
-    ]
-  },
-  "Tahm Kench": {
-    "classes": [
-      "Bruiser"
-    ],
-    "origins": [
-      "Bilgewater",
-      "Glutton"
-    ]
-  },
-  "Taric": {
-    "classes": [],
-    "origins": [
-      "Targon"
+      "Stargazer"
     ]
   },
   "Teemo": {
     "classes": [
-      "Longshot"
+      "Shepherd"
     ],
     "origins": [
-      "Yordle"
-    ]
-  },
-  "Thresh": {
-    "classes": [
-      "Warden"
-    ],
-    "origins": [
-      "Shadow Isles"
-    ]
-  },
-  "Tibbers": {
-    "classes": [
-      "Arcanist"
-    ],
-    "origins": []
-  },
-  "Tristana": {
-    "classes": [
-      "Gunslinger"
-    ],
-    "origins": [
-      "Yordle"
-    ]
-  },
-  "Tryndamere": {
-    "classes": [
-      "Slayer"
-    ],
-    "origins": [
-      "Freljord"
+      "Space Groove"
     ]
   },
   "Twisted Fate": {
     "classes": [
-      "Quickstriker"
+      "Fateweaver"
     ],
     "origins": [
-      "Bilgewater"
-    ]
-  },
-  "Vayne": {
-    "classes": [
-      "Longshot"
-    ],
-    "origins": [
-      "Demacia"
+      "Stargazer"
     ]
   },
   "Veigar": {
     "classes": [
-      "Arcanist"
+      "Replicator"
     ],
     "origins": [
-      "Yordle"
+      "Meeple"
     ]
   },
-  "Vi": {
+  "Akali": {
     "classes": [
-      "Defender"
+      "Marauder"
     ],
     "origins": [
-      "Piltover",
-      "Zaun"
+      "N.O.V.A."
     ]
   },
-  "Viego": {
+  "Belveth": {
     "classes": [
-      "Quickstriker"
+      "Challenger",
+      "Marauder"
     ],
     "origins": [
-      "Shadow Isles"
+      "Primordian"
     ]
   },
-  "Volibear": {
+  "Gnar": {
     "classes": [
-      "Bruiser"
+      "Sniper"
     ],
     "origins": [
-      "Freljord"
+      "Meeple"
     ]
   },
-  "Warwick": {
+  "Gragas": {
     "classes": [
-      "Quickstriker"
+      "Brawler"
     ],
     "origins": [
-      "Zaun"
+      "Psionic"
     ]
   },
-  "Wukong": {
+  "Gwen": {
     "classes": [
-      "Bruiser"
+      "Rogue"
     ],
     "origins": [
-      "Ionia"
+      "Space Groove"
     ]
   },
-  "Xerath": {
+  "Jax": {
     "classes": [
-      "Ascendant"
+      "Bastion"
     ],
     "origins": [
-      "Shurima"
+      "Stargazer"
     ]
   },
-  "Xin Zhao": {
+  "Jinx": {
     "classes": [
-      "Warden"
+      "Challenger"
     ],
     "origins": [
-      "Demacia",
-      "Ionia"
+      "Anima"
     ]
   },
-  "Yasuo": {
+  "Meepsie": {
     "classes": [
-      "Slayer"
+      "Shepherd",
+      "Voyager"
     ],
     "origins": [
-      "Ionia"
+      "Meeple"
     ]
   },
-  "Yone": {
+  "Milio": {
     "classes": [
-      "Slayer"
+      "Fateweaver"
     ],
     "origins": [
-      "Ionia"
+      "Timebreaker"
     ]
   },
-  "Yorick": {
+  "Mordekaiser": {
     "classes": [
-      "Warden"
+      "Conduit",
+      "Vanguard"
     ],
     "origins": [
-      "Shadow Isles"
+      "Dark Star"
     ]
   },
-  "Yunara": {
+  "Pantheon": {
     "classes": [
-      "Quickstriker"
+      "Brawler",
+      "Replicator"
     ],
     "origins": [
-      "Ionia"
+      "Timebreaker"
     ]
   },
-  "Zaahen": {
+  "Pyke": {
     "classes": [
-      "Immortal"
+      "Voyager"
     ],
     "origins": [
-      "Darkin"
-    ]
-  },
-  "Ziggs": {
-    "classes": [
-      "Longshot"
-    ],
-    "origins": [
-      "Yordle",
-      "Zaun"
-    ]
-  },
-  "Zilean": {
-    "classes": [
-      "Invoker"
-    ],
-    "origins": [
-      "Chronokeeper"
+      "Psionic"
     ]
   },
   "Zoe": {
+    "classes": [
+      "Conduit"
+    ],
+    "origins": [
+      "Arbiter"
+    ]
+  },
+  "Aurora": {
+    "classes": [
+      "Voyager"
+    ],
+    "origins": [
+      "Anima"
+    ]
+  },
+  "Diana": {
+    "classes": [
+      "Challenger"
+    ],
+    "origins": [
+      "Arbiter"
+    ]
+  },
+  "Fizz": {
+    "classes": [
+      "Rogue"
+    ],
+    "origins": [
+      "Meeple"
+    ]
+  },
+  "Illaoi": {
+    "classes": [
+      "Shepherd",
+      "Vanguard"
+    ],
+    "origins": [
+      "Anima"
+    ]
+  },
+  "Kaisa": {
+    "classes": [
+      "Rogue"
+    ],
+    "origins": [
+      "Dark Star"
+    ]
+  },
+  "Lulu": {
+    "classes": [
+      "Replicator"
+    ],
+    "origins": [
+      "Stargazer"
+    ]
+  },
+  "Maokai": {
+    "classes": [
+      "Brawler"
+    ],
+    "origins": [
+      "N.O.V.A."
+    ]
+  },
+  "Miss Fortune": {
     "classes": [],
     "origins": [
-      "Targon"
+      "Gun Goddess"
+    ]
+  },
+  "Ornn": {
+    "classes": [
+      "Bastion"
+    ],
+    "origins": [
+      "Space Groove"
+    ]
+  },
+  "Rhaast": {
+    "classes": [],
+    "origins": [
+      "Redeemer"
+    ]
+  },
+  "Samira": {
+    "classes": [
+      "Sniper"
+    ],
+    "origins": [
+      "Space Groove"
+    ]
+  },
+  "Urgot": {
+    "classes": [
+      "Brawler",
+      "Marauder"
+    ],
+    "origins": [
+      "Mecha"
+    ]
+  },
+  "Viktor": {
+    "classes": [
+      "Conduit"
+    ],
+    "origins": [
+      "Psionic"
+    ]
+  },
+  "Aurelion Sol": {
+    "classes": [
+      "Conduit"
+    ],
+    "origins": [
+      "Mecha"
+    ]
+  },
+  "Corki": {
+    "classes": [
+      "Fateweaver"
+    ],
+    "origins": [
+      "Meeple"
+    ]
+  },
+  "Karma": {
+    "classes": [
+      "Voyager"
+    ],
+    "origins": [
+      "Dark Star"
+    ]
+  },
+  "Kindred": {
+    "classes": [
+      "Challenger"
+    ],
+    "origins": [
+      "N.O.V.A."
+    ]
+  },
+  "Leblanc": {
+    "classes": [
+      "Shepherd"
+    ],
+    "origins": [
+      "Arbiter"
+    ]
+  },
+  "Master Yi": {
+    "classes": [
+      "Marauder"
+    ],
+    "origins": [
+      "Psionic"
+    ]
+  },
+  "Nami": {
+    "classes": [
+      "Replicator"
+    ],
+    "origins": [
+      "Space Groove"
+    ]
+  },
+  "Nunu": {
+    "classes": [
+      "Vanguard"
+    ],
+    "origins": [
+      "Stargazer"
+    ]
+  },
+  "Rammus": {
+    "classes": [
+      "Bastion"
+    ],
+    "origins": [
+      "Meeple"
+    ]
+  },
+  "Riven": {
+    "classes": [
+      "Rogue"
+    ],
+    "origins": [
+      "Timebreaker"
+    ]
+  },
+  "Tahm Kench": {
+    "classes": [
+      "Brawler"
+    ],
+    "origins": [
+      "Oracle"
+    ]
+  },
+  "The Mighty Mech": {
+    "classes": [
+      "Voyager"
+    ],
+    "origins": [
+      "Mecha"
+    ]
+  },
+  "Xayah": {
+    "classes": [
+      "Sniper"
+    ],
+    "origins": [
+      "Stargazer"
+    ]
+  },
+  "Bard": {
+    "classes": [
+      "Conduit"
+    ],
+    "origins": [
+      "Meeple"
+    ]
+  },
+  "Blitzcrank": {
+    "classes": [
+      "Vanguard"
+    ],
+    "origins": [
+      "Party Animal",
+      "Space Groove"
+    ]
+  },
+  "Fiora": {
+    "classes": [
+      "Marauder"
+    ],
+    "origins": [
+      "Anima",
+      "Divine Duelist"
+    ]
+  },
+  "Graves": {
+    "classes": [],
+    "origins": [
+      "Factory New"
+    ]
+  },
+  "Jhin": {
+    "classes": [
+      "Eradicator",
+      "Sniper"
+    ],
+    "origins": [
+      "Dark Star"
+    ]
+  },
+  "Morgana": {
+    "classes": [],
+    "origins": [
+      "Dark Lady"
+    ]
+  },
+  "Shen": {
+    "classes": [
+      "Bastion"
+    ],
+    "origins": [
+      "Bulwark"
+    ]
+  },
+  "Sona": {
+    "classes": [
+      "Shepherd"
+    ],
+    "origins": [
+      "Commander",
+      "Psionic"
+    ]
+  },
+  "Vex": {
+    "classes": [],
+    "origins": [
+      "Doomer"
+    ]
+  },
+  "Zed": {
+    "classes": [],
+    "origins": [
+      "Galaxy Hunter"
     ]
   }
 }
